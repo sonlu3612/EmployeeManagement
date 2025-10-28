@@ -29,26 +29,26 @@
         private void InitializeComponent()
         {
             this.panel1 = new AntdUI.Panel();
-            this.pageHeader1 = new AntdUI.PageHeader();
-            this.panel2 = new AntdUI.Panel();
-            this.image3D1 = new AntdUI.Image3D();
-            this.image3D2 = new AntdUI.Image3D();
             this.txtTaiKhoan = new AntdUI.Input();
-            this.input1 = new AntdUI.Input();
+            this.txtMatKhau = new AntdUI.Input();
             this.label1 = new AntdUI.Label();
             this.btnDangNhap = new AntdUI.Button();
+            this.image3D3 = new AntdUI.Image3D();
+            this.image3D2 = new AntdUI.Image3D();
+            this.image3D1 = new AntdUI.Image3D();
+            this.pageHeader1 = new AntdUI.PageHeader();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.image3D3);
             this.panel1.Controls.Add(this.btnDangNhap);
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.input1);
+            this.panel1.Controls.Add(this.txtMatKhau);
             this.panel1.Controls.Add(this.txtTaiKhoan);
             this.panel1.Controls.Add(this.image3D2);
             this.panel1.Controls.Add(this.image3D1);
-            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.pageHeader1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -56,51 +56,6 @@
             this.panel1.Size = new System.Drawing.Size(566, 333);
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
-            // 
-            // pageHeader1
-            // 
-            this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.sign_in_alt;
-            this.pageHeader1.Location = new System.Drawing.Point(0, 0);
-            this.pageHeader1.Name = "pageHeader1";
-            this.pageHeader1.ShowButton = true;
-            this.pageHeader1.ShowIcon = true;
-            this.pageHeader1.Size = new System.Drawing.Size(566, 34);
-            this.pageHeader1.TabIndex = 0;
-            this.pageHeader1.Text = "Đăng nhập";
-            // 
-            // panel2
-            // 
-            this.panel2.Back = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(124)))), ((int)(((byte)(186)))));
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(124)))), ((int)(((byte)(186)))));
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel2.Location = new System.Drawing.Point(0, 34);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(205, 299);
-            this.panel2.TabIndex = 1;
-            this.panel2.Text = "panel2";
-            // 
-            // image3D1
-            // 
-            this.image3D1.BackColor = System.Drawing.Color.Transparent;
-            this.image3D1.Image = global::EmployeeManagement.Properties.Resources.user_boder_black;
-            this.image3D1.ImageFit = AntdUI.TFit.Contain;
-            this.image3D1.Location = new System.Drawing.Point(249, 115);
-            this.image3D1.Name = "image3D1";
-            this.image3D1.Size = new System.Drawing.Size(75, 23);
-            this.image3D1.TabIndex = 2;
-            this.image3D1.Text = "image3D1";
-            // 
-            // image3D2
-            // 
-            this.image3D2.BackColor = System.Drawing.Color.Transparent;
-            this.image3D2.Image = global::EmployeeManagement.Properties.Resources.key_border_black;
-            this.image3D2.ImageFit = AntdUI.TFit.Contain;
-            this.image3D2.Location = new System.Drawing.Point(249, 166);
-            this.image3D2.Name = "image3D2";
-            this.image3D2.Size = new System.Drawing.Size(75, 23);
-            this.image3D2.TabIndex = 3;
-            this.image3D2.Text = "image3D2";
             // 
             // txtTaiKhoan
             // 
@@ -110,13 +65,13 @@
             this.txtTaiKhoan.Size = new System.Drawing.Size(156, 34);
             this.txtTaiKhoan.TabIndex = 4;
             // 
-            // input1
+            // txtMatKhau
             // 
-            this.input1.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.input1.Location = new System.Drawing.Point(330, 166);
-            this.input1.Name = "input1";
-            this.input1.Size = new System.Drawing.Size(156, 34);
-            this.input1.TabIndex = 5;
+            this.txtMatKhau.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.txtMatKhau.Location = new System.Drawing.Point(330, 166);
+            this.txtMatKhau.Name = "txtMatKhau";
+            this.txtMatKhau.Size = new System.Drawing.Size(156, 34);
+            this.txtMatKhau.TabIndex = 5;
             // 
             // label1
             // 
@@ -139,7 +94,54 @@
             this.btnDangNhap.TabIndex = 7;
             this.btnDangNhap.Text = "Đăng nhập";
             this.btnDangNhap.Type = AntdUI.TTypeMini.Primary;
+            this.btnDangNhap.Click += new System.EventHandler(this.btnDangNhap_Click);
             this.btnDangNhap.MouseHover += new System.EventHandler(this.btnDangNhap_MouseHover);
+            // 
+            // image3D3
+            // 
+            this.image3D3.BackColor = System.Drawing.Color.Transparent;
+            this.image3D3.Dock = System.Windows.Forms.DockStyle.Left;
+            this.image3D3.Image = global::EmployeeManagement.Properties.Resources.back;
+            this.image3D3.ImageFit = AntdUI.TFit.Contain;
+            this.image3D3.Location = new System.Drawing.Point(0, 34);
+            this.image3D3.Name = "image3D3";
+            this.image3D3.Size = new System.Drawing.Size(272, 299);
+            this.image3D3.TabIndex = 8;
+            this.image3D3.Text = "image3D3";
+            // 
+            // image3D2
+            // 
+            this.image3D2.BackColor = System.Drawing.Color.Transparent;
+            this.image3D2.Image = global::EmployeeManagement.Properties.Resources.key_border_black;
+            this.image3D2.ImageFit = AntdUI.TFit.Contain;
+            this.image3D2.Location = new System.Drawing.Point(249, 166);
+            this.image3D2.Name = "image3D2";
+            this.image3D2.Size = new System.Drawing.Size(75, 23);
+            this.image3D2.TabIndex = 3;
+            this.image3D2.Text = "image3D2";
+            // 
+            // image3D1
+            // 
+            this.image3D1.BackColor = System.Drawing.Color.Transparent;
+            this.image3D1.Image = global::EmployeeManagement.Properties.Resources.user_boder_black;
+            this.image3D1.ImageFit = AntdUI.TFit.Contain;
+            this.image3D1.Location = new System.Drawing.Point(249, 115);
+            this.image3D1.Name = "image3D1";
+            this.image3D1.Size = new System.Drawing.Size(75, 23);
+            this.image3D1.TabIndex = 2;
+            this.image3D1.Text = "image3D1";
+            // 
+            // pageHeader1
+            // 
+            this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.sign_in_alt;
+            this.pageHeader1.Location = new System.Drawing.Point(0, 0);
+            this.pageHeader1.Name = "pageHeader1";
+            this.pageHeader1.ShowButton = true;
+            this.pageHeader1.ShowIcon = true;
+            this.pageHeader1.Size = new System.Drawing.Size(566, 34);
+            this.pageHeader1.TabIndex = 0;
+            this.pageHeader1.Text = "Đăng nhập";
             // 
             // frmLogin
             // 
@@ -161,12 +163,12 @@
 
         private AntdUI.Panel panel1;
         private AntdUI.PageHeader pageHeader1;
-        private AntdUI.Panel panel2;
         private AntdUI.Button btnDangNhap;
         private AntdUI.Label label1;
-        private AntdUI.Input input1;
+        private AntdUI.Input txtMatKhau;
         private AntdUI.Input txtTaiKhoan;
         private AntdUI.Image3D image3D2;
         private AntdUI.Image3D image3D1;
+        private AntdUI.Image3D image3D3;
     }
 }

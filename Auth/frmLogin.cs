@@ -21,5 +21,10 @@ namespace EmployeeManagement.Auth
         {
             btnDangNhap.Type = AntdUI.TTypeMini.Success;
         }
+
+        private void btnDangNhap_Click(object sender, EventArgs e)
+        {
+            btnDangNhap.Loading = true;
+        }
     }
 }

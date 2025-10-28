@@ -121,19 +121,22 @@
   <data name="key_border_black" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\Icons\key_border_black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sign-in-alt" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\Icons\sign-in-alt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="user_blacl" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\Icons\user_blacl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="user_boder_black" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Assets\Icons\user_boder_black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="user_boder_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\Icons\user_boder_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="sign-in-alt" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Icons\sign-in-alt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="user_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Assets\Icons\user_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="user_boder_black" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Icons\user_boder_black.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="back" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Assets\Images\back.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
