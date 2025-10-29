@@ -37,6 +37,7 @@
       <HintPath>packages\AntdUI.2.1.13\lib\net48\AntdUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
@@ -52,23 +53,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Auth\frmLogin.cs">
+    <Compile Include="DAL\DatabaseHelper.cs" />
+    <Compile Include="DAL\Interfaces\IRepository.cs" />
+    <Compile Include="DAL\Repositories\EmployeeRepository.cs" />
+    <Compile Include="DAL\Repositories\ProjectRepository.cs" />
+    <Compile Include="DAL\Repositories\TaskRepository.cs" />
+    <Compile Include="DAL\Repositories\UserRepository.cs" />
+    <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Page_Projects.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pages\Page_Projects.Designer.cs">
-      <DependentUpon>Page_Projects.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,31 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pages\UserControl\" />
-    <Folder Include="UserControl\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\key_border_black.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\sign-in-alt.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\user_blacl.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\user_boder_black.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\user_boder_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\user_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Images\back.jpeg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
