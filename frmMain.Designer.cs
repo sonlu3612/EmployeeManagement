@@ -41,27 +41,39 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.panel1 = new AntdUI.Panel();
             this.tabs1 = new AntdUI.Tabs();
-            this.tabPage6 = new AntdUI.TabPage();
-            this.tabPage5 = new AntdUI.TabPage();
-            this.tabPage4 = new AntdUI.TabPage();
-            this.tabPage3 = new AntdUI.TabPage();
-            this.tabPage2 = new AntdUI.TabPage();
+            this.tabChangePassword = new AntdUI.TabPage();
             this.tabPage1 = new AntdUI.TabPage();
+            this.tabPage2 = new AntdUI.TabPage();
+            this.tabPage3 = new AntdUI.TabPage();
+            this.tabPage4 = new AntdUI.TabPage();
+            this.tabPage6 = new AntdUI.TabPage();
             this.phTrangChu = new AntdUI.PageHeader();
             this.panel2 = new AntdUI.Panel();
             this.avatar2 = new AntdUI.Avatar();
             this.label3 = new AntdUI.Label();
             this.menu1 = new AntdUI.Menu();
             this.panel3 = new AntdUI.Panel();
-            this.avatar1 = new AntdUI.Avatar();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.divider2 = new AntdUI.Divider();
             this.divider1 = new AntdUI.Divider();
+            this.avatar1 = new AntdUI.Avatar();
+            this.panel4 = new AntdUI.Panel();
+            this.label4 = new AntdUI.Label();
+            this.label5 = new AntdUI.Label();
+            this.label6 = new AntdUI.Label();
+            this.label7 = new AntdUI.Label();
+            this.btnChangePass = new AntdUI.Button();
+            this.btnThoat = new AntdUI.Button();
+            this.txtMKC = new AntdUI.Input();
+            this.txtMKM = new AntdUI.Input();
+            this.txtXNMK = new AntdUI.Input();
             this.panel1.SuspendLayout();
             this.tabs1.SuspendLayout();
+            this.tabChangePassword.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -78,61 +90,46 @@
             // tabs1
             // 
             this.tabs1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabPage1);
             this.tabs1.Controls.Add(this.tabPage2);
             this.tabs1.Controls.Add(this.tabPage3);
             this.tabs1.Controls.Add(this.tabPage4);
-            this.tabs1.Controls.Add(this.tabPage5);
             this.tabs1.Controls.Add(this.tabPage6);
-            this.tabs1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabs1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.tabs1.Location = new System.Drawing.Point(3, 35);
             this.tabs1.Name = "tabs1";
             this.tabs1.Pages.Add(this.tabPage1);
             this.tabs1.Pages.Add(this.tabPage2);
             this.tabs1.Pages.Add(this.tabPage3);
             this.tabs1.Pages.Add(this.tabPage4);
-            this.tabs1.Pages.Add(this.tabPage5);
+            this.tabs1.Pages.Add(this.tabChangePassword);
             this.tabs1.Pages.Add(this.tabPage6);
+            this.tabs1.SelectedIndex = 4;
             this.tabs1.Size = new System.Drawing.Size(1023, 685);
             this.tabs1.Style = styleLine1;
             this.tabs1.TabIndex = 2;
             this.tabs1.Text = "tabs1";
             // 
-            // tabPage6
+            // tabChangePassword
             // 
-            this.tabPage6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPage6.Location = new System.Drawing.Point(0, 0);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(1023, 658);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "Profile.LogOut";
+            this.tabChangePassword.Controls.Add(this.panel4);
+            this.tabChangePassword.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabChangePassword.Location = new System.Drawing.Point(0, 0);
+            this.tabChangePassword.Name = "tabChangePassword";
+            this.tabChangePassword.Showed = true;
+            this.tabChangePassword.Size = new System.Drawing.Size(1023, 658);
+            this.tabChangePassword.TabIndex = 4;
+            this.tabChangePassword.Text = "Profile.ChangePassword";
             // 
-            // tabPage5
+            // tabPage1
             // 
-            this.tabPage5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPage5.Location = new System.Drawing.Point(0, 0);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1023, 658);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Profile.ChangePassword";
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPage4.Location = new System.Drawing.Point(0, 0);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1023, 658);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Setting.Database";
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPage3.Location = new System.Drawing.Point(0, 0);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1023, 658);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Setting.Company";
+            this.tabPage1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage1.Location = new System.Drawing.Point(0, 0);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Projects";
             // 
             // tabPage2
             // 
@@ -143,15 +140,32 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Tasks";
             // 
-            // tabPage1
+            // tabPage3
             // 
-            this.tabPage1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabPage1.Location = new System.Drawing.Point(0, 0);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Showed = true;
-            this.tabPage1.Size = new System.Drawing.Size(1023, 658);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Projects";
+            this.tabPage3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage3.Location = new System.Drawing.Point(0, 0);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Setting.Company";
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage4.Location = new System.Drawing.Point(0, 0);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Setting.Database";
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage6.Location = new System.Drawing.Point(0, 0);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Profile.LogOut";
             // 
             // phTrangChu
             // 
@@ -254,6 +268,7 @@
             this.menu1.Size = new System.Drawing.Size(212, 485);
             this.menu1.TabIndex = 5;
             this.menu1.Text = "menu1";
+            this.menu1.SelectChanged += new AntdUI.SelectEventHandler(this.menu1_SelectChanged);
             // 
             // panel3
             // 
@@ -265,15 +280,6 @@
             this.panel3.Size = new System.Drawing.Size(75, 85);
             this.panel3.TabIndex = 4;
             this.panel3.Text = "panel3";
-            // 
-            // avatar1
-            // 
-            this.avatar1.Image = ((System.Drawing.Image)(resources.GetObject("avatar1.Image")));
-            this.avatar1.Location = new System.Drawing.Point(3, 6);
-            this.avatar1.Name = "avatar1";
-            this.avatar1.Size = new System.Drawing.Size(60, 76);
-            this.avatar1.TabIndex = 0;
-            this.avatar1.Text = "a";
             // 
             // label2
             // 
@@ -323,6 +329,138 @@
             this.divider1.Text = "";
             this.divider1.Thickness = 0.9F;
             // 
+            // avatar1
+            // 
+            this.avatar1.Image = ((System.Drawing.Image)(resources.GetObject("avatar1.Image")));
+            this.avatar1.Location = new System.Drawing.Point(3, 6);
+            this.avatar1.Name = "avatar1";
+            this.avatar1.Size = new System.Drawing.Size(60, 76);
+            this.avatar1.TabIndex = 0;
+            this.avatar1.Text = "a";
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.txtXNMK);
+            this.panel4.Controls.Add(this.txtMKM);
+            this.panel4.Controls.Add(this.txtMKC);
+            this.panel4.Controls.Add(this.btnThoat);
+            this.panel4.Controls.Add(this.btnChangePass);
+            this.panel4.Controls.Add(this.label7);
+            this.panel4.Controls.Add(this.label6);
+            this.panel4.Controls.Add(this.label5);
+            this.panel4.Controls.Add(this.label4);
+            this.panel4.Location = new System.Drawing.Point(289, 132);
+            this.panel4.Name = "panel4";
+            this.panel4.Radius = 8;
+            this.panel4.Size = new System.Drawing.Size(546, 321);
+            this.panel4.TabIndex = 0;
+            this.panel4.Text = "panel4";
+            // 
+            // label4
+            // 
+            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(0, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(115, 34);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Đổi mật khẩu";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label5
+            // 
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.Black;
+            this.label5.Location = new System.Drawing.Point(38, 91);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(104, 35);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Mật khẩu cũ:";
+            // 
+            // label6
+            // 
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.Black;
+            this.label6.Location = new System.Drawing.Point(38, 146);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 35);
+            this.label6.TabIndex = 5;
+            this.label6.Text = "Mật khẩu mới:";
+            // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Segoe UI Semibold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.Black;
+            this.label7.Location = new System.Drawing.Point(38, 206);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(169, 35);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "Xác nhận mật khẩu mới:";
+            // 
+            // btnChangePass
+            // 
+            this.btnChangePass.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnChangePass.BorderWidth = 5F;
+            this.btnChangePass.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnChangePass.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangePass.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnChangePass.Location = new System.Drawing.Point(373, 265);
+            this.btnChangePass.Name = "btnChangePass";
+            this.btnChangePass.Radius = 8;
+            this.btnChangePass.Size = new System.Drawing.Size(100, 37);
+            this.btnChangePass.TabIndex = 7;
+            this.btnChangePass.Text = "Đổi mật khẩu";
+            this.btnChangePass.Type = AntdUI.TTypeMini.Primary;
+            this.btnChangePass.Click += new System.EventHandler(this.btnChangePass_Click_1);
+            // 
+            // btnThoat
+            // 
+            this.btnThoat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnThoat.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.BorderWidth = 1F;
+            this.btnThoat.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThoat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnThoat.Location = new System.Drawing.Point(267, 265);
+            this.btnThoat.Name = "btnThoat";
+            this.btnThoat.Radius = 8;
+            this.btnThoat.Size = new System.Drawing.Size(100, 37);
+            this.btnThoat.TabIndex = 8;
+            this.btnThoat.Text = "Thoát";
+            this.btnThoat.Type = AntdUI.TTypeMini.Primary;
+            // 
+            // txtMKC
+            // 
+            this.txtMKC.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.txtMKC.Location = new System.Drawing.Point(227, 91);
+            this.txtMKC.Name = "txtMKC";
+            this.txtMKC.PlaceholderText = "Mật khẩu cũ";
+            this.txtMKC.Size = new System.Drawing.Size(179, 34);
+            this.txtMKC.TabIndex = 9;
+            // 
+            // txtMKM
+            // 
+            this.txtMKM.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.txtMKM.Location = new System.Drawing.Point(227, 146);
+            this.txtMKM.Name = "txtMKM";
+            this.txtMKM.PlaceholderText = "Mật khẩu mới";
+            this.txtMKM.Size = new System.Drawing.Size(179, 34);
+            this.txtMKM.TabIndex = 10;
+            // 
+            // txtXNMK
+            // 
+            this.txtXNMK.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.txtXNMK.Location = new System.Drawing.Point(227, 206);
+            this.txtXNMK.Name = "txtXNMK";
+            this.txtXNMK.PlaceholderText = "Xác nhận mật khẩu mới";
+            this.txtXNMK.Size = new System.Drawing.Size(179, 34);
+            this.txtXNMK.TabIndex = 11;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,9 +473,11 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.panel1.ResumeLayout(false);
             this.tabs1.ResumeLayout(false);
+            this.tabChangePassword.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -362,6 +502,16 @@
         private AntdUI.TabPage tabPage4;
         private AntdUI.TabPage tabPage3;
         private AntdUI.TabPage tabPage6;
-        private AntdUI.TabPage tabPage5;
+        private AntdUI.TabPage tabChangePassword;
+        private AntdUI.Panel panel4;
+        private AntdUI.Label label4;
+        private AntdUI.Label label5;
+        private AntdUI.Button btnChangePass;
+        private AntdUI.Label label7;
+        private AntdUI.Label label6;
+        private AntdUI.Button btnThoat;
+        private AntdUI.Input txtXNMK;
+        private AntdUI.Input txtMKM;
+        private AntdUI.Input txtMKC;
     }
 }
