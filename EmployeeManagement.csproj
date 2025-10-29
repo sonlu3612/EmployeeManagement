@@ -53,6 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
     <Compile Include="DAL\Repositories\EmployeeRepository.cs" />
@@ -64,6 +67,23 @@
     </Compile>
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ProjectStats.cs" />
+    <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Projects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Projects.Designer.cs">
+      <DependentUpon>Page_Projects.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +119,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Icons\key_border_black.png" />
+    <Content Include="Assets\Icons\sign-in-alt.png" />
+    <Content Include="Assets\Icons\user_blacl.png" />
+    <Content Include="Assets\Icons\user_boder_black.png" />
+    <Content Include="Assets\Icons\user_boder_white.png" />
+    <Content Include="Assets\Icons\user_white.png" />
+    <Content Include="Assets\Images\back.jpeg" />
+    <Content Include="Database\schema.sql" />
+    <Content Include="Database\stored_procedures.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
