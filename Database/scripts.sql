@@ -45,15 +45,16 @@ GO
  Table: Users
  Mô tả: Lưu thông tin accounts đăng nhập hệ thống
  Relationships: 
-   - 1 User có thể tạo nhiều Projects (Projects.CreatedBy)
+   - 1 User CÓ ĐÚNG 1 Employee (Shared Primary Key: EmployeeID = UserID)
+ - 1 User có thể tạo nhiều Projects (Projects.CreatedBy)
    - 1 User có thể tạo nhiều Tasks (Tasks.CreatedBy)
    - 1 User có thể comment nhiều TaskComments (TaskComments.UserID)
 */
 CREATE TABLE dbo.Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     Username NVARCHAR(50) NOT NULL UNIQUE,
- PasswordHash NVARCHAR(256) NOT NULL,
-    Email NVARCHAR(100) UNIQUE,
+    PasswordHash NVARCHAR(256) NOT NULL,
+  Email NVARCHAR(100) UNIQUE,
     Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin','Manager','Employee')),
   IsActive BIT NOT NULL DEFAULT (1),
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE())
@@ -81,11 +82,15 @@ GO
  Table: Employees
  Mô tả: Quản lý nhân viên
  Relationships:
+   - 1 Employee CÓ ĐÚNG 1 User (Shared PK: EmployeeID = UserID)
    - Nhiều Employees thuộc 1 Department (FK: DepartmentID)
    - 1 Employee có thể được gán nhiều Tasks (Tasks.AssignedTo)
+ 
+ LƯU Ý: EmployeeID KHÔNG DÙNG IDENTITY vì phải khớp với UserID
+        Workflow: Tạo User trước → Tạo Employee với EmployeeID = UserID vừa tạo
 */
 CREATE TABLE dbo.Employees (
-    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    EmployeeID INT PRIMARY KEY, -- KHÔNG DÙNG IDENTITY, khớp với Users.UserID
     FullName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) UNIQUE,
     Phone VARCHAR(20),
@@ -93,11 +98,17 @@ CREATE TABLE dbo.Employees (
     ImagePath NVARCHAR(500),
     Address NVARCHAR(500),
     HireDate DATE NOT NULL DEFAULT (GETDATE()),
- IsActive BIT NOT NULL DEFAULT (1),
+    IsActive BIT NOT NULL DEFAULT (1),
+    
+    -- Foreign Key: Đảm bảo EmployeeID phải tồn tại trong Users.UserID
+    CONSTRAINT FK_Employees_Users FOREIGN KEY (EmployeeID) 
+    REFERENCES dbo.Users(UserID) ON DELETE CASCADE,
+    
+    -- Foreign Key: Department (nullable)
     CONSTRAINT FK_Employees_Departments FOREIGN KEY (DepartmentID) 
-        REFERENCES dbo.Departments(DepartmentID) ON DELETE SET NULL
+      REFERENCES dbo.Departments(DepartmentID) ON DELETE SET NULL
 );
-PRINT 'Table [Employees] created.';
+PRINT 'Table [Employees] created with Shared PK (EmployeeID = UserID).';
 GO
 
 -- Thêm FK từ Departments.ManagerID -> Employees.EmployeeID (sau khi Employees đã tạo)
@@ -211,22 +222,23 @@ PRINT '==> All 10 indexes created successfully!';
 GO
 
 -- =============================================
--- SAMPLE DATA INSERTION
+-- SAMPLE DATA INSERTION (WITH SHARED PRIMARY KEY)
 -- =============================================
 
 PRINT 'Inserting sample data...';
 GO
 
--- 1. Users (5 records)
+-- 1. Users (5 records) - TẠO TRƯỚC
 -- Password format: CONVERT to hex string for NVARCHAR storage
 INSERT INTO dbo.Users (Username, PasswordHash, Email, Role)
 VALUES
 ('admin', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Admin@123!'), 2), 'admin@company.com', 'Admin'),
-('manager1', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager1@123'), 2), 'manager1@company.com', 'Manager'),
-('manager2', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager2@123'), 2), 'manager2@company.com', 'Manager'),
-('employee1', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee1@123'), 2), 'emp1@company.com', 'Employee'),
-('employee2', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee2@123'), 2), 'emp2@company.com', 'Employee');
-PRINT '==> 5 Users inserted.';
+('nva', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'nguyen.van.an@company.com', 'Employee'),
+('ttb', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2), 'tran.thi.binh@company.com', 'Manager'),
+('lmc', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2), 'le.minh.cuong@company.com', 'Manager'),
+('ptd', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'pham.thu.dung@company.com', 'Employee'),
+('hqh', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'hoang.quoc.huy@company.com', 'Employee');
+PRINT '==> 6 Users inserted.';
 GO
 
 -- 2. Departments (5 records) - ManagerID sẽ update sau
@@ -240,57 +252,67 @@ VALUES
 PRINT '==> 5 Departments inserted.';
 GO
 
--- 3. Employees (5 records)
-INSERT INTO dbo.Employees (FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate)
+-- 3. Employees (5 records) - DÙNG UserID LÀM EmployeeID
+-- LƯU Ý: EmployeeID phải khớp với UserID đã tạo ở bước 1
+-- UserID=1: admin (không tạo Employee vì là Admin thuần túy)
+-- UserID=2: nva
+-- UserID=3: ttb
+-- UserID=4: lmc
+-- UserID=5: ptd
+-- UserID=6: hqh
+INSERT INTO dbo.Employees (EmployeeID, FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate)
 VALUES
-(N'Nguyễn Văn An', 'nguyen.van.an@company.com', '0901234567', 1, '/images/employees/nva.jpg', N'123 Láng Hạ, Hà Nội', '2020-03-15'),
-(N'Trần Thị Bình', 'tran.thi.binh@company.com', '0912345678', 2, '/images/employees/ttb.jpg', N'456 Giải Phóng, Hà Nội', '2019-07-20'),
-(N'Lê Minh Cường', 'le.minh.cuong@company.com', '0923456789', 1, '/images/employees/lmc.jpg', N'789 Trường Chinh, Hà Nội', '2018-11-10'),
-(N'Phạm Thu Dung', 'pham.thu.dung@company.com', '0934567890', 3, '/images/employees/ptd.jpg', N'101 Cầu Giấy, Hà Nội', '2021-02-01'),
-(N'Hoàng Quốc Huy', 'hoang.quoc.huy@company.com', '0945678901', 4, '/images/employees/hqh.jpg', N'202 Nguyễn Trãi, Hà Nội', '2019-09-25');
-PRINT '==> 5 Employees inserted.';
+(2, N'Nguyễn Văn An', 'nguyen.van.an@company.com', '0901234567', 1, '/images/employees/nva.jpg', N'123 Láng Hạ, Hà Nội', '2020-03-15'),
+(3, N'Trần Thị Bình', 'tran.thi.binh@company.com', '0912345678', 2, '/images/employees/ttb.jpg', N'456 Giải Phóng, Hà Nội', '2019-07-20'),
+(4, N'Lê Minh Cường', 'le.minh.cuong@company.com', '0923456789', 1, '/images/employees/lmc.jpg', N'789 Trường Chinh, Hà Nội', '2018-11-10'),
+(5, N'Phạm Thu Dung', 'pham.thu.dung@company.com', '0934567890', 3, '/images/employees/ptd.jpg', N'101 Cầu Giấy, Hà Nội', '2021-02-01'),
+(6, N'Hoàng Quốc Huy', 'hoang.quoc.huy@company.com', '0945678901', 4, '/images/employees/hqh.jpg', N'202 Nguyễn Trãi, Hà Nội', '2019-09-25');
+PRINT '==> 5 Employees inserted (EmployeeID = UserID).';
 GO
 
 -- 4. Update ManagerID cho Departments
-UPDATE dbo.Departments SET ManagerID = 3 WHERE DepartmentID = 1; -- IT: Lê Minh Cường
-UPDATE dbo.Departments SET ManagerID = 2 WHERE DepartmentID = 2; -- HR: Trần Thị Bình
-UPDATE dbo.Departments SET ManagerID = 4 WHERE DepartmentID = 3; -- Finance: Phạm Thu Dung
-UPDATE dbo.Departments SET ManagerID = 5 WHERE DepartmentID = 4; -- Marketing: Hoàng Quốc Huy
+UPDATE dbo.Departments SET ManagerID = 4 WHERE DepartmentID = 1; -- IT: Lê Minh Cường (EmployeeID=4)
+UPDATE dbo.Departments SET ManagerID = 3 WHERE DepartmentID = 2; -- HR: Trần Thị Bình (EmployeeID=3)
+UPDATE dbo.Departments SET ManagerID = 5 WHERE DepartmentID = 3; -- Finance: Phạm Thu Dung (EmployeeID=5)
+UPDATE dbo.Departments SET ManagerID = 6 WHERE DepartmentID = 4; -- Marketing: Hoàng Quốc Huy (EmployeeID=6)
 -- Operations: No manager (NULL)
 PRINT '==> Department managers assigned.';
 GO
 
--- 5. Projects (5 records)
+-- 5. Projects (5 records) - CreatedBy dùng UserID
 INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy)
 VALUES
-(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', 'InProgress', 800000000, 2),
-(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, 'Planning', 1200000000, 2),
-(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', 'Completed', 500000000, 1),
-(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', 'Planning', 300000000, 3),
-(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', 'InProgress', 600000000, 2);
+(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', 'InProgress', 800000000, 3), -- CreatedBy = User ttb
+(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, 'Planning', 1200000000, 3),
+(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', 'Completed', 500000000, 1), -- Admin
+(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', 'Planning', 300000000, 4), -- lmc
+(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', 'InProgress', 600000000, 3);
 PRINT '==> 5 Projects inserted.';
 GO
 
--- 6. Tasks (5 records)
+-- 6. Tasks (5 records) - AssignedTo dùng EmployeeID (= UserID)
 INSERT INTO dbo.Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Deadline, Status, Priority, Progress)
 VALUES
-(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 3, 2, '2024-02-15', 'Done', 'High', 100),
-(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 1, 2, '2024-04-30', 'InProgress', 'High', 60),
-(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', NULL, 2, '2024-03-15', 'Todo', 'Medium', 0),
-(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 4, 1, '2024-03-20', 'Done', 'Critical', 100),
-(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 5, 2, '2024-05-31', 'InProgress', 'High', 30);
+(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 4, 3, '2024-02-15', 'Done', 'High', 100), -- Assigned to lmc (EmployeeID=4)
+(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 2, 3, '2024-04-30', 'InProgress', 'High', 60), -- nva (EmployeeID=2)
+(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', NULL, 3, '2024-03-15', 'Todo', 'Medium', 0),
+(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 5, 1, '2024-03-20', 'Done', 'Critical', 100), -- ptd (EmployeeID=5)
+(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 6, 3, '2024-05-31', 'InProgress', 'High', 30); -- hqh (EmployeeID=6)
 PRINT '==> 5 Tasks inserted.';
 GO
 
--- 7. TaskComments (5 records)
+-- 7. TaskComments (5 records) - UserID (vì Users có thể comment dù không phải Employee)
 INSERT INTO dbo.TaskComments (TaskID, UserID, Comment)
 VALUES
-(1, 2, N'Schema đã được review và approve bởi team lead.'),
-(2, 4, N'Cần optimize performance cho API lấy danh sách users.'),
-(2, 2, N'Đã áp dụng caching, response time giảm từ 800ms xuống 120ms.'),
+(1, 3, N'Schema đã được review và approve bởi team lead.'),
+(2, 5, N'Cần optimize performance cho API lấy danh sách users.'),
+(2, 3, N'Đã áp dụng caching, response time giảm từ 800ms xuống 120ms.'),
 (4, 1, N'Tất cả 45 test cases đã PASSED. Ready for production.'),
-(5, 2, N'Cần phối hợp với team Network để test connection.');
+(5, 3, N'Cần phối hợp với team Network để test connection.');
 PRINT '==> 5 TaskComments inserted.';
+GO
+
+PRINT '==> Sample data inserted successfully!';
 GO
 
 -- =============================================
@@ -305,20 +327,33 @@ PRINT 'Database Name: ProjectManagementDB';
 PRINT 'Tables Created: 6';
 PRINT '  - Users';
 PRINT '  - Departments';
-PRINT '  - Employees';
+PRINT '  - Employees (Shared PK with Users)';
 PRINT '  - Projects';
 PRINT '  - Tasks';
 PRINT '  - TaskComments';
 PRINT '';
 PRINT 'Indexes Created: 10';
-PRINT 'Sample Records: 5 per table';
+PRINT 'Sample Records:';
+PRINT '  - Users: 6 (1 Admin, 5 Employees)';
+PRINT '  - Employees: 5 (EmployeeID = UserID)';
+PRINT '  - Departments: 5';
+PRINT '  - Projects: 5';
+PRINT '  - Tasks: 5';
+PRINT '  - Comments: 5';
 PRINT '';
 PRINT 'Default Login Credentials:';
-PRINT '  Admin    - Username: admin   Password: Admin@123!';
-PRINT '  Manager  - Username: manager1  Password: Manager1@123';
-PRINT '  Employee - Username: employee1 Password: Employee1@123';
+PRINT '  Admin    - Username: admin     Password: Admin@123!';
+PRINT '  Employee - Username: nva     Password: Employee@123';
+PRINT '  Manager  - Username: ttb   Password: Manager@123';
 PRINT '';
 PRINT '========================================';
+PRINT 'QUAN HỆ 1-1 GIỮA USERS VÀ EMPLOYEES:';
+PRINT '- Employees.EmployeeID = Users.UserID (Shared PK)';
+PRINT '- Workflow: Tạo User trước → Tạo Employee với ID giống User';
+PRINT '- ON DELETE CASCADE: Xóa User → tự động xóa Employee';
+PRINT '- Đảm bảo tuyệt đối 1-1 (không cần UNIQUE constraint)';
+PRINT '========================================';
+PRINT '';
 PRINT 'SECURITY NOTES:';
 PRINT '- Passwords are hashed using SHA2_256';
 PRINT '- In production, use BCrypt/Argon2 with salt';
@@ -438,14 +473,16 @@ GO
 
 -- ---------------------------------------------
 -- sp_Employee_Insert
--- Mô tả: Thêm nhân viên mới
--- Trả về: EmployeeID mới hoặc -1 nếu thất bại
+-- Mô tả: Thêm nhân viên mới (với Shared PK: EmployeeID = UserID)
+-- LƯU Ý: @UserID phải được truyền vào và phải tồn tại trong Users
+-- Trả về: 0 nếu thành công, -1 nếu thất bại
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_Insert', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_Insert;
 GO
 
 CREATE PROCEDURE dbo.sp_Employee_Insert
+    @UserID INT, -- BẮT BUỘC: EmployeeID = UserID
     @FullName NVARCHAR(100),
     @Email NVARCHAR(100),
     @Phone VARCHAR(20),
@@ -453,66 +490,77 @@ CREATE PROCEDURE dbo.sp_Employee_Insert
     @Address NVARCHAR(500) = NULL,
     @ImagePath NVARCHAR(500) = NULL,
     @HireDate DATETIME = NULL,
-    @IsActive BIT = 1,
-  @NewEmployeeID INT OUTPUT
+    @IsActive BIT = 1
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+ 
     BEGIN TRY
         BEGIN TRANSACTION;
   
-    -- Kiểm tra các trường bắt buộc
-        IF @FullName IS NULL OR LTRIM(RTRIM(@FullName)) = ''
+        -- Kiểm tra UserID có tồn tại không
+        IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @UserID)
         BEGIN
- PRINT 'FullName là bắt buộc';
-  ROLLBACK TRANSACTION;
+      PRINT 'UserID không tồn tại trong bảng Users';
+            ROLLBACK TRANSACTION;
             RETURN -1;
         END
-     
-    -- Kiểm tra email đã tồn tại chưa
-  IF @Email IS NOT NULL AND EXISTS (SELECT 1 FROM dbo.Employees WHERE Email = @Email)
-      BEGIN
-        PRINT 'Email đã tồn tại';
-    ROLLBACK TRANSACTION;
-   RETURN -1;
+        
+  -- Kiểm tra UserID đã có Employee chưa (đảm bảo 1-1)
+        IF EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @UserID)
+        BEGIN
+        PRINT 'User này đã có Employee';
+  ROLLBACK TRANSACTION;
+RETURN -1;
         END
+        
+    -- Kiểm tra các trường bắt buộc
+        IF @FullName IS NULL OR LTRIM(RTRIM(@FullName)) = ''
+BEGIN
+     PRINT 'FullName là bắt buộc';
+        ROLLBACK TRANSACTION;
+       RETURN -1;
+     END
+     
+        -- Kiểm tra email đã tồn tại chưa
+        IF @Email IS NOT NULL AND EXISTS (SELECT 1 FROM dbo.Employees WHERE Email = @Email)
+        BEGIN
+            PRINT 'Email đã tồn tại';
+ ROLLBACK TRANSACTION;
+            RETURN -1;
+  END
     
         -- Kiểm tra phòng ban có tồn tại không (nếu được cung cấp)
- IF @DepartmentID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
-  BEGIN
-    PRINT 'Phòng ban không tồn tại';
-   ROLLBACK TRANSACTION;
-      RETURN -1;
+        IF @DepartmentID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
+        BEGIN
+  PRINT 'Phòng ban không tồn tại';
+            ROLLBACK TRANSACTION;
+ RETURN -1;
       END
    
-        -- Đặt HireDate là ngày hiện tại nếu không được cung cấp
-        IF @HireDate IS NULL
-         SET @HireDate = GETDATE();
+   -- Đặt HireDate là ngày hiện tại nếu không được cung cấp
+ IF @HireDate IS NULL
+  SET @HireDate = GETDATE();
     
-  -- Thêm nhân viên
-    INSERT INTO dbo.Employees (FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate, IsActive)
-  VALUES (@FullName, @Email, @Phone, @DepartmentID, @ImagePath, @Address, @HireDate, @IsActive);
- 
-      -- Lấy ID mới
-        SET @NewEmployeeID = SCOPE_IDENTITY();
-        
-COMMIT TRANSACTION;
-   PRINT 'Tạo nhân viên thành công với ID: ' + CAST(@NewEmployeeID AS NVARCHAR(10));
-        RETURN @NewEmployeeID;
+    -- Thêm nhân viên với EmployeeID = UserID
+        INSERT INTO dbo.Employees (EmployeeID, FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate, IsActive)
+        VALUES (@UserID, @FullName, @Email, @Phone, @DepartmentID, @ImagePath, @Address, @HireDate, @IsActive);
+  
+        COMMIT TRANSACTION;
+        PRINT 'Tạo nhân viên thành công với EmployeeID: ' + CAST(@UserID AS NVARCHAR(10));
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-    IF @@TRANCOUNT > 0
-  ROLLBACK TRANSACTION;
+        IF @@TRANCOUNT > 0
+ROLLBACK TRANSACTION;
   
-  PRINT ERROR_MESSAGE();
-   SET @NewEmployeeID = -1;
+    PRINT ERROR_MESSAGE();
         RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Đã tạo: sp_Employee_Insert';
+PRINT 'Đã tạo: sp_Employee_Insert (với Shared PK)';
 GO
 
 -- ---------------------------------------------
@@ -1357,7 +1405,7 @@ BEGIN TRY
   RETURN -1;
         END
      
-    -- Kiểm tra người tạo có tồn tại không
+        -- Kiểm tra người tạo có tồn tại không
  IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @CreatedBy)
         BEGIN
      PRINT 'Người tạo không tồn tại';
@@ -1856,19 +1904,28 @@ PRINT '--- TEST 3: Lấy nhân viên theo phòng ban (DepartmentID=1) ---';
 EXEC dbo.sp_Employee_GetByDepartment @DepartmentID = 1;
 GO
 
--- Test 4: Thêm nhân viên mới
+-- Test 4: Thêm nhân viên mới (Workflow: Tạo User trước → Tạo Employee)
 PRINT '';
-PRINT '--- TEST 4: Thêm nhân viên mới ---';
-DECLARE @NewEmpID INT;
+PRINT '--- TEST 4: Thêm nhân viên mới (Shared PK Workflow) ---';
+
+-- Bước 1: Tạo User mới
+DECLARE @TestUserID INT;
+INSERT INTO dbo.Users (Username, PasswordHash, Email, Role)
+VALUES ('ntm', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'nguyen.thi.mai@company.com', 'Employee');
+SET @TestUserID = SCOPE_IDENTITY();
+PRINT 'Tạo User mới với UserID: ' + CAST(@TestUserID AS NVARCHAR(10));
+
+-- Bước 2: Tạo Employee với EmployeeID = UserID vừa tạo
 EXEC dbo.sp_Employee_Insert 
+    @UserID = @TestUserID, -- EmployeeID = UserID
     @FullName = N'Nguyễn Thị Mai',
     @Email = 'nguyen.thi.mai@company.com',
     @Phone = '0956789012',
     @DepartmentID = 2,
     @Address = N'303 Hai Bà Trưng, Hà Nội',
-    @ImagePath = '/images/employees/ntm.jpg',
-    @NewEmployeeID = @NewEmpID OUTPUT;
-SELECT @NewEmpID AS NewEmployeeID;
+    @ImagePath = '/images/employees/ntm.jpg';
+    
+SELECT @TestUserID AS NewEmployeeID;
 GO
 
 -- Test 5: Lấy tất cả dự án
@@ -1939,4 +1996,47 @@ PRINT '- Các validations về Foreign key đã được triển khai';
 PRINT '- Xóa mềm được sử dụng cho Employees';
 PRINT '- Xóa CASCADE được sử dụng cho Projects/Tasks';
 PRINT '========================================';
+GO
+
+-- 3. Tạo View
+
+-- =============================================
+-- View: vw_TaskDetails
+-- Mô tả: View tổng hợp thông tin Task để dùng trong DAL/Repositories/TaskRepository.cs
+-- - Alias `TaskTitle` thành `TaskName` để tương thích với model Task.TaskName
+-- - Cung cấp `ProjectName`, `EmployeeName` (tên người được giao), `CreatedByUsername`
+-- - Không thay đổi dữ liệu nguồn, chỉ tổng hợp/alias cho mục đích hiển thị
+-- =============================================
+
+IF OBJECT_ID('dbo.vw_TaskDetails', 'V') IS NOT NULL
+    DROP VIEW dbo.vw_TaskDetails;
+GO
+
+CREATE VIEW dbo.vw_TaskDetails
+AS
+SELECT
+    t.TaskID,
+    t.ProjectID,
+    p.ProjectName,
+    -- Alias TaskTitle thành TaskName để phù hợp với Task model/Repository
+    t.TaskTitle AS TaskName,
+    t.Description,
+    t.AssignedTo,
+    -- Tên nhân viên được giao (null nếu không có)
+    e.FullName AS EmployeeName,
+    -- Email của nhân viên (hữu ích cho báo cáo nếu cần)
+    e.Email AS EmployeeEmail,
+    -- Thông tin người tạo task
+    t.CreatedBy,
+    u.Username AS CreatedByUsername,
+    t.Deadline,
+    t.Status,
+    t.Priority,
+    t.Progress,
+    t.CreatedDate,
+    t.UpdatedDate
+FROM dbo.Tasks t
+INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
+LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
+LEFT JOIN dbo.Users u ON t.CreatedBy = u.UserID;
 GO
