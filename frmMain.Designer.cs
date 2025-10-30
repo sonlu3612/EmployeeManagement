@@ -41,7 +41,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.panel1 = new AntdUI.Panel();
             this.tabs1 = new AntdUI.Tabs();
-            this.tabChangePassword = new AntdUI.TabPage();
             this.tabPage1 = new AntdUI.TabPage();
             this.tabPage2 = new AntdUI.TabPage();
             this.tabPage3 = new AntdUI.TabPage();
