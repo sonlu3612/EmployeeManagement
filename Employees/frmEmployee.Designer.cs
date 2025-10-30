@@ -2,7 +2,7 @@
 
 namespace EmployeeManagement
 {
-    partial class frmMain
+    partial class frmEmployee
     {
         /// <summary>
         /// Required designer variable.
@@ -40,13 +40,13 @@ namespace EmployeeManagement
             AntdUI.MenuItem menuItem7 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem8 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem9 = new AntdUI.MenuItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEmployee));
             this.panel1 = new AntdUI.Panel();
             this.tabs1 = new AntdUI.Tabs();
-            this.tabProject = new AntdUI.TabPage();
-            this.tabTask = new AntdUI.TabPage();
-            this.tabCompany = new AntdUI.TabPage();
-            this.tabDatabase = new AntdUI.TabPage();
+            this.tabPage1 = new AntdUI.TabPage();
+            this.tabPage2 = new AntdUI.TabPage();
+            this.tabPage3 = new AntdUI.TabPage();
+            this.tabPage4 = new AntdUI.TabPage();
             this.tabChangePassword = new AntdUI.TabPage();
             this.panel4 = new AntdUI.Panel();
             this.labelMatKhau = new System.Windows.Forms.Label();
@@ -59,7 +59,7 @@ namespace EmployeeManagement
             this.label6 = new AntdUI.Label();
             this.label5 = new AntdUI.Label();
             this.label4 = new AntdUI.Label();
-            this.tabLogout = new AntdUI.TabPage();
+            this.tabPage6 = new AntdUI.TabPage();
             this.phTrangChu = new AntdUI.PageHeader();
             this.panel2 = new AntdUI.Panel();
             this.avatar2 = new AntdUI.Avatar();
@@ -93,62 +93,62 @@ namespace EmployeeManagement
             // tabs1
             // 
             this.tabs1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.tabs1.Controls.Add(this.tabProject);
-            this.tabs1.Controls.Add(this.tabTask);
-            this.tabs1.Controls.Add(this.tabCompany);
-            this.tabs1.Controls.Add(this.tabDatabase);
+            this.tabs1.Controls.Add(this.tabPage1);
+            this.tabs1.Controls.Add(this.tabPage2);
+            this.tabs1.Controls.Add(this.tabPage3);
+            this.tabs1.Controls.Add(this.tabPage4);
             this.tabs1.Controls.Add(this.tabChangePassword);
-            this.tabs1.Controls.Add(this.tabLogout);
-            this.tabs1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabs1.Controls.Add(this.tabPage6);
+            this.tabs1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.tabs1.Location = new System.Drawing.Point(3, 35);
             this.tabs1.Name = "tabs1";
-            this.tabs1.Pages.Add(this.tabProject);
-            this.tabs1.Pages.Add(this.tabTask);
-            this.tabs1.Pages.Add(this.tabCompany);
-            this.tabs1.Pages.Add(this.tabDatabase);
+            this.tabs1.Pages.Add(this.tabPage1);
+            this.tabs1.Pages.Add(this.tabPage2);
+            this.tabs1.Pages.Add(this.tabPage3);
+            this.tabs1.Pages.Add(this.tabPage4);
             this.tabs1.Pages.Add(this.tabChangePassword);
-            this.tabs1.Pages.Add(this.tabLogout);
+            this.tabs1.Pages.Add(this.tabPage6);
             this.tabs1.SelectedIndex = 4;
             this.tabs1.Size = new System.Drawing.Size(1023, 685);
             this.tabs1.Style = styleLine1;
             this.tabs1.TabIndex = 2;
             this.tabs1.Text = "tabs1";
             // 
-            // tabProject
+            // tabPage1
             // 
-            this.tabProject.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabProject.Location = new System.Drawing.Point(0, 0);
-            this.tabProject.Name = "tabProject";
-            this.tabProject.Size = new System.Drawing.Size(1023, 658);
-            this.tabProject.TabIndex = 0;
-            this.tabProject.Text = "Projects";
+            this.tabPage1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage1.Location = new System.Drawing.Point(0, 0);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Projects";
             // 
-            // tabTask
+            // tabPage2
             // 
-            this.tabTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabTask.Location = new System.Drawing.Point(0, 0);
-            this.tabTask.Name = "tabTask";
-            this.tabTask.Size = new System.Drawing.Size(1023, 658);
-            this.tabTask.TabIndex = 1;
-            this.tabTask.Text = "Tasks";
+            this.tabPage2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage2.Location = new System.Drawing.Point(0, 0);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Tasks";
             // 
-            // tabCompany
+            // tabPage3
             // 
-            this.tabCompany.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabCompany.Location = new System.Drawing.Point(0, 0);
-            this.tabCompany.Name = "tabCompany";
-            this.tabCompany.Size = new System.Drawing.Size(1023, 658);
-            this.tabCompany.TabIndex = 2;
-            this.tabCompany.Text = "Setting.Company";
+            this.tabPage3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage3.Location = new System.Drawing.Point(0, 0);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Setting.Company";
             // 
-            // tabDatabase
+            // tabPage4
             // 
-            this.tabDatabase.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabDatabase.Location = new System.Drawing.Point(0, 0);
-            this.tabDatabase.Name = "tabDatabase";
-            this.tabDatabase.Size = new System.Drawing.Size(1023, 658);
-            this.tabDatabase.TabIndex = 3;
-            this.tabDatabase.Text = "Setting.Database";
+            this.tabPage4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage4.Location = new System.Drawing.Point(0, 0);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Setting.Database";
             // 
             // tabChangePassword
             // 
@@ -297,14 +297,14 @@ namespace EmployeeManagement
             this.label4.Text = "Đổi mật khẩu";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // tabLogout
+            // tabPage6
             // 
-            this.tabLogout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabLogout.Location = new System.Drawing.Point(0, 0);
-            this.tabLogout.Name = "tabLogout";
-            this.tabLogout.Size = new System.Drawing.Size(1023, 658);
-            this.tabLogout.TabIndex = 5;
-            this.tabLogout.Text = "Profile.LogOut";
+            this.tabPage6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabPage6.Location = new System.Drawing.Point(0, 0);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(1023, 658);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Profile.LogOut";
             // 
             // phTrangChu
             // 
@@ -437,9 +437,9 @@ namespace EmployeeManagement
             this.label2.ForeColor = System.Drawing.Color.MediumTurquoise;
             this.label2.Location = new System.Drawing.Point(135, 74);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(48, 17);
+            this.label2.Size = new System.Drawing.Size(67, 17);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Admin";
+            this.label2.Text = "Employee";
             // 
             // label1
             // 
@@ -477,16 +477,16 @@ namespace EmployeeManagement
             this.divider1.Text = "";
             this.divider1.Thickness = 0.9F;
             // 
-            // frmMain
+            // frmEmployee
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Name = "frmMain";
-            this.Text = "frmMain";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Name = "frmEmployee";
+            this.Text = "frmEmployee";
+            this.Load += new System.EventHandler(this.frmEmployee_Load);
             this.panel1.ResumeLayout(false);
             this.tabs1.ResumeLayout(false);
             this.tabChangePassword.ResumeLayout(false);
@@ -514,11 +514,11 @@ namespace EmployeeManagement
         private AntdUI.Avatar avatar2;
         private AntdUI.Label label3;
         private AntdUI.Tabs tabs1;
-        private AntdUI.TabPage tabProject;
-        private AntdUI.TabPage tabTask;
-        private AntdUI.TabPage tabDatabase;
-        private AntdUI.TabPage tabCompany;
-        private AntdUI.TabPage tabLogout;
+        private AntdUI.TabPage tabPage1;
+        private AntdUI.TabPage tabPage2;
+        private AntdUI.TabPage tabPage4;
+        private AntdUI.TabPage tabPage3;
+        private AntdUI.TabPage tabPage6;
         private AntdUI.TabPage tabChangePassword;
         private AntdUI.Panel panel4;
         private AntdUI.Label label4;

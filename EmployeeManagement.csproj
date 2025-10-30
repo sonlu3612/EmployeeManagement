@@ -32,6 +32,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AntdUI, Version=2.1.13.0, Culture=neutral, PublicKeyToken=0e24e5118ea3d6af, processorArchitecture=MSIL">
       <HintPath>packages\AntdUI.2.1.13\lib\net48\AntdUI.dll</HintPath>
@@ -57,22 +66,32 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DAL\DatabaseHelper.cs" />
+    <Compile Include="DAL\HashPassword.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
     <Compile Include="DAL\Repositories\EmployeeRepository.cs" />
     <Compile Include="DAL\Repositories\ProjectRepository.cs" />
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Employees\frmEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Employees\frmEmployee.Designer.cs">
+      <DependentUpon>frmEmployee.cs</DependentUpon>
     </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Managers\frmManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\frmManager.Designer.cs">
+      <DependentUpon>frmManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Project.cs" />
@@ -90,8 +109,14 @@
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Employees\frmEmployee.resx">
+      <DependentUpon>frmEmployee.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Managers\frmManager.resx">
+      <DependentUpon>frmManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Projects.resx">
       <DependentUpon>Page_Projects.cs</DependentUpon>
@@ -107,6 +132,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
+    <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
+    <None Include="packages\AntdUI.2.1.13\AntdUI.2.1.13.nupkg" />
+    <None Include="packages\AntdUI.2.1.13\README.md" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -130,6 +159,20 @@
     <Content Include="Assets\Images\back.jpeg" />
     <Content Include="Database\schema.sql" />
     <Content Include="Database\stored_procedures.sql" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net40\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net40\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net46\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net46\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net48\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net48\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net6.0-windows7.0\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net6.0-windows7.0\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net8.0-windows7.0\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net8.0-windows7.0\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net9.0-windows7.0\AntdUI.dll" />
+    <Content Include="packages\AntdUI.2.1.13\lib\net9.0-windows7.0\AntdUI.xml" />
+    <Content Include="packages\AntdUI.2.1.13\logo.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

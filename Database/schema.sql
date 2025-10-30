@@ -324,3 +324,4 @@ PRINT '- Always use parameterized queries';
 PRINT '- Enable SQL Server audit logs';
 PRINT '========================================';
 GO
+

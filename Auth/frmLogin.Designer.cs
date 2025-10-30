@@ -29,19 +29,21 @@
         private void InitializeComponent()
         {
             this.panel1 = new AntdUI.Panel();
-            this.txtTaiKhoan = new AntdUI.Input();
-            this.txtMatKhau = new AntdUI.Input();
-            this.label1 = new AntdUI.Label();
-            this.btnDangNhap = new AntdUI.Button();
             this.image3D3 = new AntdUI.Image3D();
+            this.btnDangNhap = new AntdUI.Button();
+            this.label1 = new AntdUI.Label();
+            this.txtMatKhau = new AntdUI.Input();
+            this.txtTaiKhoan = new AntdUI.Input();
             this.image3D2 = new AntdUI.Image3D();
             this.image3D1 = new AntdUI.Image3D();
             this.pageHeader1 = new AntdUI.PageHeader();
+            this.labelThongBao = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.labelThongBao);
             this.panel1.Controls.Add(this.image3D3);
             this.panel1.Controls.Add(this.btnDangNhap);
             this.panel1.Controls.Add(this.label1);
@@ -57,32 +59,17 @@
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
             // 
-            // txtTaiKhoan
+            // image3D3
             // 
-            this.txtTaiKhoan.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.txtTaiKhoan.Location = new System.Drawing.Point(330, 115);
-            this.txtTaiKhoan.Name = "txtTaiKhoan";
-            this.txtTaiKhoan.Size = new System.Drawing.Size(156, 34);
-            this.txtTaiKhoan.TabIndex = 4;
-            // 
-            // txtMatKhau
-            // 
-            this.txtMatKhau.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.txtMatKhau.Location = new System.Drawing.Point(330, 166);
-            this.txtMatKhau.Name = "txtMatKhau";
-            this.txtMatKhau.Size = new System.Drawing.Size(156, 34);
-            this.txtMatKhau.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(298, 54);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(179, 36);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "ĐĂNG NHẬP";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.image3D3.BackColor = System.Drawing.Color.Transparent;
+            this.image3D3.Dock = System.Windows.Forms.DockStyle.Left;
+            this.image3D3.Image = global::EmployeeManagement.Properties.Resources.back;
+            this.image3D3.ImageFit = AntdUI.TFit.Contain;
+            this.image3D3.Location = new System.Drawing.Point(0, 34);
+            this.image3D3.Name = "image3D3";
+            this.image3D3.Size = new System.Drawing.Size(272, 299);
+            this.image3D3.TabIndex = 8;
+            this.image3D3.Text = "image3D3";
             // 
             // btnDangNhap
             // 
@@ -97,17 +84,32 @@
             this.btnDangNhap.Click += new System.EventHandler(this.btnDangNhap_Click);
             this.btnDangNhap.MouseHover += new System.EventHandler(this.btnDangNhap_MouseHover);
             // 
-            // image3D3
+            // label1
             // 
-            this.image3D3.BackColor = System.Drawing.Color.Transparent;
-            this.image3D3.Dock = System.Windows.Forms.DockStyle.Left;
-            this.image3D3.Image = global::EmployeeManagement.Properties.Resources.back;
-            this.image3D3.ImageFit = AntdUI.TFit.Contain;
-            this.image3D3.Location = new System.Drawing.Point(0, 34);
-            this.image3D3.Name = "image3D3";
-            this.image3D3.Size = new System.Drawing.Size(272, 299);
-            this.image3D3.TabIndex = 8;
-            this.image3D3.Text = "image3D3";
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(298, 54);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(179, 36);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "ĐĂNG NHẬP";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // txtMatKhau
+            // 
+            this.txtMatKhau.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.txtMatKhau.Location = new System.Drawing.Point(330, 166);
+            this.txtMatKhau.Name = "txtMatKhau";
+            this.txtMatKhau.Size = new System.Drawing.Size(156, 34);
+            this.txtMatKhau.TabIndex = 5;
+            // 
+            // txtTaiKhoan
+            // 
+            this.txtTaiKhoan.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.txtTaiKhoan.Location = new System.Drawing.Point(330, 115);
+            this.txtTaiKhoan.Name = "txtTaiKhoan";
+            this.txtTaiKhoan.Size = new System.Drawing.Size(156, 34);
+            this.txtTaiKhoan.TabIndex = 4;
             // 
             // image3D2
             // 
@@ -143,6 +145,17 @@
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Đăng nhập";
             // 
+            // labelThongBao
+            // 
+            this.labelThongBao.AutoSize = true;
+            this.labelThongBao.BackColor = System.Drawing.Color.Transparent;
+            this.labelThongBao.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelThongBao.ForeColor = System.Drawing.Color.Red;
+            this.labelThongBao.Location = new System.Drawing.Point(278, 217);
+            this.labelThongBao.Name = "labelThongBao";
+            this.labelThongBao.Size = new System.Drawing.Size(0, 17);
+            this.labelThongBao.TabIndex = 9;
+            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -155,6 +168,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmLogin";
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -170,5 +184,6 @@
         private AntdUI.Image3D image3D2;
         private AntdUI.Image3D image3D1;
         private AntdUI.Image3D image3D3;
+        private System.Windows.Forms.Label labelThongBao;
     }
 }
