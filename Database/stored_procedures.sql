@@ -1,22 +1,22 @@
--- =============================================
--- Script: Stored Procedures for ProjectManagementDB
--- Description: CRUD operations and reporting procedures
--- Created: 2024
+﻿-- =============================================
+-- Script: Stored Procedures cho ProjectManagementDB
+-- Mô tả: Các thủ tục CRUD và báo cáo
+-- Tạo ngày: 2024
 -- =============================================
 
 USE [ProjectManagementDB];
 GO
 
-PRINT 'Creating Stored Procedures...';
+PRINT 'Đang tạo Stored Procedures...';
 GO
 
 -- =============================================
--- SECTION 1: EMPLOYEE PROCEDURES
+-- PHẦN 1: CÁC THỦ TUC CHO EMPLOYEE (NHÂN VIÊN)
 -- =============================================
 
 -- ---------------------------------------------
 -- sp_Employee_GetAll
--- Description: Get all active employees with department info
+-- Mô tả: Lấy tất cả nhân viên đang hoạt động với thông tin phòng ban
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_GetAll', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_GetAll;
@@ -29,36 +29,36 @@ BEGIN
     
   BEGIN TRY
         SELECT 
-         e.EmployeeID,
+       e.EmployeeID,
        e.FullName,
-            e.Email,
-            e.Phone,
-            e.DepartmentID,
+      e.Email,
+       e.Phone,
+  e.DepartmentID,
             d.DepartmentName,
-            e.ImagePath,
-            e.Address,
+    e.ImagePath,
+         e.Address,
        e.HireDate,
 e.IsActive
-        FROM dbo.Employees e
-        LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
+  FROM dbo.Employees e
+ LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
   WHERE e.IsActive = 1
-        ORDER BY e.FullName;
+   ORDER BY e.FullName;
     
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_GetAll';
+PRINT 'Đã tạo: sp_Employee_GetAll';
 GO
 
 -- ---------------------------------------------
 -- sp_Employee_GetById
--- Description: Get employee by ID with department info
+-- Mô tả: Lấy thông tin nhân viên theo ID với thông tin phòng ban
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_GetById', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_GetById;
@@ -71,43 +71,44 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
+        -- Kiểm tra nhân viên có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @EmployeeID)
         BEGIN
-      PRINT 'Employee not found';
-      RETURN -1;
+      PRINT 'Không tìm thấy nhân viên';
+  RETURN -1;
    END
     
         SELECT 
     e.EmployeeID,
  e.FullName,
             e.Email,
-          e.Phone,
+        e.Phone,
             e.DepartmentID,
    d.DepartmentName,
    e.ImagePath,
    e.Address,
-            e.HireDate,
+    e.HireDate,
             e.IsActive
         FROM dbo.Employees e
-        LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
+   LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
  WHERE e.EmployeeID = @EmployeeID;
-        
-        RETURN 0; -- Success
+   
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+      RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_GetById';
+PRINT 'Đã tạo: sp_Employee_GetById';
 GO
 
 -- ---------------------------------------------
 -- sp_Employee_Insert
--- Description: Insert new employee
--- Returns: New EmployeeID or -1 if failed
+-- Mô tả: Thêm nhân viên mới
+-- Trả về: EmployeeID mới hoặc -1 nếu thất bại
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_Insert', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_Insert;
@@ -119,8 +120,10 @@ CREATE PROCEDURE dbo.sp_Employee_Insert
     @Phone VARCHAR(20),
     @DepartmentID INT = NULL,
     @Address NVARCHAR(500) = NULL,
- @ImagePath NVARCHAR(500) = NULL,
-    @NewEmployeeID INT OUTPUT
+    @ImagePath NVARCHAR(500) = NULL,
+    @HireDate DATETIME = NULL,
+    @IsActive BIT = 1,
+  @NewEmployeeID INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -128,58 +131,62 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
   
-        -- Validate required fields
+    -- Kiểm tra các trường bắt buộc
         IF @FullName IS NULL OR LTRIM(RTRIM(@FullName)) = ''
-    BEGIN
-          PRINT 'FullName is required';
-            ROLLBACK TRANSACTION;
-            RETURN -1;
-    END
-     
-        -- Check if email already exists
-        IF @Email IS NOT NULL AND EXISTS (SELECT 1 FROM dbo.Employees WHERE Email = @Email)
         BEGIN
-            PRINT 'Email already exists';
-       ROLLBACK TRANSACTION;
-      RETURN -1;
-   END
+ PRINT 'FullName là bắt buộc';
+  ROLLBACK TRANSACTION;
+            RETURN -1;
+        END
+     
+    -- Kiểm tra email đã tồn tại chưa
+  IF @Email IS NOT NULL AND EXISTS (SELECT 1 FROM dbo.Employees WHERE Email = @Email)
+      BEGIN
+        PRINT 'Email đã tồn tại';
+    ROLLBACK TRANSACTION;
+   RETURN -1;
+        END
     
-        -- Validate Department exists if provided
-        IF @DepartmentID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
-        BEGIN
-  PRINT 'Department does not exist';
-         ROLLBACK TRANSACTION;
-            RETURN -1;
-END
-        
-        -- Insert employee
-        INSERT INTO dbo.Employees (FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate, IsActive)
- VALUES (@FullName, @Email, @Phone, @DepartmentID, @ImagePath, @Address, GETDATE(), 1);
-     
-        -- Get new ID
+        -- Kiểm tra phòng ban có tồn tại không (nếu được cung cấp)
+ IF @DepartmentID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
+  BEGIN
+    PRINT 'Phòng ban không tồn tại';
+   ROLLBACK TRANSACTION;
+      RETURN -1;
+      END
+   
+        -- Đặt HireDate là ngày hiện tại nếu không được cung cấp
+        IF @HireDate IS NULL
+         SET @HireDate = GETDATE();
+    
+  -- Thêm nhân viên
+    INSERT INTO dbo.Employees (FullName, Email, Phone, DepartmentID, ImagePath, Address, HireDate, IsActive)
+  VALUES (@FullName, @Email, @Phone, @DepartmentID, @ImagePath, @Address, @HireDate, @IsActive);
+ 
+      -- Lấy ID mới
         SET @NewEmployeeID = SCOPE_IDENTITY();
         
-        COMMIT TRANSACTION;
-        PRINT 'Employee created successfully with ID: ' + CAST(@NewEmployeeID AS NVARCHAR(10));
+COMMIT TRANSACTION;
+   PRINT 'Tạo nhân viên thành công với ID: ' + CAST(@NewEmployeeID AS NVARCHAR(10));
         RETURN @NewEmployeeID;
     END TRY
     BEGIN CATCH
     IF @@TRANCOUNT > 0
-     ROLLBACK TRANSACTION;
+  ROLLBACK TRANSACTION;
   
-        PRINT ERROR_MESSAGE();
-        SET @NewEmployeeID = -1;
-        RETURN -1; -- Error
+  PRINT ERROR_MESSAGE();
+   SET @NewEmployeeID = -1;
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_Insert';
+PRINT 'Đã tạo: sp_Employee_Insert';
 GO
 
 -- ---------------------------------------------
 -- sp_Employee_Update
--- Description: Update existing employee
+-- Mô tả: Cập nhật thông tin nhân viên
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_Update', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_Update;
@@ -196,79 +203,79 @@ CREATE PROCEDURE dbo.sp_Employee_Update
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+  
     BEGIN TRY
         BEGIN TRANSACTION;
         
-     -- Check if employee exists
-        IF NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @EmployeeID)
+  -- Kiểm tra nhân viên có tồn tại không
+ IF NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @EmployeeID)
     BEGIN
-            PRINT 'Employee not found';
+    PRINT 'Không tìm thấy nhân viên';
     ROLLBACK TRANSACTION;
     RETURN -1;
-        END
+  END
    
-        -- Validate required fields
+        -- Kiểm tra các trường bắt buộc
     IF @FullName IS NULL OR LTRIM(RTRIM(@FullName)) = ''
         BEGIN
-    PRINT 'FullName is required';
+    PRINT 'FullName là bắt buộc';
     ROLLBACK TRANSACTION;
   RETURN -1;
   END
   
-        -- Check if email already exists for another employee
+   -- Kiểm tra email đã tồn tại cho nhân viên khác chưa
       IF @Email IS NOT NULL AND EXISTS (
-          SELECT 1 FROM dbo.Employees 
+  SELECT 1 FROM dbo.Employees 
 WHERE Email = @Email AND EmployeeID != @EmployeeID
         )
-        BEGIN
-            PRINT 'Email already exists for another employee';
-            ROLLBACK TRANSACTION;
-       RETURN -1;
-        END
-      
-        -- Validate Department exists if provided
+    BEGIN
+ PRINT 'Email đã tồn tại cho nhân viên khác';
+          ROLLBACK TRANSACTION;
+  RETURN -1;
+   END
+    
+        -- Kiểm tra phòng ban có tồn tại không (nếu được cung cấp)
 IF @DepartmentID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
         BEGIN
-            PRINT 'Department does not exist';
-            ROLLBACK TRANSACTION;
+   PRINT 'Phòng ban không tồn tại';
+   ROLLBACK TRANSACTION;
          RETURN -1;
-        END
+     END
    
-        -- Update employee
+        -- Cập nhật nhân viên
         UPDATE dbo.Employees
-        SET 
-        FullName = @FullName,
-            Email = @Email,
+    SET 
+    FullName = @FullName,
+      Email = @Email,
     Phone = @Phone,
-            DepartmentID = @DepartmentID,
-          Address = @Address,
-            ImagePath = @ImagePath
+      DepartmentID = @DepartmentID,
+     Address = @Address,
+        ImagePath = @ImagePath
         WHERE EmployeeID = @EmployeeID;
   
-        COMMIT TRANSACTION;
-        PRINT 'Employee updated successfully';
-RETURN 0; -- Success
+    COMMIT TRANSACTION;
+   PRINT 'Cập nhật nhân viên thành công';
+RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
-         ROLLBACK TRANSACTION;
+  IF @@TRANCOUNT > 0
+     ROLLBACK TRANSACTION;
 
      PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_Update';
+PRINT 'Đã tạo: sp_Employee_Update';
 GO
 
 -- ---------------------------------------------
 -- sp_Employee_Delete
--- Description: Soft delete employee (set IsActive = 0)
+-- Mô tả: Xóa mềm nhân viên (đặt IsActive = 0)
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_Delete', 'P') IS NOT NULL
-    DROP PROCEDURE dbo.sp_Employee_Delete;
+  DROP PROCEDURE dbo.sp_Employee_Delete;
 GO
 
 CREATE PROCEDURE dbo.sp_Employee_Delete
@@ -278,49 +285,49 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-        BEGIN TRANSACTION;
+    BEGIN TRANSACTION;
       
-        -- Check if employee exists
+        -- Kiểm tra nhân viên có tồn tại không
  IF NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @EmployeeID)
-        BEGIN
-        PRINT 'Employee not found';
-         ROLLBACK TRANSACTION;
-            RETURN -1;
+ BEGIN
+        PRINT 'Không tìm thấy nhân viên';
+ROLLBACK TRANSACTION;
+      RETURN -1;
      END
         
-     -- Check if employee is a department manager
+     -- Kiểm tra nhân viên có phải là quản lý phòng ban không
       IF EXISTS (SELECT 1 FROM dbo.Departments WHERE ManagerID = @EmployeeID)
   BEGIN
-            PRINT 'Cannot delete employee who is a department manager';
-            ROLLBACK TRANSACTION;
-            RETURN -1;
+       PRINT 'Không thể xóa nhân viên đang là quản lý phòng ban';
+    ROLLBACK TRANSACTION;
+       RETURN -1;
      END
-        
-        -- Soft delete
+    
+  -- Xóa mềm
         UPDATE dbo.Employees
   SET IsActive = 0
   WHERE EmployeeID = @EmployeeID;
         
-        COMMIT TRANSACTION;
-     PRINT 'Employee deleted successfully';
-        RETURN 0; -- Success
+   COMMIT TRANSACTION;
+     PRINT 'Xóa nhân viên thành công';
+     RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
  IF @@TRANCOUNT > 0
           ROLLBACK TRANSACTION;
   
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_Delete';
+PRINT 'Đã tạo: sp_Employee_Delete';
 GO
 
 -- ---------------------------------------------
 -- sp_Employee_GetByDepartment
--- Description: Get all employees in a specific department
+-- Mô tả: Lấy tất cả nhân viên trong một phòng ban cụ thể
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Employee_GetByDepartment', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Employee_GetByDepartment;
@@ -333,48 +340,48 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-    -- Validate department exists
-        IF NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
+    -- Kiểm tra phòng ban có tồn tại không
+  IF NOT EXISTS (SELECT 1 FROM dbo.Departments WHERE DepartmentID = @DepartmentID)
         BEGIN
-   PRINT 'Department not found';
-          RETURN -1;
+   PRINT 'Không tìm thấy phòng ban';
+ RETURN -1;
      END
         
       SELECT 
-            e.EmployeeID,
-         e.FullName,
-    e.Email,
-        e.Phone,
+       e.EmployeeID,
+       e.FullName,
+e.Email,
+ e.Phone,
    e.DepartmentID,
-            d.DepartmentName,
-            e.ImagePath,
-          e.Address,
+        d.DepartmentName,
+    e.ImagePath,
+    e.Address,
   e.HireDate,
         e.IsActive
         FROM dbo.Employees e
    LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
    WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
-        ORDER BY e.FullName;
+   ORDER BY e.FullName;
         
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+ PRINT ERROR_MESSAGE();
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Employee_GetByDepartment';
+PRINT 'Đã tạo: sp_Employee_GetByDepartment';
 GO
 
 -- =============================================
--- SECTION 2: PROJECT PROCEDURES
+-- PHẦN 2: CÁC THỦ TỤC CHO PROJECT (DỰ ÁN)
 -- =============================================
 
 -- ---------------------------------------------
 -- sp_Project_GetAll
--- Description: Get all projects with creator info
+-- Mô tả: Lấy tất cả dự án với thông tin người tạo
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_GetAll', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_GetAll;
@@ -388,34 +395,34 @@ BEGIN
     BEGIN TRY
         SELECT 
    p.ProjectID,
-            p.ProjectName,
+     p.ProjectName,
 p.Description,
       p.StartDate,
-            p.EndDate,
+ p.EndDate,
  p.Status,
-     p.Budget,
-            p.CreatedBy,
+  p.Budget,
+          p.CreatedBy,
      u.Username AS CreatedByUsername,
-    p.CreatedDate
+ p.CreatedDate
     FROM dbo.Projects p
         INNER JOIN dbo.Users u ON p.CreatedBy = u.UserID
 ORDER BY p.CreatedDate DESC;
-        
-        RETURN 0; -- Success
+ 
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-    RETURN -1; -- Error
+    PRINT ERROR_MESSAGE();
+    RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_GetAll';
+PRINT 'Đã tạo: sp_Project_GetAll';
 GO
 
 -- ---------------------------------------------
 -- sp_Project_GetById
--- Description: Get project by ID with creator info
+-- Mô tả: Lấy thông tin dự án theo ID với thông tin người tạo
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_GetById', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_GetById;
@@ -426,45 +433,46 @@ CREATE PROCEDURE dbo.sp_Project_GetById
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+  
     BEGIN TRY
+        -- Kiểm tra dự án có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
         BEGIN
-            PRINT 'Project not found';
+       PRINT 'Không tìm thấy dự án';
       RETURN -1;
-        END
+    END
         
         SELECT 
-            p.ProjectID,
-      p.ProjectName,
+       p.ProjectID,
+    p.ProjectName,
      p.Description,
  p.StartDate,
-            p.EndDate,
-            p.Status,
-     p.Budget,
-      p.CreatedBy,
-            u.Username AS CreatedByUsername,
-         p.CreatedDate
-        FROM dbo.Projects p
-        INNER JOIN dbo.Users u ON p.CreatedBy = u.UserID
+          p.EndDate,
+        p.Status,
+   p.Budget,
+   p.CreatedBy,
+       u.Username AS CreatedByUsername,
+   p.CreatedDate
+ FROM dbo.Projects p
+    INNER JOIN dbo.Users u ON p.CreatedBy = u.UserID
         WHERE p.ProjectID = @ProjectID;
  
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-      PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+ PRINT ERROR_MESSAGE();
+  RETURN -1; -- Lỗi
   END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_GetById';
+PRINT 'Đã tạo: sp_Project_GetById';
 GO
 
 -- ---------------------------------------------
 -- sp_Project_Insert
--- Description: Insert new project
--- Returns: New ProjectID or -1 if failed
+-- Mô tả: Thêm dự án mới
+-- Trả về: ProjectID mới hoặc -1 nếu thất bại
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_Insert', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_Insert;
@@ -473,7 +481,7 @@ GO
 CREATE PROCEDURE dbo.sp_Project_Insert
     @ProjectName NVARCHAR(200),
     @Description NVARCHAR(MAX) = NULL,
-    @StartDate DATE,
+  @StartDate DATE,
     @EndDate DATE = NULL,
     @Status NVARCHAR(20),
     @Budget DECIMAL(18,2) = NULL,
@@ -481,71 +489,71 @@ CREATE PROCEDURE dbo.sp_Project_Insert
     @NewProjectID INT OUTPUT
 AS
 BEGIN
-    SET NOCOUNT ON;
+SET NOCOUNT ON;
     
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- Validate required fields
+        -- Kiểm tra các trường bắt buộc
  IF @ProjectName IS NULL OR LTRIM(RTRIM(@ProjectName)) = ''
 BEGIN
-      PRINT 'ProjectName is required';
-            ROLLBACK TRANSACTION;
+      PRINT 'ProjectName là bắt buộc';
+  ROLLBACK TRANSACTION;
     RETURN -1;
         END
         
-        -- Validate status
-        IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
+   -- Kiểm tra trạng thái hợp lệ
+  IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
       BEGIN
-            PRINT 'Invalid status. Must be: Planning, InProgress, Completed, or Cancelled';
+        PRINT 'Trạng thái không hợp lệ. Phải là: Planning, InProgress, Completed, hoặc Cancelled';
   ROLLBACK TRANSACTION;
   RETURN -1;
-        END
+   END
         
-        -- Validate dates
+        -- Kiểm tra ngày tháng
       IF @EndDate IS NOT NULL AND @EndDate < @StartDate
  BEGIN
-            PRINT 'EndDate cannot be before StartDate';
-       ROLLBACK TRANSACTION;
+   PRINT 'EndDate không thể trước StartDate';
+  ROLLBACK TRANSACTION;
      RETURN -1;
-        END
-      
- -- Validate creator exists
+   END
+    
+ -- Kiểm tra người tạo có tồn tại không
      IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @CreatedBy)
         BEGIN
-            PRINT 'Creator user does not exist';
+ PRINT 'Người tạo không tồn tại';
           ROLLBACK TRANSACTION;
-   RETURN -1;
+ RETURN -1;
   END
    
-    -- Insert project
-        INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate)
+    -- Thêm dự án
+      INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate)
      VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @Budget, @CreatedBy, GETDATE());
         
-        -- Get new ID
-        SET @NewProjectID = SCOPE_IDENTITY();
-        
-        COMMIT TRANSACTION;
-        PRINT 'Project created successfully with ID: ' + CAST(@NewProjectID AS NVARCHAR(10));
+   -- Lấy ID mới
+  SET @NewProjectID = SCOPE_IDENTITY();
+   
+COMMIT TRANSACTION;
+        PRINT 'Tạo dự án thành công với ID: ' + CAST(@NewProjectID AS NVARCHAR(10));
         RETURN @NewProjectID;
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0
-        ROLLBACK TRANSACTION;
+   ROLLBACK TRANSACTION;
         
-        PRINT ERROR_MESSAGE();
-        SET @NewProjectID = -1;
-    RETURN -1; -- Error
+  PRINT ERROR_MESSAGE();
+   SET @NewProjectID = -1;
+    RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_Insert';
+PRINT 'Đã tạo: sp_Project_Insert';
 GO
 
 -- ---------------------------------------------
 -- sp_Project_Update
--- Description: Update existing project
+-- Mô tả: Cập nhật thông tin dự án
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_Update', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_Update;
@@ -566,69 +574,69 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
         
-        -- Check if project exists
+  -- Kiểm tra dự án có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
-        BEGIN
-  PRINT 'Project not found';
-      ROLLBACK TRANSACTION;
+ BEGIN
+  PRINT 'Không tìm thấy dự án';
+ROLLBACK TRANSACTION;
  RETURN -1;
         END
         
-        -- Validate required fields
+        -- Kiểm tra các trường bắt buộc
         IF @ProjectName IS NULL OR LTRIM(RTRIM(@ProjectName)) = ''
-        BEGIN
-    PRINT 'ProjectName is required';
-            ROLLBACK TRANSACTION;
-          RETURN -1;
-        END
-        
-        -- Validate status
-        IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
-        BEGIN
- PRINT 'Invalid status. Must be: Planning, InProgress, Completed, or Cancelled';
+ BEGIN
+    PRINT 'ProjectName là bắt buộc';
+     ROLLBACK TRANSACTION;
+   RETURN -1;
+  END
+   
+    -- Kiểm tra trạng thái hợp lệ
+    IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
+   BEGIN
+ PRINT 'Trạng thái không hợp lệ. Phải là: Planning, InProgress, Completed, hoặc Cancelled';
       ROLLBACK TRANSACTION;
-          RETURN -1;
+  RETURN -1;
      END
 
-   -- Validate dates
+-- Kiểm tra ngày tháng
         IF @EndDate IS NOT NULL AND @EndDate < @StartDate
-        BEGIN
-          PRINT 'EndDate cannot be before StartDate';
+  BEGIN
+          PRINT 'EndDate không thể trước StartDate';
      ROLLBACK TRANSACTION;
-       RETURN -1;
+    RETURN -1;
  END
         
-   -- Update project
-        UPDATE dbo.Projects
-     SET 
+   -- Cập nhật dự án
+ UPDATE dbo.Projects
+SET 
     ProjectName = @ProjectName,
-            Description = @Description,
+       Description = @Description,
  StartDate = @StartDate,
-            EndDate = @EndDate,
+       EndDate = @EndDate,
             Status = @Status,
    Budget = @Budget
-        WHERE ProjectID = @ProjectID;
-        
-        COMMIT TRANSACTION;
-   PRINT 'Project updated successfully';
-RETURN 0; -- Success
+   WHERE ProjectID = @ProjectID;
+   
+   COMMIT TRANSACTION;
+   PRINT 'Cập nhật dự án thành công';
+RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
   IF @@TRANCOUNT > 0
     ROLLBACK TRANSACTION;
    
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+      RETURN -1; -- Lỗi
 END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_Update';
+PRINT 'Đã tạo: sp_Project_Update';
 GO
 
 -- ---------------------------------------------
 -- sp_Project_Delete
--- Description: Delete project (CASCADE will delete related tasks)
+-- Mô tả: Xóa dự án (CASCADE sẽ xóa các task liên quan)
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_Delete', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_Delete;
@@ -643,37 +651,37 @@ BEGIN
     BEGIN TRY
    BEGIN TRANSACTION;
         
-        -- Check if project exists
+        -- Kiểm tra dự án có tồn tại không
  IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
         BEGIN
- PRINT 'Project not found';
-            ROLLBACK TRANSACTION;
+ PRINT 'Không tìm thấy dự án';
+ ROLLBACK TRANSACTION;
      RETURN -1;
         END
-        
-        -- Delete project (CASCADE will handle tasks and comments)
+   
+  -- Xóa dự án (CASCADE sẽ xử lý tasks và comments)
 DELETE FROM dbo.Projects WHERE ProjectID = @ProjectID;
       
-        COMMIT TRANSACTION;
-        PRINT 'Project deleted successfully';
-        RETURN 0; -- Success
+  COMMIT TRANSACTION;
+   PRINT 'Xóa dự án thành công';
+  RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK TRANSACTION;
+   IF @@TRANCOUNT > 0
+      ROLLBACK TRANSACTION;
         
-      PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+   PRINT ERROR_MESSAGE();
+    RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_Delete';
+PRINT 'Đã tạo: sp_Project_Delete';
 GO
 
 -- ---------------------------------------------
 -- sp_Project_GetByStatus
--- Description: Get all projects by status
+-- Mô tả: Lấy tất cả dự án theo trạng thái
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Project_GetByStatus', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Project_GetByStatus;
@@ -686,48 +694,48 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-        -- Validate status
-        IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
-        BEGIN
-   PRINT 'Invalid status. Must be: Planning, InProgress, Completed, or Cancelled';
-       RETURN -1;
-        END
+  -- Kiểm tra trạng thái hợp lệ
+   IF @Status NOT IN ('Planning', 'InProgress', 'Completed', 'Cancelled')
+ BEGIN
+ PRINT 'Trạng thái không hợp lệ. Phải là: Planning, InProgress, Completed, hoặc Cancelled';
+     RETURN -1;
+  END
         
      SELECT 
     p.ProjectID,
-        p.ProjectName,
+p.ProjectName,
    p.Description,
  p.StartDate,
      p.EndDate,
 p.Status,
     p.Budget,
-          p.CreatedBy,
-     u.Username AS CreatedByUsername,
+    p.CreatedBy,
+  u.Username AS CreatedByUsername,
   p.CreatedDate
-        FROM dbo.Projects p
-        INNER JOIN dbo.Users u ON p.CreatedBy = u.UserID
-        WHERE p.Status = @Status
-        ORDER BY p.CreatedDate DESC;
+     FROM dbo.Projects p
+   INNER JOIN dbo.Users u ON p.CreatedBy = u.UserID
+   WHERE p.Status = @Status
+      ORDER BY p.CreatedDate DESC;
 
-  RETURN 0; -- Success
+  RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
    PRINT ERROR_MESSAGE();
-    RETURN -1; -- Error
+    RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Project_GetByStatus';
+PRINT 'Đã tạo: sp_Project_GetByStatus';
 GO
 
 -- =============================================
--- SECTION 3: TASK PROCEDURES
+-- PHẦN 3: CÁC THỦ TỤC CHO TASK (CÔNG VIỆC)
 -- =============================================
 
 -- ---------------------------------------------
 -- sp_Task_GetAll
--- Description: Get all tasks with related info
+-- Mô tả: Lấy tất cả task với thông tin liên quan
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_GetAll', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_GetAll;
@@ -739,43 +747,43 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-        SELECT 
+    SELECT 
          t.TaskID,
       t.ProjectID,
         p.ProjectName,
-            t.TaskTitle,
-            t.Description,
+       t.TaskTitle,
+      t.Description,
      t.AssignedTo,
       e.FullName AS AssignedToName,
-        t.CreatedBy,
-        u.Username AS CreatedByUsername,
-         t.Deadline,
+ t.CreatedBy,
+ u.Username AS CreatedByUsername,
+    t.Deadline,
      t.Status,
-      t.Priority,
-            t.Progress,
+ t.Priority,
+       t.Progress,
       t.CreatedDate,
-         t.UpdatedDate
-        FROM dbo.Tasks t
-        INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
-        LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
-        INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
-        ORDER BY t.CreatedDate DESC;
+  t.UpdatedDate
+ FROM dbo.Tasks t
+  INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
+   LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
+   INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
+     ORDER BY t.CreatedDate DESC;
   
- RETURN 0; -- Success
+ RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
      PRINT ERROR_MESSAGE();
-      RETURN -1; -- Error
+   RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_GetAll';
+PRINT 'Đã tạo: sp_Task_GetAll';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_GetById
--- Description: Get task by ID with related info
+-- Mô tả: Lấy thông tin task theo ID với thông tin liên quan
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_GetById', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_GetById;
@@ -786,11 +794,12 @@ CREATE PROCEDURE dbo.sp_Task_GetById
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+  
     BEGIN TRY
+        -- Kiểm tra task có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Tasks WHERE TaskID = @TaskID)
         BEGIN
-            PRINT 'Task not found';
+    PRINT 'Không tìm thấy task';
  RETURN -1;
    END
         
@@ -798,39 +807,39 @@ BEGIN
     t.TaskID,
   t.ProjectID,
   p.ProjectName,
-            t.TaskTitle,
-      t.Description,
-     t.AssignedTo,
-     e.FullName AS AssignedToName,
-         t.CreatedBy,
-         u.Username AS CreatedByUsername,
-            t.Deadline,
+   t.TaskTitle,
+   t.Description,
+   t.AssignedTo,
+   e.FullName AS AssignedToName,
+       t.CreatedBy,
+ u.Username AS CreatedByUsername,
+          t.Deadline,
        t.Status,
-     t.Priority,
-            t.Progress,
-       t.CreatedDate,
-       t.UpdatedDate
-        FROM dbo.Tasks t
-        INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
-        LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
-        INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
-        WHERE t.TaskID = @TaskID;
+ t.Priority,
+        t.Progress,
+     t.CreatedDate,
+    t.UpdatedDate
+FROM dbo.Tasks t
+   INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
+  LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
+  INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
+   WHERE t.TaskID = @TaskID;
      
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
   END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+   PRINT ERROR_MESSAGE();
+    RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_GetById';
+PRINT 'Đã tạo: sp_Task_GetById';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_GetByProject
--- Description: Get all tasks for a specific project
+-- Mô tả: Lấy tất cả task của một dự án cụ thể
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_GetByProject', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_GetByProject;
@@ -843,51 +852,51 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-        -- Validate project exists
+        -- Kiểm tra dự án có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
         BEGIN
-            PRINT 'Project not found';
-            RETURN -1;
-        END
-        
-        SELECT 
-            t.TaskID,
+            PRINT 'Không tìm thấy dự án';
+  RETURN -1;
+ END
+
+      SELECT 
+     t.TaskID,
        t.ProjectID,
-          p.ProjectName,
+     p.ProjectName,
   t.TaskTitle,
   t.Description,
         t.AssignedTo,
-          e.FullName AS AssignedToName,
+e.FullName AS AssignedToName,
             t.CreatedBy,
      u.Username AS CreatedByUsername,
 t.Deadline,
     t.Status,
       t.Priority,
     t.Progress,
-        t.CreatedDate,
-          t.UpdatedDate
+      t.CreatedDate,
+   t.UpdatedDate
         FROM dbo.Tasks t
-        INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
-        LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
+ INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
+LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
    INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
     WHERE t.ProjectID = @ProjectID
         ORDER BY t.Deadline ASC, t.Priority DESC;
-        
-        RETURN 0; -- Success
+ 
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
-    END CATCH
+      PRINT ERROR_MESSAGE();
+     RETURN -1; -- Lỗi
+END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_GetByProject';
+PRINT 'Đã tạo: sp_Task_GetByProject';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_GetByEmployee
--- Description: Get all tasks assigned to an employee
+-- Mô tả: Lấy tất cả task được giao cho một nhân viên
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_GetByEmployee', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_GetByEmployee;
@@ -900,52 +909,52 @@ BEGIN
     SET NOCOUNT ON;
     
     BEGIN TRY
-      -- Validate employee exists
+      -- Kiểm tra nhân viên có tồn tại không
    IF NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @EmployeeID)
     BEGIN
- PRINT 'Employee not found';
+ PRINT 'Không tìm thấy nhân viên';
          RETURN -1;
         END
 
         SELECT 
-            t.TaskID,
-            t.ProjectID,
+t.TaskID,
+    t.ProjectID,
             p.ProjectName,
-            t.TaskTitle,
-          t.Description,
+  t.TaskTitle,
+        t.Description,
         t.AssignedTo,
    e.FullName AS AssignedToName,
     t.CreatedBy,
    u.Username AS CreatedByUsername,
-            t.Deadline,
-            t.Status,
-            t.Priority,
+     t.Deadline,
+          t.Status,
+         t.Priority,
       t.Progress,
-            t.CreatedDate,
+    t.CreatedDate,
       t.UpdatedDate
    FROM dbo.Tasks t
         INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
         LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
         INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
-        WHERE t.AssignedTo = @EmployeeID
-      ORDER BY t.Deadline ASC, t.Priority DESC;
-        
-        RETURN 0; -- Success
+ WHERE t.AssignedTo = @EmployeeID
+    ORDER BY t.Deadline ASC, t.Priority DESC;
+     
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-     RETURN -1; -- Error
+    PRINT ERROR_MESSAGE();
+  RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_GetByEmployee';
+PRINT 'Đã tạo: sp_Task_GetByEmployee';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_Insert
--- Description: Insert new task
--- Returns: New TaskID or -1 if failed
+-- Mô tả: Thêm task mới
+-- Trả về: TaskID mới hoặc -1 nếu thất bại
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_Insert', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_Insert;
@@ -954,8 +963,8 @@ GO
 CREATE PROCEDURE dbo.sp_Task_Insert
     @ProjectID INT,
     @TaskTitle NVARCHAR(200),
-    @Description NVARCHAR(MAX) = NULL,
-    @AssignedTo INT = NULL,
+@Description NVARCHAR(MAX) = NULL,
+  @AssignedTo INT = NULL,
     @CreatedBy INT,
     @Deadline DATE = NULL,
     @Status NVARCHAR(20),
@@ -969,90 +978,90 @@ BEGIN
 BEGIN TRY
         BEGIN TRANSACTION;
         
-   -- Validate required fields
-        IF @TaskTitle IS NULL OR LTRIM(RTRIM(@TaskTitle)) = ''
+   -- Kiểm tra các trường bắt buộc
+  IF @TaskTitle IS NULL OR LTRIM(RTRIM(@TaskTitle)) = ''
      BEGIN
-       PRINT 'TaskTitle is required';
-       ROLLBACK TRANSACTION;
+       PRINT 'TaskTitle là bắt buộc';
+    ROLLBACK TRANSACTION;
         RETURN -1;
-        END
-        
-        -- Validate project exists
-        IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
+   END
+      
+   -- Kiểm tra dự án có tồn tại không
+     IF NOT EXISTS (SELECT 1 FROM dbo.Projects WHERE ProjectID = @ProjectID)
         BEGIN
-         PRINT 'Project does not exist';
-        ROLLBACK TRANSACTION;
+    PRINT 'Dự án không tồn tại';
+   ROLLBACK TRANSACTION;
        RETURN -1;
         END
         
--- Validate status
+-- Kiểm tra trạng thái hợp lệ
         IF @Status NOT IN ('Todo', 'InProgress', 'Review', 'Done')
-        BEGIN
-      PRINT 'Invalid status. Must be: Todo, InProgress, Review, or Done';
+     BEGIN
+      PRINT 'Trạng thái không hợp lệ. Phải là: Todo, InProgress, Review, hoặc Done';
          ROLLBACK TRANSACTION;
             RETURN -1;
   END
         
-        -- Validate priority
+    -- Kiểm tra độ ưu tiên hợp lệ
       IF @Priority NOT IN ('Low', 'Medium', 'High', 'Critical')
    BEGIN
-          PRINT 'Invalid priority. Must be: Low, Medium, High, or Critical';
-            ROLLBACK TRANSACTION;
+          PRINT 'Độ ưu tiên không hợp lệ. Phải là: Low, Medium, High, hoặc Critical';
+    ROLLBACK TRANSACTION;
     RETURN -1;
  END
-        
-        -- Validate progress range
+    
+        -- Kiểm tra phạm vi tiến độ
         IF @Progress < 0 OR @Progress > 100
    BEGIN
-        PRINT 'Progress must be between 0 and 100';
+        PRINT 'Tiến độ phải từ 0 đến 100';
  ROLLBACK TRANSACTION;
        RETURN -1;
         END
      
-        -- Validate assigned employee exists if provided
-        IF @AssignedTo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @AssignedTo AND IsActive = 1)
-        BEGIN
-            PRINT 'Assigned employee does not exist or is inactive';
+        -- Kiểm tra nhân viên được giao có tồn tại không (nếu được cung cấp)
+    IF @AssignedTo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @AssignedTo AND IsActive = 1)
+    BEGIN
+    PRINT 'Nhân viên được giao không tồn tại hoặc không hoạt động';
             ROLLBACK TRANSACTION;
-      RETURN -1;
+  RETURN -1;
         END
      
-      -- Validate creator exists
+    -- Kiểm tra người tạo có tồn tại không
  IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @CreatedBy)
         BEGIN
-     PRINT 'Creator user does not exist';
+     PRINT 'Người tạo không tồn tại';
  ROLLBACK TRANSACTION;
      RETURN -1;
     END
         
-        -- Insert task
+    -- Thêm task
  INSERT INTO dbo.Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Deadline, Status, Priority, Progress, CreatedDate)
   VALUES (@ProjectID, @TaskTitle, @Description, @AssignedTo, @CreatedBy, @Deadline, @Status, @Priority, @Progress, GETDATE());
       
-        -- Get new ID
+      -- Lấy ID mới
         SET @NewTaskID = SCOPE_IDENTITY();
      
         COMMIT TRANSACTION;
-        PRINT 'Task created successfully with ID: ' + CAST(@NewTaskID AS NVARCHAR(10));
+        PRINT 'Tạo task thành công với ID: ' + CAST(@NewTaskID AS NVARCHAR(10));
    RETURN @NewTaskID;
-    END TRY
+  END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0
       ROLLBACK TRANSACTION;
    
-        PRINT ERROR_MESSAGE();
+ PRINT ERROR_MESSAGE();
         SET @NewTaskID = -1;
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
   END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_Insert';
+PRINT 'Đã tạo: sp_Task_Insert';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_Update
--- Description: Update existing task
+-- Mô tả: Cập nhật thông tin task
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_Update', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_Update;
@@ -1074,57 +1083,57 @@ BEGIN
     BEGIN TRY
       BEGIN TRANSACTION;
         
-        -- Check if task exists
+        -- Kiểm tra task có tồn tại không
      IF NOT EXISTS (SELECT 1 FROM dbo.Tasks WHERE TaskID = @TaskID)
   BEGIN
-       PRINT 'Task not found';
+       PRINT 'Không tìm thấy task';
  ROLLBACK TRANSACTION;
      RETURN -1;
         END
         
- -- Validate required fields
+ -- Kiểm tra các trường bắt buộc
         IF @TaskTitle IS NULL OR LTRIM(RTRIM(@TaskTitle)) = ''
-        BEGIN
-    PRINT 'TaskTitle is required';
+ BEGIN
+    PRINT 'TaskTitle là bắt buộc';
 ROLLBACK TRANSACTION;
   RETURN -1;
     END
         
-        -- Validate status
-        IF @Status NOT IN ('Todo', 'InProgress', 'Review', 'Done')
-        BEGIN
-         PRINT 'Invalid status. Must be: Todo, InProgress, Review, or Done';
+     -- Kiểm tra trạng thái hợp lệ
+IF @Status NOT IN ('Todo', 'InProgress', 'Review', 'Done')
+ BEGIN
+    PRINT 'Trạng thái không hợp lệ. Phải là: Todo, InProgress, Review, hoặc Done';
   ROLLBACK TRANSACTION;
             RETURN -1;
         END
         
- -- Validate priority
+ -- Kiểm tra độ ưu tiên hợp lệ
         IF @Priority NOT IN ('Low', 'Medium', 'High', 'Critical')
    BEGIN
-            PRINT 'Invalid priority. Must be: Low, Medium, High, or Critical';
-   ROLLBACK TRANSACTION;
+          PRINT 'Độ ưu tiên không hợp lệ. Phải là: Low, Medium, High, hoặc Critical';
+ ROLLBACK TRANSACTION;
             RETURN -1;
    END
       
-        -- Validate progress range
+      -- Kiểm tra phạm vi tiến độ
    IF @Progress < 0 OR @Progress > 100
-        BEGIN
-            PRINT 'Progress must be between 0 and 100';
-        ROLLBACK TRANSACTION;
-            RETURN -1;
+      BEGIN
+PRINT 'Tiến độ phải từ 0 đến 100';
+  ROLLBACK TRANSACTION;
+       RETURN -1;
         END
-        
-        -- Validate assigned employee exists if provided
+  
+        -- Kiểm tra nhân viên được giao có tồn tại không (nếu được cung cấp)
         IF @AssignedTo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM dbo.Employees WHERE EmployeeID = @AssignedTo AND IsActive = 1)
         BEGIN
-            PRINT 'Assigned employee does not exist or is inactive';
+            PRINT 'Nhân viên được giao không tồn tại hoặc không hoạt động';
        ROLLBACK TRANSACTION;
-            RETURN -1;
+  RETURN -1;
         END
  
- -- Update task
-        UPDATE dbo.Tasks
-        SET 
+ -- Cập nhật task
+UPDATE dbo.Tasks
+   SET 
        TaskTitle = @TaskTitle,
         Description = @Description,
   AssignedTo = @AssignedTo,
@@ -1136,25 +1145,25 @@ ROLLBACK TRANSACTION;
 WHERE TaskID = @TaskID;
         
      COMMIT TRANSACTION;
-      PRINT 'Task updated successfully';
- RETURN 0; -- Success
+      PRINT 'Cập nhật task thành công';
+ RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
+   IF @@TRANCOUNT > 0
             ROLLBACK TRANSACTION;
     
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_Update';
+PRINT 'Đã tạo: sp_Task_Update';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_Delete
--- Description: Delete task (CASCADE will delete related comments)
+-- Mô tả: Xóa task (CASCADE sẽ xóa các comment liên quan)
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_Delete', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_Delete;
@@ -1169,37 +1178,37 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
       
-     -- Check if task exists
+  -- Kiểm tra task có tồn tại không
   IF NOT EXISTS (SELECT 1 FROM dbo.Tasks WHERE TaskID = @TaskID)
      BEGIN
-            PRINT 'Task not found';
-            ROLLBACK TRANSACTION;
+ PRINT 'Không tìm thấy task';
+    ROLLBACK TRANSACTION;
    RETURN -1;
         END
-        
-        -- Delete task (CASCADE will handle comments)
+      
+        -- Xóa task (CASCADE sẽ xử lý comments)
         DELETE FROM dbo.Tasks WHERE TaskID = @TaskID;
  
         COMMIT TRANSACTION;
-        PRINT 'Task deleted successfully';
-        RETURN 0; -- Success
+        PRINT 'Xóa task thành công';
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
       IF @@TRANCOUNT > 0
     ROLLBACK TRANSACTION;
    
       PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_Delete';
+PRINT 'Đã tạo: sp_Task_Delete';
 GO
 
 -- ---------------------------------------------
 -- sp_Task_UpdateProgress
--- Description: Update task progress only
+-- Mô tả: Chỉ cập nhật tiến độ task
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Task_UpdateProgress', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Task_UpdateProgress;
@@ -1215,53 +1224,53 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
         
-        -- Check if task exists
+        -- Kiểm tra task có tồn tại không
         IF NOT EXISTS (SELECT 1 FROM dbo.Tasks WHERE TaskID = @TaskID)
  BEGIN
-            PRINT 'Task not found';
+       PRINT 'Không tìm thấy task';
             ROLLBACK TRANSACTION;
        RETURN -1;
         END
-   
-        -- Validate progress range
+
+   -- Kiểm tra phạm vi tiến độ
       IF @Progress < 0 OR @Progress > 100
    BEGIN
-  PRINT 'Progress must be between 0 and 100';
-            ROLLBACK TRANSACTION;
+  PRINT 'Tiến độ phải từ 0 đến 100';
+   ROLLBACK TRANSACTION;
      RETURN -1;
         END
-        
-        -- Update progress
+    
+        -- Cập nhật tiến độ
  UPDATE dbo.Tasks
         SET 
-            Progress = @Progress,
+  Progress = @Progress,
             UpdatedDate = GETDATE()
-        WHERE TaskID = @TaskID;
+    WHERE TaskID = @TaskID;
         
         COMMIT TRANSACTION;
-        PRINT 'Task progress updated successfully';
-      RETURN 0; -- Success
+        PRINT 'Cập nhật tiến độ task thành công';
+      RETURN 0; -- Thành công
   END TRY
     BEGIN CATCH
       IF @@TRANCOUNT > 0
        ROLLBACK TRANSACTION;
         
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Task_UpdateProgress';
+PRINT 'Đã tạo: sp_Task_UpdateProgress';
 GO
 
 -- =============================================
--- SECTION 4: REPORT PROCEDURES
+-- PHẦN 4: CÁC THỦ TỤC BÁO CÁO
 -- =============================================
 
 -- ---------------------------------------------
 -- sp_Report_TasksByStatus
--- Description: Group tasks by status with counts
+-- Mô tả: Nhóm task theo trạng thái với số lượng
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Report_TasksByStatus', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Report_TasksByStatus;
@@ -1271,38 +1280,38 @@ CREATE PROCEDURE dbo.sp_Report_TasksByStatus
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+ 
     BEGIN TRY
         SELECT 
-            Status,
-        COUNT(*) AS TaskCount,
-         AVG(Progress) AS AvgProgress,
+       Status,
+      COUNT(*) AS TaskCount,
+       AVG(Progress) AS AvgProgress,
       COUNT(CASE WHEN Deadline < GETDATE() AND Status NOT IN ('Done') THEN 1 END) AS OverdueCount
         FROM dbo.Tasks
         GROUP BY Status
         ORDER BY 
-            CASE Status
-         WHEN 'Todo' THEN 1
-       WHEN 'InProgress' THEN 2
+      CASE Status
+   WHEN 'Todo' THEN 1
+    WHEN 'InProgress' THEN 2
 WHEN 'Review' THEN 3
      WHEN 'Done' THEN 4
   END;
   
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
         PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Report_TasksByStatus';
+PRINT 'Đã tạo: sp_Report_TasksByStatus';
 GO
 
 -- ---------------------------------------------
 -- sp_Report_EmployeeWorkload
--- Description: Get number of tasks assigned to each employee
+-- Mô tả: Lấy số lượng task được giao cho mỗi nhân viên
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Report_EmployeeWorkload', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Report_EmployeeWorkload;
@@ -1315,38 +1324,38 @@ BEGIN
     
     BEGIN TRY
      SELECT 
-            e.EmployeeID,
+     e.EmployeeID,
     e.FullName,
        d.DepartmentName,
-            COUNT(t.TaskID) AS TotalTasks,
+ COUNT(t.TaskID) AS TotalTasks,
         SUM(CASE WHEN t.Status = 'Todo' THEN 1 ELSE 0 END) AS TodoTasks,
       SUM(CASE WHEN t.Status = 'InProgress' THEN 1 ELSE 0 END) AS InProgressTasks,
             SUM(CASE WHEN t.Status = 'Review' THEN 1 ELSE 0 END) AS ReviewTasks,
-            SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS DoneTasks,
+          SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS DoneTasks,
          SUM(CASE WHEN t.Deadline < GETDATE() AND t.Status NOT IN ('Done') THEN 1 ELSE 0 END) AS OverdueTasks,
-            AVG(CAST(t.Progress AS FLOAT)) AS AvgProgress
+ AVG(CAST(t.Progress AS FLOAT)) AS AvgProgress
         FROM dbo.Employees e
-        LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
+ LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
         LEFT JOIN dbo.Tasks t ON e.EmployeeID = t.AssignedTo
      WHERE e.IsActive = 1
-      GROUP BY e.EmployeeID, e.FullName, d.DepartmentName
+ GROUP BY e.EmployeeID, e.FullName, d.DepartmentName
  ORDER BY TotalTasks DESC, e.FullName;
         
-   RETURN 0; -- Success
+   RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
       PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Report_EmployeeWorkload';
+PRINT 'Đã tạo: sp_Report_EmployeeWorkload';
 GO
 
 -- ---------------------------------------------
 -- sp_Report_ProjectProgress
--- Description: Get completion percentage for each project
+-- Mô tả: Lấy phần trăm hoàn thành cho mỗi dự án
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Report_ProjectProgress', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Report_ProjectProgress;
@@ -1360,21 +1369,21 @@ BEGIN
     BEGIN TRY
         SELECT 
             p.ProjectID,
-            p.ProjectName,
-          p.Status AS ProjectStatus,
+    p.ProjectName,
+     p.Status AS ProjectStatus,
 p.StartDate,
-            p.EndDate,
+      p.EndDate,
     p.Budget,
      COUNT(t.TaskID) AS TotalTasks,
 SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS CompletedTasks,
      CASE 
-           WHEN COUNT(t.TaskID) > 0 
-            THEN CAST(SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) * 100.0 / COUNT(t.TaskID) AS DECIMAL(5,2))
+    WHEN COUNT(t.TaskID) > 0 
+   THEN CAST(SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) * 100.0 / COUNT(t.TaskID) AS DECIMAL(5,2))
     ELSE 0 
-            END AS CompletionPercentage,
+   END AS CompletionPercentage,
          AVG(CAST(t.Progress AS FLOAT)) AS AvgTaskProgress,
-            SUM(CASE WHEN t.Deadline < GETDATE() AND t.Status NOT IN ('Done') THEN 1 ELSE 0 END) AS OverdueTasks,
-            CASE 
+SUM(CASE WHEN t.Deadline < GETDATE() AND t.Status NOT IN ('Done') THEN 1 ELSE 0 END) AS OverdueTasks,
+    CASE 
      WHEN p.EndDate < GETDATE() AND p.Status NOT IN ('Completed', 'Cancelled') THEN 'Overdue'
                 WHEN p.EndDate IS NOT NULL AND DATEDIFF(DAY, GETDATE(), p.EndDate) <= 7 AND p.Status NOT IN ('Completed', 'Cancelled') THEN 'Due Soon'
             ELSE 'On Track'
@@ -1384,21 +1393,21 @@ SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS CompletedTasks,
         GROUP BY p.ProjectID, p.ProjectName, p.Status, p.StartDate, p.EndDate, p.Budget
         ORDER BY p.Status, p.ProjectName;
         
-        RETURN 0; -- Success
-    END TRY
+        RETURN 0; -- Thành công
+  END TRY
     BEGIN CATCH
         PRINT ERROR_MESSAGE();
-     RETURN -1; -- Error
+     RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Report_ProjectProgress';
+PRINT 'Đã tạo: sp_Report_ProjectProgress';
 GO
 
 -- ---------------------------------------------
 -- sp_Report_OverdueTasks
--- Description: Get all tasks that are overdue and not done
+-- Mô tả: Lấy tất cả task quá hạn và chưa hoàn thành
 -- ---------------------------------------------
 IF OBJECT_ID('dbo.sp_Report_OverdueTasks', 'P') IS NOT NULL
     DROP PROCEDURE dbo.sp_Report_OverdueTasks;
@@ -1414,47 +1423,47 @@ BEGIN
           t.TaskID,
 t.TaskTitle,
 p.ProjectName,
-            t.Status,
-            t.Priority,
-            t.Progress,
-            t.Deadline,
+t.Status,
+       t.Priority,
+      t.Progress,
+      t.Deadline,
         DATEDIFF(DAY, t.Deadline, GETDATE()) AS DaysOverdue,
 e.FullName AS AssignedToName,
-       e.Email AS AssignedToEmail,
-         d.DepartmentName,
+  e.Email AS AssignedToEmail,
+  d.DepartmentName,
     u.Username AS CreatedBy
  FROM dbo.Tasks t
         INNER JOIN dbo.Projects p ON t.ProjectID = p.ProjectID
         LEFT JOIN dbo.Employees e ON t.AssignedTo = e.EmployeeID
         LEFT JOIN dbo.Departments d ON e.DepartmentID = d.DepartmentID
-        INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
-        WHERE t.Deadline < GETDATE() 
+   INNER JOIN dbo.Users u ON t.CreatedBy = u.UserID
+   WHERE t.Deadline < GETDATE() 
           AND t.Status NOT IN ('Done')
         ORDER BY t.Deadline ASC, t.Priority DESC;
         
-        RETURN 0; -- Success
+        RETURN 0; -- Thành công
     END TRY
     BEGIN CATCH
-        PRINT ERROR_MESSAGE();
-        RETURN -1; -- Error
+     PRINT ERROR_MESSAGE();
+        RETURN -1; -- Lỗi
     END CATCH
 END
 GO
 
-PRINT 'Created: sp_Report_OverdueTasks';
+PRINT 'Đã tạo: sp_Report_OverdueTasks';
 GO
 
 -- =============================================
--- COMPLETION SUMMARY
+-- TỔNG KẾT HOÀN THÀNH
 -- =============================================
 
 PRINT '';
 PRINT '========================================';
-PRINT '  STORED PROCEDURES CREATED!';
+PRINT '  ĐÃ TẠO STORED PROCEDURES!';
 PRINT '========================================';
-PRINT 'Total Procedures: 28';
+PRINT 'Tổng số Procedures: 28';
 PRINT '';
-PRINT 'EMPLOYEE Procedures: 6';
+PRINT 'Procedures cho EMPLOYEE: 6';
 PRINT '  - sp_Employee_GetAll';
 PRINT '  - sp_Employee_GetById';
 PRINT '  - sp_Employee_Insert';
@@ -1462,7 +1471,7 @@ PRINT '  - sp_Employee_Update';
 PRINT '  - sp_Employee_Delete';
 PRINT '  - sp_Employee_GetByDepartment';
 PRINT '';
-PRINT 'PROJECT Procedures: 6';
+PRINT 'Procedures cho PROJECT: 6';
 PRINT '  - sp_Project_GetAll';
 PRINT '  - sp_Project_GetById';
 PRINT '  - sp_Project_Insert';
@@ -1470,7 +1479,7 @@ PRINT '  - sp_Project_Update';
 PRINT '  - sp_Project_Delete';
 PRINT '  - sp_Project_GetByStatus';
 PRINT '';
-PRINT 'TASK Procedures: 8';
+PRINT 'Procedures cho TASK: 8';
 PRINT '  - sp_Task_GetAll';
 PRINT '  - sp_Task_GetById';
 PRINT '  - sp_Task_GetByProject';
@@ -1480,7 +1489,7 @@ PRINT '  - sp_Task_Update';
 PRINT '  - sp_Task_Delete';
 PRINT '  - sp_Task_UpdateProgress';
 PRINT '';
-PRINT 'REPORT Procedures: 4';
+PRINT 'Procedures cho REPORT: 4';
 PRINT '  - sp_Report_TasksByStatus';
 PRINT '  - sp_Report_EmployeeWorkload';
 PRINT '  - sp_Report_ProjectProgress';
@@ -1489,114 +1498,114 @@ PRINT '========================================';
 GO
 
 -- =============================================
--- SECTION 5: SAMPLE TEST CALLS
+-- PHẦN 5: CÁC LỆNH TEST MẪU
 -- =============================================
 
 PRINT '';
 PRINT '========================================';
-PRINT '  RUNNING SAMPLE TEST CALLS';
+PRINT '  ĐANG CHẠY CÁC LỆNH TEST MẪU';
 PRINT '========================================';
 GO
 
--- Test 1: Get all employees
+-- Test 1: Lấy tất cả nhân viên
 PRINT '';
-PRINT '--- TEST 1: Get All Employees ---';
+PRINT '--- TEST 1: Lấy tất cả nhân viên ---';
 EXEC dbo.sp_Employee_GetAll;
 GO
 
--- Test 2: Get employee by ID
+-- Test 2: Lấy nhân viên theo ID
 PRINT '';
-PRINT '--- TEST 2: Get Employee By ID (EmployeeID=1) ---';
+PRINT '--- TEST 2: Lấy nhân viên theo ID (EmployeeID=1) ---';
 EXEC dbo.sp_Employee_GetById @EmployeeID = 1;
 GO
 
--- Test 3: Get employees by department
+-- Test 3: Lấy nhân viên theo phòng ban
 PRINT '';
-PRINT '--- TEST 3: Get Employees By Department (DepartmentID=1) ---';
+PRINT '--- TEST 3: Lấy nhân viên theo phòng ban (DepartmentID=1) ---';
 EXEC dbo.sp_Employee_GetByDepartment @DepartmentID = 1;
 GO
 
--- Test 4: Insert new employee
+-- Test 4: Thêm nhân viên mới
 PRINT '';
-PRINT '--- TEST 4: Insert New Employee ---';
+PRINT '--- TEST 4: Thêm nhân viên mới ---';
 DECLARE @NewEmpID INT;
 EXEC dbo.sp_Employee_Insert 
-    @FullName = N'Nguy?n Th? Mai',
+    @FullName = N'Nguyễn Thị Mai',
     @Email = 'nguyen.thi.mai@company.com',
     @Phone = '0956789012',
     @DepartmentID = 2,
-    @Address = N'303 Hai B� Tr?ng, H� N?i',
+    @Address = N'303 Hai Bà Trưng, Hà Nội',
     @ImagePath = '/images/employees/ntm.jpg',
     @NewEmployeeID = @NewEmpID OUTPUT;
 SELECT @NewEmpID AS NewEmployeeID;
 GO
 
--- Test 5: Get all projects
+-- Test 5: Lấy tất cả dự án
 PRINT '';
-PRINT '--- TEST 5: Get All Projects ---';
+PRINT '--- TEST 5: Lấy tất cả dự án ---';
 EXEC dbo.sp_Project_GetAll;
 GO
 
--- Test 6: Get projects by status
+-- Test 6: Lấy dự án theo trạng thái
 PRINT '';
-PRINT '--- TEST 6: Get Projects By Status (InProgress) ---';
+PRINT '--- TEST 6: Lấy dự án theo trạng thái (InProgress) ---';
 EXEC dbo.sp_Project_GetByStatus @Status = 'InProgress';
 GO
 
--- Test 7: Get tasks by project
+-- Test 7: Lấy task theo dự án
 PRINT '';
-PRINT '--- TEST 7: Get Tasks By Project (ProjectID=1) ---';
+PRINT '--- TEST 7: Lấy task theo dự án (ProjectID=1) ---';
 EXEC dbo.sp_Task_GetByProject @ProjectID = 1;
 GO
 
--- Test 8: Get tasks by employee
+-- Test 8: Lấy task theo nhân viên
 PRINT '';
-PRINT '--- TEST 8: Get Tasks By Employee (EmployeeID=3) ---';
+PRINT '--- TEST 8: Lấy task theo nhân viên (EmployeeID=3) ---';
 EXEC dbo.sp_Task_GetByEmployee @EmployeeID = 3;
 GO
 
--- Test 9: Update task progress
+-- Test 9: Cập nhật tiến độ task
 PRINT '';
-PRINT '--- TEST 9: Update Task Progress (TaskID=2, Progress=75) ---';
+PRINT '--- TEST 9: Cập nhật tiến độ task (TaskID=2, Progress=75) ---';
 EXEC dbo.sp_Task_UpdateProgress @TaskID = 2, @Progress = 75;
 GO
 
--- Test 10: Report - Tasks by Status
+-- Test 10: Báo cáo - Task theo trạng thái
 PRINT '';
-PRINT '--- TEST 10: Report - Tasks By Status ---';
+PRINT '--- TEST 10: Báo cáo - Task theo trạng thái ---';
 EXEC dbo.sp_Report_TasksByStatus;
 GO
 
--- Test 11: Report - Employee Workload
+-- Test 11: Báo cáo - Khối lượng công việc nhân viên
 PRINT '';
-PRINT '--- TEST 11: Report - Employee Workload ---';
+PRINT '--- TEST 11: Báo cáo - Khối lượng công việc nhân viên ---';
 EXEC dbo.sp_Report_EmployeeWorkload;
 GO
 
--- Test 12: Report - Project Progress
+-- Test 12: Báo cáo - Tiến độ dự án
 PRINT '';
-PRINT '--- TEST 12: Report - Project Progress ---';
+PRINT '--- TEST 12: Báo cáo - Tiến độ dự án ---';
 EXEC dbo.sp_Report_ProjectProgress;
 GO
 
--- Test 13: Report - Overdue Tasks
+-- Test 13: Báo cáo - Task quá hạn
 PRINT '';
-PRINT '--- TEST 13: Report - Overdue Tasks ---';
+PRINT '--- TEST 13: Báo cáo - Task quá hạn ---';
 EXEC dbo.sp_Report_OverdueTasks;
 GO
 
 PRINT '';
 PRINT '========================================';
-PRINT '  ALL TESTS COMPLETED!';
+PRINT '  HOÀN THÀNH TẤT CẢ CÁC TEST!';
 PRINT '========================================';
 PRINT '';
-PRINT 'NOTES:';
-PRINT '- All procedures use TRY-CATCH for error handling';
-PRINT '- Transactions are used for INSERT/UPDATE/DELETE';
-PRINT '- Return codes: 0 = Success, -1 = Error';
-PRINT '- All date validations are in place';
-PRINT '- Foreign key validations are implemented';
-PRINT '- Soft delete is used for Employees';
-PRINT '- CASCADE delete is used for Projects/Tasks';
+PRINT 'GHI CHÚ:';
+PRINT '- Tất cả procedures sử dụng TRY-CATCH để xử lý lỗi';
+PRINT '- Transactions được sử dụng cho INSERT/UPDATE/DELETE';
+PRINT '- Mã trả về: 0 = Thành công, -1 = Lỗi';
+PRINT '- Tất cả validations về ngày tháng đã được thực hiện';
+PRINT '- Các validations về Foreign key đã được triển khai';
+PRINT '- Xóa mềm được sử dụng cho Employees';
+PRINT '- Xóa CASCADE được sử dụng cho Projects/Tasks';
 PRINT '========================================';
 GO

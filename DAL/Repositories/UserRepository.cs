@@ -8,19 +8,19 @@ using EmployeeManagement.Models;
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
-    /// Repository for User entity operations
-    /// Handles authentication and user management
+    /// Repository cho các thao tác dữ liệu User
+    /// Xử lý authentication và quản lý user
     /// </summary>
     public class UserRepository : IRepository<User>
     {
         /// <summary>
-        /// Validates user login credentials
-        /// Password must be pre-hashed before calling this method
-        /// Only returns active users (IsActive = 1)
+        /// Xác thực thông tin đăng nhập của user
+        /// Password phải được hash trước khi gọi method này
+        /// Chỉ trả về user đang active (IsActive = 1)
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="passwordHash">Pre-hashed password</param>
-        /// <returns>User object if valid, null if invalid</returns>
+        /// <param name="username">Tên đăng nhập</param>
+        /// <param name="passwordHash">Mật khẩu đã được hash</param>
+        /// <returns>Đối tượng User nếu hợp lệ, null nếu không hợp lệ</returns>
         public User ValidateLogin(string username, string passwordHash)
         {
             try
@@ -31,8 +31,8 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@PasswordHash", passwordHash ?? (object)DBNull.Value)
                 };
 
-                // Query with username, password hash, and check IsActive = 1
-                string sql = 
+                // Truy vấn với username, password hash và kiểm tra IsActive = 1
+                string sql =
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users 
                     WHERE Username = @Username 
@@ -41,28 +41,28 @@ namespace EmployeeManagement.DAL.Repositories
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Return null if no user found or credentials invalid
+                // Trả về null nếu không tìm thấy user hoặc thông tin không hợp lệ
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to User object (without PasswordHash for security)
+                // Chuyển đổi dòng đầu tiên thành đối tượng User (không bao gồm PasswordHash vì lý do bảo mật)
                 return MapDataRowToUserWithoutPassword(dt.Rows[0]);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.ValidateLogin] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.ValidateLogin] Lỗi: {ex.Message}");
                 return null;
             }
         }
 
         /// <summary>
-        /// Retrieves a user by username
-        /// Does NOT return PasswordHash for security
+        /// Lấy thông tin user theo username
+        /// KHÔNG trả về PasswordHash vì lý do bảo mật
         /// </summary>
-        /// <param name="username">Username to search</param>
-        /// <returns>User object or null if not found</returns>
+        /// <param name="username">Tên đăng nhập cần tìm</param>
+        /// <returns>Đối tượng User hoặc null nếu không tìm thấy</returns>
         public User GetByUsername(string username)
         {
             try
@@ -72,7 +72,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Username", username ?? (object)DBNull.Value)
                 };
 
-                // Query without PasswordHash field for security
+                // Truy vấn không bao gồm PasswordHash vì lý do bảo mật
                 string sql =
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users 
@@ -80,42 +80,42 @@ namespace EmployeeManagement.DAL.Repositories
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Return null if no user found
+                // Trả về null nếu không tìm thấy user
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to User object (without PasswordHash)
+                // Chuyển đổi dòng đầu tiên thành đối tượng User (không bao gồm PasswordHash)
                 return MapDataRowToUserWithoutPassword(dt.Rows[0]);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.GetByUsername] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.GetByUsername] Lỗi: {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        /// Retrieves all users from database
-        /// Does NOT return PasswordHash for security
-        /// Calls sp_User_GetAll stored procedure
+        /// Lấy danh sách tất cả user từ database
+        /// KHÔNG trả về PasswordHash vì lý do bảo mật
+        /// Gọi stored procedure sp_User_GetAll
         /// </summary>
-        /// <returns>List of all users</returns>
+        /// <returns>Danh sách tất cả user</returns>
         public List<User> GetAll()
         {
             List<User> users = new List<User>();
 
             try
             {
-                // Query without PasswordHash field for security
+                // Truy vấn không bao gồm PasswordHash vì lý do bảo mật
                 string sql =
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Map DataTable rows to User objects (without PasswordHash)
+                // Chuyển đổi các dòng DataTable thành đối tượng User (không bao gồm PasswordHash)
                 foreach (DataRow row in dt.Rows)
                 {
                     users.Add(MapDataRowToUserWithoutPassword(row));
@@ -123,7 +123,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.GetAll] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -131,11 +131,11 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Retrieves a single user by ID
-        /// Does NOT return PasswordHash for security
+        /// Lấy thông tin một user theo ID
+        /// KHÔNG trả về PasswordHash vì lý do bảo mật
         /// </summary>
-        /// <param name="id">User ID</param>
-        /// <returns>User object or null if not found</returns>
+        /// <param name="id">ID user</param>
+        /// <returns>Đối tượng User hoặc null nếu không tìm thấy</returns>
         public User GetById(int id)
         {
             try
@@ -145,7 +145,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@UserID", id)
                 };
 
-                // Query without PasswordHash field for security
+                // Truy vấn không bao gồm PasswordHash vì lý do bảo mật
                 string sql =
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users 
@@ -153,29 +153,29 @@ namespace EmployeeManagement.DAL.Repositories
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Return null if no user found
+                // Trả về null nếu không tìm thấy user
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to User object (without PasswordHash)
+                // Chuyển đổi dòng đầu tiên thành đối tượng User (không bao gồm PasswordHash)
                 return MapDataRowToUserWithoutPassword(dt.Rows[0]);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.GetById] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.GetById] Lỗi: {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        /// Inserts a new user
-        /// Password must be pre-hashed before calling this method
-        /// Calls sp_User_Insert stored procedure
+        /// Thêm một user mới
+        /// Password phải được hash trước khi gọi method này
+        /// Gọi stored procedure sp_User_Insert
         /// </summary>
-        /// <param name="entity">User object to insert</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng User cần thêm</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Insert(User entity)
         {
             try
@@ -194,18 +194,18 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.Insert] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.Insert] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Updates an existing user
-        /// Does NOT update password (use ChangePassword instead)
-        /// Calls sp_User_Update stored procedure
+        /// Cập nhật thông tin một user đã tồn tại
+        /// KHÔNG cập nhật mật khẩu (sử dụng ChangePassword để thay đổi mật khẩu)
+        /// Gọi stored procedure sp_User_Update
         /// </summary>
-        /// <param name="entity">User object with updated data</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng User với dữ liệu đã cập nhật</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Update(User entity)
         {
             try
@@ -224,16 +224,16 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.Update] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.Update] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Deletes a user (soft delete by setting IsActive = 0)
+        /// Xóa một user (xóa mềm bằng cách đặt IsActive = 0)
         /// </summary>
-        /// <param name="id">User ID to delete</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="id">ID user cần xóa</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Delete(int id)
         {
             try
@@ -249,19 +249,19 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.Delete] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.Delete] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Changes user password
-        /// New password must be pre-hashed before calling this method
-        /// Calls sp_User_ChangePassword stored procedure
+        /// Thay đổi mật khẩu cho user
+        /// Mật khẩu mới phải được hash trước khi gọi method này
+        /// Gọi stored procedure sp_User_ChangePassword
         /// </summary>
-        /// <param name="userId">User ID</param>
-        /// <param name="newPasswordHash">New pre-hashed password</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="userId">ID user</param>
+        /// <param name="newPasswordHash">Mật khẩu mới đã được hash</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool ChangePassword(int userId, string newPasswordHash)
         {
             try
@@ -277,40 +277,40 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.ChangePassword] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.ChangePassword] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Maps a DataRow to a User object WITHOUT PasswordHash for security
-        /// Handles NULL values and type conversions
+        /// Chuyển đổi một DataRow thành đối tượng User KHÔNG có PasswordHash vì lý do bảo mật
+        /// Xử lý giá trị NULL và chuyển đổi kiểu dữ liệu
         /// </summary>
-        /// <param name="row">DataRow from query result</param>
-        /// <returns>User object without PasswordHash</returns>
+        /// <param name="row">DataRow từ kết quả truy vấn</param>
+        /// <returns>Đối tượng User không có PasswordHash</returns>
         private User MapDataRowToUserWithoutPassword(DataRow row)
         {
             return new User
             {
-                // Map UserID (required field)
+                // Map UserID (trường bắt buộc)
                 UserID = row["UserID"] != DBNull.Value ? Convert.ToInt32(row["UserID"]) : 0,
 
-                // Map Username (nullable string)
+                // Map Username (chuỗi có thể null)
                 Username = row["Username"] != DBNull.Value ? row["Username"].ToString() : null,
 
-                // PasswordHash is NOT included for security
+                // PasswordHash KHÔNG được bao gồm vì lý do bảo mật
                 PasswordHash = null,
 
-                // Map Email (nullable string)
+                // Map Email (chuỗi có thể null)
                 Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null,
 
-                // Map Role (nullable string)
+                // Map Role (chuỗi có thể null)
                 Role = row["Role"] != DBNull.Value ? row["Role"].ToString() : null,
 
-                // Map IsActive (required bool)
+                // Map IsActive (boolean bắt buộc)
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
 
-                // Map CreatedDate (required DateTime)
+                // Map CreatedDate (DateTime bắt buộc)
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
             };
         }

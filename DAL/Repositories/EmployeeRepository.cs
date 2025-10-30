@@ -8,16 +8,16 @@ using EmployeeManagement.Models;
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
-    /// Repository for Employee entity operations
-    /// Implements IRepository pattern for data access
+    /// Repository cho các thao tác dữ liệu Employee
+    /// Triển khai IRepository pattern cho data access
     /// </summary>
     public class EmployeeRepository : IRepository<Employee>
     {
         /// <summary>
-        /// Retrieves all employees from database
-        /// Calls sp_Employee_GetAll stored procedure
+        /// Lấy danh sách tất cả nhân viên từ database
+        /// Gọi stored procedure sp_Employee_GetAll
         /// </summary>
-        /// <returns>List of all employees</returns>
+        /// <returns>Danh sách tất cả nhân viên</returns>
         public List<Employee> GetAll()
         {
             List<Employee> employees = new List<Employee>();
@@ -26,7 +26,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetAll", null);
 
-                // Map DataTable rows to Employee objects
+                // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
                 {
                     employees.Add(MapDataRowToEmployee(row));
@@ -34,7 +34,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.GetAll] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -42,44 +42,44 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Retrieves a single employee by ID
-        /// Calls sp_Employee_GetById stored procedure
+        /// Lấy thông tin một nhân viên theo ID
+        /// Gọi stored procedure sp_Employee_GetById
         /// </summary>
-        /// <param name="id">Employee ID</param>
-        /// <returns>Employee object or null if not found</returns>
+        /// <param name="id">ID nhân viên</param>
+        /// <returns>Đối tượng Employee hoặc null nếu không tìm thấy</returns>
         public Employee GetById(int id)
         {
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
-                {
+              {
                     new SqlParameter("@EmployeeID", id)
-                };
+              };
 
                 DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetById", parameters);
 
-                // Return null if no employee found
+                // Trả về null nếu không tìm thấy nhân viên
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to Employee object
+                // Chuyển đổi dòng đầu tiên thành đối tượng Employee
                 return MapDataRowToEmployee(dt.Rows[0]);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.GetById] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.GetById] Lỗi: {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        /// Inserts a new employee
-        /// Calls sp_Employee_Insert stored procedure
+        /// Thêm mới một nhân viên
+        /// Gọi stored procedure sp_Employee_Insert
         /// </summary>
-        /// <param name="entity">Employee object to insert</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng Employee cần thêm</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Insert(Employee entity)
         {
             try
@@ -94,24 +94,24 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
                     new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
-                         };
+                };
 
                 DatabaseHelper.ExecuteStoredProcedure("sp_Employee_Insert", parameters);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.Insert] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.Insert] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Updates an existing employee
-        /// Calls sp_Employee_Update stored procedure
+        /// Cập nhật thông tin nhân viên
+        /// Gọi stored procedure sp_Employee_Update
         /// </summary>
-        /// <param name="entity">Employee object with updated data</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng Employee với dữ liệu cập nhật</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Update(Employee entity)
         {
             try
@@ -134,17 +134,17 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.Update] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.Update] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Soft deletes an employee (sets IsActive = 0)
-        /// Calls sp_Employee_Delete stored procedure
+        /// Xóa mềm nhân viên (đặt IsActive = 0)
+        /// Gọi stored procedure sp_Employee_Delete
         /// </summary>
-        /// <param name="id">Employee ID to delete</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="id">ID nhân viên cần xóa</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Delete(int id)
         {
             try
@@ -159,16 +159,16 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.Delete] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.Delete] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Retrieves employees by department
+        /// Lấy danh sách nhân viên theo phòng ban
         /// </summary>
-        /// <param name="deptId">Department ID</param>
-        /// <returns>List of employees in the department</returns>
+        /// <param name="deptId">ID phòng ban</param>
+        /// <returns>Danh sách nhân viên trong phòng ban</returns>
         public List<Employee> GetByDepartment(int deptId)
         {
             List<Employee> employees = new List<Employee>();
@@ -182,7 +182,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetByDepartment", parameters);
 
-                // Map DataTable rows to Employee objects
+                // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
                 {
                     employees.Add(MapDataRowToEmployee(row));
@@ -190,7 +190,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.GetByDepartment] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.GetByDepartment] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -198,10 +198,10 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Searches employees by name (partial match)
+        /// Tìm kiếm nhân viên theo tên (khớp một phần)
         /// </summary>
-        /// <param name="keyword">Search keyword</param>
-        /// <returns>List of matching employees</returns>
+        /// <param name="keyword">Từ khóa tìm kiếm</param>
+        /// <returns>Danh sách nhân viên phù hợp</returns>
         public List<Employee> SearchByName(string keyword)
         {
             List<Employee> employees = new List<Employee>();
@@ -215,7 +215,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_SearchByName", parameters);
 
-                // Map DataTable rows to Employee objects
+                // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
                 {
                     employees.Add(MapDataRowToEmployee(row));
@@ -223,7 +223,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[EmployeeRepository.SearchByName] Error: {ex.Message}");
+                Console.WriteLine($"[EmployeeRepository.SearchByName] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -231,45 +231,45 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Maps a DataRow to an Employee object
-        /// Handles NULL values and type conversions
+        /// Chuyển đổi một DataRow thành đối tượng Employee
+        /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
         /// </summary>
-        /// <param name="row">DataRow from query result</param>
-        /// <returns>Employee object</returns>
+        /// <param name="row">DataRow từ kết quả query</param>
+        /// <returns>Đối tượng Employee</returns>
         private Employee MapDataRowToEmployee(DataRow row)
         {
             return new Employee
             {
-                // Map EmployeeID (required field)
+                // Mapping EmployeeID (trường bắt buộc)
                 EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
 
-                // Map FullName (nullable string)
+                // Mapping FullName (nullable string)
                 FullName = row["FullName"] != DBNull.Value ? row["FullName"].ToString() : null,
 
-                // Map Email (nullable string)
+                // Mapping Email (nullable string)
                 Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null,
 
-                // Map Phone (nullable string)
+                // Mapping Phone (nullable string)
                 Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null,
 
-                // Map DepartmentID (nullable int)
+                // Mapping DepartmentID (nullable int)
                 DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
 
-                // Map DepartmentName (for display, nullable string)
+                // Mapping DepartmentName (cho hiển thị, nullable string)
                 DepartmentName = row.Table.Columns.Contains("DepartmentName") && row["DepartmentName"] != DBNull.Value
               ? row["DepartmentName"].ToString()
                 : null,
 
-                // Map ImagePath (nullable string)
+                // Mapping ImagePath (nullable string)
                 ImagePath = row["ImagePath"] != DBNull.Value ? row["ImagePath"].ToString() : null,
 
-                // Map Address (nullable string)
+                // Mapping Address (nullable string)
                 Address = row["Address"] != DBNull.Value ? row["Address"].ToString() : null,
 
-                // Map HireDate (required DateTime)
+                // Mapping HireDate (DateTime bắt buộc)
                 HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
 
-                // Map IsActive (required bool)
+                // Mapping IsActive (bool bắt buộc)
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false
             };
         }
