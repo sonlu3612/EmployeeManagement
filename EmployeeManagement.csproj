@@ -76,6 +76,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include=".github\copilot-instructions.md" />
+    <None Include="App.config" />
+    <None Include="App.config.template" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -85,9 +87,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\scripts.sql" />
