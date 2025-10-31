@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Dialogs
 {
-    partial class frmManagerTasks
+    partial class frmManageTasks
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.pageTasks = new AntdUI.PageHeader();
-            this.page_Task1 = new EmployeeManagement.Pages.Page_Task();
+            this.page_Task1 = new EmployeeManagement.Pages.Page_ManageTask();
             this.SuspendLayout();
             // 
             // pageTasks
@@ -75,6 +75,6 @@
         #endregion
 
         private AntdUI.PageHeader pageTasks;
-        private Pages.Page_Task page_Task1;
+        private Pages.Page_ManageTask page_Task1;
     }
 }

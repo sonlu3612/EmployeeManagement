@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace EmployeeManagement.Dialogs
 {
-    public partial class frmManagerTasks : Form
+    public partial class frmEmployee : Form
     {
-        public frmManagerTasks()
+        public frmEmployee()
         {
             InitializeComponent();
         }

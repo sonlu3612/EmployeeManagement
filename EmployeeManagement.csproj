@@ -75,11 +75,17 @@
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\frmManagerTasks.cs">
+    <Compile Include="Dialogs\frmManageTasks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\frmManagerTasks.Designer.cs">
-      <DependentUpon>frmManagerTasks.cs</DependentUpon>
+    <Compile Include="Dialogs\frmManageTasks.Designer.cs">
+      <DependentUpon>frmManageTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frmEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmEmployee.Designer.cs">
+      <DependentUpon>frmEmployee.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\frmTask.cs">
       <SubType>Form</SubType>
@@ -110,25 +116,34 @@
     <Compile Include="Models\ProjectStats.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Pages\Page_Projects.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pages\Page_Projects.Designer.cs">
-      <DependentUpon>Page_Projects.cs</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Pages\Page_Task.Designer.cs">
       <DependentUpon>Page_Task.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Page_Projects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Projects.Designer.cs">
+      <DependentUpon>Page_Projects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_ManageTask.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_ManageTask.Designer.cs">
+      <DependentUpon>Page_ManageTask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\frmManagerTasks.resx">
-      <DependentUpon>frmManagerTasks.cs</DependentUpon>
+    <EmbeddedResource Include="Dialogs\frmManageTasks.resx">
+      <DependentUpon>frmManageTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmEmployee.resx">
+      <DependentUpon>frmEmployee.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmTask.resx">
       <DependentUpon>frmTask.cs</DependentUpon>
@@ -142,11 +157,14 @@
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Task.resx">
+      <DependentUpon>Page_Task.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Projects.resx">
       <DependentUpon>Page_Projects.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Pages\Page_Task.resx">
-      <DependentUpon>Page_Task.cs</DependentUpon>
+    <EmbeddedResource Include="Pages\Page_ManageTask.resx">
+      <DependentUpon>Page_ManageTask.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -158,6 +176,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
     <None Include="packages\AntdUI.2.1.13\AntdUI.2.1.13.nupkg" />
@@ -174,6 +193,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Icons\note.png" />
     <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>

@@ -44,6 +44,7 @@ namespace EmployeeManagement
             }
             if (select == "Projects")
             {
+
                 tabs1.SelectedTab = tabProject;
             }
             // if (select == "Employee")
@@ -57,6 +58,8 @@ namespace EmployeeManagement
             if (select == "Tasks")
             {
                 tabs1.SelectedTab = tabTask;
+                phTrangChu.Text = "Tasks";
+                phTrangChu.Icon = Properties.Resources.note;
             }
             if (select == "Database")
             {
@@ -67,6 +70,10 @@ namespace EmployeeManagement
                 frmMain.ActiveForm.Close();
                 frmLogin loginForm = new frmLogin();
                 loginForm.Show();
+            }
+            if(select == "My Profile")
+            {
+                tabs1.SelectedTab = tabMyProfile;
             }
 
 

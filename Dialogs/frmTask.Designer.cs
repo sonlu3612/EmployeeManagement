@@ -41,6 +41,8 @@
             this.ddownOwnerID = new AntdUI.Dropdown();
             this.ddownStatus = new AntdUI.Dropdown();
             this.dateStart = new AntdUI.DatePicker();
+            this.btnLuu = new AntdUI.Button();
+            this.btnHuy = new AntdUI.Button();
             this.SuspendLayout();
             // 
             // pageHeader1
@@ -175,11 +177,41 @@
             this.dateStart.Size = new System.Drawing.Size(217, 33);
             this.dateStart.TabIndex = 17;
             // 
+            // btnLuu
+            // 
+            this.btnLuu.BackHover = System.Drawing.Color.White;
+            this.btnLuu.BorderWidth = 2F;
+            this.btnLuu.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLuu.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnLuu.Location = new System.Drawing.Point(382, 444);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(85, 41);
+            this.btnLuu.TabIndex = 18;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.Type = AntdUI.TTypeMini.Primary;
+            // 
+            // btnHuy
+            // 
+            this.btnHuy.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnHuy.BorderWidth = 2F;
+            this.btnHuy.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnHuy.ForeHover = System.Drawing.Color.White;
+            this.btnHuy.Location = new System.Drawing.Point(291, 444);
+            this.btnHuy.Name = "btnHuy";
+            this.btnHuy.Size = new System.Drawing.Size(85, 41);
+            this.btnHuy.TabIndex = 19;
+            this.btnHuy.Text = "Hủy";
+            // 
             // frmTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(536, 450);
+            this.ClientSize = new System.Drawing.Size(536, 507);
+            this.Controls.Add(this.btnHuy);
+            this.Controls.Add(this.btnLuu);
             this.Controls.Add(this.dateStart);
             this.Controls.Add(this.ddownStatus);
             this.Controls.Add(this.ddownOwnerID);
@@ -215,5 +247,7 @@
         private AntdUI.Dropdown ddownOwnerID;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.DatePicker dateStart;
+        private AntdUI.Button btnLuu;
+        private AntdUI.Button btnHuy;
     }
 }

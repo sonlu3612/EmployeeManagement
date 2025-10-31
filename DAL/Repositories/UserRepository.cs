@@ -17,21 +17,21 @@ namespace EmployeeManagement.DAL.Repositories
         /// <param name="username">Username</param>
         /// <param name="passwordHash">Pre-hashed password</param>
         /// <returns>User object if valid, null if invalid</returns>
-        public User ValidateLogin(string username, string passwordHash)
+        public User ValidateLogin(string email, string passwordHash)
         {
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Username", username ?? (object)DBNull.Value),
+                    new SqlParameter("@Email", email ?? (object)DBNull.Value),
                     new SqlParameter("@PasswordHash", passwordHash ?? (object)DBNull.Value)
                 };
 
                 // Query with username, password hash, and check IsActive = 1
                 string sql = 
-                    @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
+                    @"SELECT UserID,Phone, Email, Role, IsActive, CreatedDate 
                     FROM Users 
-                    WHERE Username = @Username 
+                    WHERE Email = @Email
                     AND PasswordHash = @PasswordHash 
                     AND IsActive = 1";
 
@@ -81,41 +81,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
         }
 
-        /// <summary>
-        /// Retrieves a user by username
-        /// Does NOT return PasswordHash for security
-        /// </summary>
-        /// <param name="username">Username to search</param>
-        /// <returns>User object or null if not found</returns>
-        public User GetByUsername(string username)
-        {
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@Username", username ?? (object)DBNull.Value)
-                };
-
-                string sql =
-                    @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
-                    FROM Users 
-                    WHERE Username = @Username";
-
-                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return null;
-                }
-
-                return MapDataRowToUserWithoutPassword(dt.Rows[0]);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[UserRepository.GetByUsername] Error: {ex.Message}");
-                throw;
-            }
-        }
 
         public List<User> GetAll()
         {
