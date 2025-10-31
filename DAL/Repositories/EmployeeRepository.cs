@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -15,7 +15,6 @@ namespace EmployeeManagement.DAL.Repositories
     {
         /// <summary>
         /// Lấy danh sách tất cả nhân viên từ database
-        /// Gọi stored procedure sp_Employee_GetAll
         /// </summary>
         /// <returns>Danh sách tất cả nhân viên</returns>
         public List<Employee> GetAll()
@@ -24,7 +23,14 @@ namespace EmployeeManagement.DAL.Repositories
 
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetAll", null);
+                string sql =
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    d.DepartmentName
+                    FROM Employees e
+                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -43,7 +49,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
-        /// Gọi stored procedure sp_Employee_GetById
         /// </summary>
         /// <param name="id">ID nhân viên</param>
         /// <returns>Đối tượng Employee hoặc null nếu không tìm thấy</returns>
@@ -52,11 +57,19 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
-              {
+                {
                     new SqlParameter("@EmployeeID", id)
-              };
+                };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetById", parameters);
+                string sql =
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    d.DepartmentName
+                    FROM Employees e
+                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                    WHERE e.EmployeeID = @EmployeeID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
                 // Trả về null nếu không tìm thấy nhân viên
                 if (dt.Rows.Count == 0)
@@ -76,7 +89,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Thêm mới một nhân viên
-        /// Gọi stored procedure sp_Employee_Insert
         /// </summary>
         /// <param name="entity">Đối tượng Employee cần thêm</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -86,9 +98,9 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
+                    new SqlParameter("@EmployeeID", entity.EmployeeID),
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
-                    new SqlParameter("@Email", entity.Email ?? (object)DBNull.Value),
-                    new SqlParameter("@Phone", entity.Phone ?? (object)DBNull.Value),
+                    new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
                     new SqlParameter("@ImagePath", entity.ImagePath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
@@ -96,7 +108,11 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@IsActive", entity.IsActive)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Employee_Insert", parameters);
+                string sql =
+                    @"INSERT INTO Employees (EmployeeID, FullName, Position, DepartmentID, ImagePath, Address, HireDate, IsActive)
+                    VALUES (@EmployeeID, @FullName, @Position, @DepartmentID, @ImagePath, @Address, @HireDate, @IsActive)";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -108,7 +124,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Cập nhật thông tin nhân viên
-        /// Gọi stored procedure sp_Employee_Update
         /// </summary>
         /// <param name="entity">Đối tượng Employee với dữ liệu cập nhật</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -120,8 +135,7 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@EmployeeID", entity.EmployeeID),
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
-                    new SqlParameter("@Email", entity.Email ?? (object)DBNull.Value),
-                    new SqlParameter("@Phone", entity.Phone ?? (object)DBNull.Value),
+                    new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
                     new SqlParameter("@ImagePath", entity.ImagePath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
@@ -129,7 +143,18 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@IsActive", entity.IsActive)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Employee_Update", parameters);
+                string sql =
+                    @"UPDATE Employees
+                    SET FullName = @FullName,
+                    Position = @Position,
+                    DepartmentID = @DepartmentID,
+                    ImagePath = @ImagePath,
+                    Address = @Address
+                    HireDate = @HireDate,
+                    IsActive = @IsActive
+                    WHERE EmployeeID = @EmployeeID";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -141,7 +166,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Xóa mềm nhân viên (đặt IsActive = 0)
-        /// Gọi stored procedure sp_Employee_Delete
         /// </summary>
         /// <param name="id">ID nhân viên cần xóa</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -154,7 +178,8 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@EmployeeID", id)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Employee_Delete", parameters);
+                string sql = "UPDATE Employees SET IsActive = 0 WHERE EmployeeID = @EmployeeID";
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -180,7 +205,15 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@DepartmentID", deptId)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_GetByDepartment", parameters);
+                string sql =
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    d.DepartmentName
+                    FROM Employees e
+                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                    WHERE e.DepartmentID = @DepartmentID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -210,10 +243,18 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Keyword", keyword ?? (object)DBNull.Value)
+                    new SqlParameter("@Keyword", $"%{keyword}%")
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Employee_SearchByName", parameters);
+                string sql =
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    d.DepartmentName
+                    FROM Employees e
+                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                    WHERE e.FullName LIKE @Keyword";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -246,11 +287,8 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping FullName (nullable string)
                 FullName = row["FullName"] != DBNull.Value ? row["FullName"].ToString() : null,
 
-                // Mapping Email (nullable string)
-                Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null,
-
-                // Mapping Phone (nullable string)
-                Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null,
+                // Mapping Position (nullable string)
+                Position = row["Position"] != DBNull.Value ? row["Position"].ToString() : null,
 
                 // Mapping DepartmentID (nullable int)
                 DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
