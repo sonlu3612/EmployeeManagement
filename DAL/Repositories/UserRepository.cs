@@ -21,13 +21,13 @@ namespace EmployeeManagement.DAL.Repositories
         /// <param name="username">Username</param>
         /// <param name="passwordHash">Pre-hashed password</param>
         /// <returns>User object if valid, null if invalid</returns>
-        public User ValidateLogin(string username, string passwordHash)
+        public User ValidateLogin(string email, string passwordHash)
         {
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Username", username ?? (object)DBNull.Value),
+                    new SqlParameter("@Email", email ?? (object)DBNull.Value),
                     new SqlParameter("@PasswordHash", passwordHash ?? (object)DBNull.Value)
                 };
 
@@ -35,7 +35,7 @@ namespace EmployeeManagement.DAL.Repositories
                 string sql = 
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users 
-                    WHERE Username = @Username 
+                    WHERE Email = @Email
                     AND PasswordHash = @PasswordHash 
                     AND IsActive = 1";
 
@@ -63,20 +63,20 @@ namespace EmployeeManagement.DAL.Repositories
         /// </summary>
         /// <param name="username">Username to search</param>
         /// <returns>User object or null if not found</returns>
-        public User GetByUsername(string username)
+        public User GetByEmail(string email)
         {
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Username", username ?? (object)DBNull.Value)
+                    new SqlParameter("@Email", email ?? (object)DBNull.Value)
                 };
 
                 // Query without PasswordHash field for security
                 string sql =
                     @"SELECT UserID, Username, Email, Role, IsActive, CreatedDate 
                     FROM Users 
-                    WHERE Username = @Username";
+                    WHERE Email = @Email";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
@@ -91,7 +91,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[UserRepository.GetByUsername] Error: {ex.Message}");
+                Console.WriteLine($"[UserRepository.GetByEmail] Error: {ex.Message}");
                 throw;
             }
         }
