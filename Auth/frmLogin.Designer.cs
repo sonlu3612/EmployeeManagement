@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new AntdUI.Panel();
+            this.labelThongBao = new System.Windows.Forms.Label();
             this.image3D3 = new AntdUI.Image3D();
             this.btnDangNhap = new AntdUI.Button();
             this.label1 = new AntdUI.Label();
@@ -37,7 +38,6 @@
             this.image3D2 = new AntdUI.Image3D();
             this.image3D1 = new AntdUI.Image3D();
             this.pageHeader1 = new AntdUI.PageHeader();
-            this.labelThongBao = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +58,17 @@
             this.panel1.Size = new System.Drawing.Size(566, 333);
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
+            // 
+            // labelThongBao
+            // 
+            this.labelThongBao.AutoSize = true;
+            this.labelThongBao.BackColor = System.Drawing.Color.Transparent;
+            this.labelThongBao.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelThongBao.ForeColor = System.Drawing.Color.Red;
+            this.labelThongBao.Location = new System.Drawing.Point(278, 217);
+            this.labelThongBao.Name = "labelThongBao";
+            this.labelThongBao.Size = new System.Drawing.Size(0, 17);
+            this.labelThongBao.TabIndex = 9;
             // 
             // image3D3
             // 
@@ -135,6 +146,7 @@
             // 
             // pageHeader1
             // 
+            this.pageHeader1.CancelButton = true;
             this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
             this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.sign_in_alt;
             this.pageHeader1.Location = new System.Drawing.Point(0, 0);
@@ -144,17 +156,6 @@
             this.pageHeader1.Size = new System.Drawing.Size(566, 34);
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Đăng nhập";
-            // 
-            // labelThongBao
-            // 
-            this.labelThongBao.AutoSize = true;
-            this.labelThongBao.BackColor = System.Drawing.Color.Transparent;
-            this.labelThongBao.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelThongBao.ForeColor = System.Drawing.Color.Red;
-            this.labelThongBao.Location = new System.Drawing.Point(278, 217);
-            this.labelThongBao.Name = "labelThongBao";
-            this.labelThongBao.Size = new System.Drawing.Size(0, 17);
-            this.labelThongBao.TabIndex = 9;
             // 
             // frmLogin
             // 

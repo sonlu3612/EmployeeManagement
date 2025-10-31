@@ -75,6 +75,18 @@
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmManagerTasks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmManagerTasks.Designer.cs">
+      <DependentUpon>frmManagerTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frmTask.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmTask.Designer.cs">
+      <DependentUpon>frmTask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Employees\frmEmployee.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,10 +116,22 @@
     <Compile Include="Pages\Page_Projects.Designer.cs">
       <DependentUpon>Page_Projects.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Page_Task.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Task.Designer.cs">
+      <DependentUpon>Page_Task.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmManagerTasks.resx">
+      <DependentUpon>frmManagerTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmTask.resx">
+      <DependentUpon>frmTask.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Employees\frmEmployee.resx">
       <DependentUpon>frmEmployee.cs</DependentUpon>
@@ -120,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Projects.resx">
       <DependentUpon>Page_Projects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Task.resx">
+      <DependentUpon>Page_Task.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -151,6 +178,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\key_border_black.png" />
+    <None Include="Assets\Icons\menu-burger-white.png" />
+    <None Include="Assets\Icons\search-white.png" />
+    <None Include="Assets\Icons\search-blue.png" />
+    <None Include="Assets\Icons\rotate-right-blue.png" />
+    <None Include="Assets\Icons\rotate-right-white.png" />
     <Content Include="Assets\Icons\sign-in-alt.png" />
     <Content Include="Assets\Icons\user_blacl.png" />
     <Content Include="Assets\Icons\user_boder_black.png" />
