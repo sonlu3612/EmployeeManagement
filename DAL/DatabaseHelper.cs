@@ -6,13 +6,14 @@ using System.Data.SqlClient;
 namespace EmployeeManagement.DAL
 {
     /// <summary>
-    /// Static helper class for database operations using ADO.NET
-    /// Supports parameterized queries and stored procedures
+    /// Class helper tĩnh cho các thao tác database sử dụng ADO.NET
+    /// Hỗ trợ parameterized queries và stored procedures
+    /// Đảm bảo connection pooling và proper resource disposal
     /// </summary>
     public static class DatabaseHelper
     {
         /// <summary>
-        /// Gets the connection string from app.config
+        /// Lấy connection string từ app.config
         /// </summary>
         public static string ConnectionString
         {
@@ -23,20 +24,20 @@ namespace EmployeeManagement.DAL
         }
 
         /// <summary>
-        /// Creates and returns a new SqlConnection with connection pooling enabled
+        /// Tạo và trả về SqlConnection mới với connection pooling được kích hoạt
         /// </summary>
-        /// <returns>SqlConnection object</returns>
+        /// <returns>Đối tượng SqlConnection</returns>
         public static SqlConnection GetConnection()
         {
             return new SqlConnection(ConnectionString);
         }
 
         /// <summary>
-        /// Executes a SQL query and returns results as DataTable
+        /// Thực thi câu lệnh SQL query và trả về kết quả dạng DataTable
         /// </summary>
-        /// <param name="sql">SQL query string</param>
-        /// <param name="parameters">Array of SqlParameter objects</param>
-        /// <returns>DataTable containing query results</returns>
+        /// <param name="sql">Câu lệnh SQL query</param>
+        /// <param name="parameters">Mảng các SqlParameter (tùy chọn)</param>
+        /// <returns>DataTable chứa kết quả query</returns>
         public static DataTable ExecuteQuery(string sql, SqlParameter[] parameters = null)
         {
             DataTable dataTable = new DataTable();
@@ -52,7 +53,7 @@ namespace EmployeeManagement.DAL
                 command = new SqlCommand(sql, connection);
                 command.CommandType = CommandType.Text;
 
-                // Add parameters if provided
+                // Thêm parameters nếu có
                 if (parameters != null && parameters.Length > 0)
                 {
                     command.Parameters.AddRange(parameters);
@@ -65,14 +66,14 @@ namespace EmployeeManagement.DAL
             }
             catch (Exception ex)
             {
-                // Log error to console (development mode)
-                Console.WriteLine($"[DatabaseHelper.ExecuteQuery] Error: {ex.Message}");
+                // Ghi log lỗi ra console (chế độ development)
+                Console.WriteLine($"[DatabaseHelper.ExecuteQuery] Lỗi: {ex.Message}");
                 Console.WriteLine($"SQL: {sql}");
                 throw;
             }
             finally
             {
-                // Proper disposal of resources
+                // Giải phóng tài nguyên đúng cách
                 if (adapter != null)
                 {
                     adapter.Dispose();
@@ -90,11 +91,11 @@ namespace EmployeeManagement.DAL
         }
 
         /// <summary>
-        /// Executes a non-query SQL command (INSERT, UPDATE, DELETE)
+        /// Thực thi câu lệnh SQL không trả về dữ liệu (INSERT, UPDATE, DELETE)
         /// </summary>
-        /// <param name="sql">SQL command string</param>
-        /// <param name="parameters">Array of SqlParameter objects</param>
-        /// <returns>Number of rows affected</returns>
+        /// <param name="sql">Câu lệnh SQL</param>
+        /// <param name="parameters">Mảng các SqlParameter (tùy chọn)</param>
+        /// <returns>Số dòng bị ảnh hưởng</returns>
         public static int ExecuteNonQuery(string sql, SqlParameter[] parameters = null)
         {
             SqlConnection connection = null;
@@ -108,7 +109,7 @@ namespace EmployeeManagement.DAL
                 command = new SqlCommand(sql, connection);
                 command.CommandType = CommandType.Text;
 
-                // Add parameters if provided
+                // Thêm parameters nếu có
                 if (parameters != null && parameters.Length > 0)
                 {
                     command.Parameters.AddRange(parameters);
@@ -119,14 +120,14 @@ namespace EmployeeManagement.DAL
             }
             catch (Exception ex)
             {
-                // Log error to console (development mode)
-                Console.WriteLine($"[DatabaseHelper.ExecuteNonQuery] Error: {ex.Message}");
+                // Ghi log lỗi ra console (chế độ development)
+                Console.WriteLine($"[DatabaseHelper.ExecuteNonQuery] Lỗi: {ex.Message}");
                 Console.WriteLine($"SQL: {sql}");
                 throw;
             }
             finally
             {
-                // Proper disposal of resources
+                // Giải phóng tài nguyên đúng cách
                 if (command != null)
                 {
                     command.Dispose();
@@ -140,11 +141,11 @@ namespace EmployeeManagement.DAL
         }
 
         /// <summary>
-        /// Executes a scalar query and returns the first column of the first row
+        /// Thực thi scalar query và trả về giá trị cột đầu tiên của dòng đầu tiên
         /// </summary>
-        /// <param name="sql">SQL query string</param>
-        /// <param name="parameters">Array of SqlParameter objects</param>
-        /// <returns>Object containing the scalar value</returns>
+        /// <param name="sql">Câu lệnh SQL query</param>
+        /// <param name="parameters">Mảng các SqlParameter (tùy chọn)</param>
+        /// <returns>Object chứa giá trị scalar</returns>
         public static object ExecuteScalar(string sql, SqlParameter[] parameters = null)
         {
             SqlConnection connection = null;
@@ -158,7 +159,7 @@ namespace EmployeeManagement.DAL
                 command = new SqlCommand(sql, connection);
                 command.CommandType = CommandType.Text;
 
-                // Add parameters if provided
+                // Thêm parameters nếu có
                 if (parameters != null && parameters.Length > 0)
                 {
                     command.Parameters.AddRange(parameters);
@@ -169,14 +170,14 @@ namespace EmployeeManagement.DAL
             }
             catch (Exception ex)
             {
-                // Log error to console (development mode)
-                Console.WriteLine($"[DatabaseHelper.ExecuteScalar] Error: {ex.Message}");
+                // Ghi log lỗi ra console (chế độ development)
+                Console.WriteLine($"[DatabaseHelper.ExecuteScalar] Lỗi: {ex.Message}");
                 Console.WriteLine($"SQL: {sql}");
                 throw;
             }
             finally
             {
-                // Proper disposal of resources
+                // Giải phóng tài nguyên đúng cách
                 if (command != null)
                 {
                     command.Dispose();
@@ -190,11 +191,11 @@ namespace EmployeeManagement.DAL
         }
 
         /// <summary>
-        /// Executes a stored procedure and returns results as DataTable
+        /// Thực thi stored procedure và trả về kết quả dạng DataTable
         /// </summary>
-        /// <param name="spName">Stored procedure name</param>
-        /// <param name="parameters">Array of SqlParameter objects</param>
-        /// <returns>DataTable containing stored procedure results</returns>
+        /// <param name="spName">Tên stored procedure</param>
+        /// <param name="parameters">Mảng các SqlParameter (tùy chọn)</param>
+        /// <returns>DataTable chứa kết quả từ stored procedure</returns>
         public static DataTable ExecuteStoredProcedure(string spName, SqlParameter[] parameters = null)
         {
             DataTable dataTable = new DataTable();
@@ -210,7 +211,7 @@ namespace EmployeeManagement.DAL
                 command = new SqlCommand(spName, connection);
                 command.CommandType = CommandType.StoredProcedure;
 
-                // Add parameters if provided
+                // Thêm parameters nếu có
                 if (parameters != null && parameters.Length > 0)
                 {
                     command.Parameters.AddRange(parameters);
@@ -223,14 +224,14 @@ namespace EmployeeManagement.DAL
             }
             catch (Exception ex)
             {
-                // Log error to console (development mode)
-                Console.WriteLine($"[DatabaseHelper.ExecuteStoredProcedure] Error: {ex.Message}");
+                // Ghi log lỗi ra console (chế độ development)
+                Console.WriteLine($"[DatabaseHelper.ExecuteStoredProcedure] Lỗi: {ex.Message}");
                 Console.WriteLine($"Stored Procedure: {spName}");
                 throw;
             }
             finally
             {
-                // Proper disposal of resources
+                // Giải phóng tài nguyên đúng cách
                 if (adapter != null)
                 {
                     adapter.Dispose();

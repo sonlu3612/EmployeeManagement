@@ -174,7 +174,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Icons\key_border_black.png" />

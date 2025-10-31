@@ -150,6 +150,7 @@
             this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
             this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.sign_in_alt;
             this.pageHeader1.Location = new System.Drawing.Point(0, 0);
+            this.pageHeader1.MaximizeBox = false;
             this.pageHeader1.Name = "pageHeader1";
             this.pageHeader1.ShowButton = true;
             this.pageHeader1.ShowIcon = true;

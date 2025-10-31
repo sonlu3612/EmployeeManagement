@@ -1,32 +1,35 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
 
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
-    /// Repository for Project entity operations
-    /// Implements IRepository pattern for data access
+    /// Repository cho các thao tác dữ liệu Project
+    /// Triển khai IRepository pattern cho data access
     /// </summary>
     public class ProjectRepository : IRepository<Project>
     {
         /// <summary>
-        /// Retrieves all projects from database
-        /// Calls sp_Project_GetAll stored procedure
+        /// Lấy danh sách tất cả dự án từ database
         /// </summary>
-        /// <returns>List of all projects</returns>
+        /// <returns>Danh sách tất cả dự án</returns>
         public List<Project> GetAll()
         {
             List<Project> projects = new List<Project>();
 
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetAll", null);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects";
 
-                // Map DataTable rows to Project objects
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
+
+                // Chuyển đổi các dòng DataTable thành đối tượng Project
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -34,7 +37,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.GetAll] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -42,11 +45,10 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Retrieves a single project by ID
-        /// Calls sp_Project_GetById stored procedure
+        /// Lấy thông tin một dự án theo ID
         /// </summary>
-        /// <param name="id">Project ID</param>
-        /// <returns>Project object or null if not found</returns>
+        /// <param name="id">ID dự án</param>
+        /// <returns>Đối tượng Project hoặc null nếu không tìm thấy</returns>
         public Project GetById(int id)
         {
             try
@@ -56,39 +58,43 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", id)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetById", parameters);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects
+                    WHERE ProjectID = @ProjectID";
 
-                // Return null if no project found
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
+                // Trả về null nếu không tìm thấy dự án
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to Project object
+                // Chuyển đổi dòng đầu tiên thành đối tượng Project
                 return MapDataRowToProject(dt.Rows[0]);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.GetById] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.GetById] Lỗi: {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        /// Inserts a new project
-        /// Validates StartDate <= EndDate before insertion
-        /// Calls sp_Project_Insert stored procedure
+        /// Thêm mới một dự án
+        /// Kiểm tra StartDate <= EndDate trước khi thêm
         /// </summary>
-        /// <param name="entity">Project object to insert</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng Project cần thêm</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Insert(Project entity)
         {
             try
             {
-                // Validate StartDate <= EndDate
+                // Kiểm tra StartDate <= EndDate
                 if (entity.EndDate.HasValue && entity.StartDate > entity.EndDate.Value)
                 {
-                    Console.WriteLine("[ProjectRepository.Insert] Validation Error: StartDate must be <= EndDate");
+                    Console.WriteLine("[ProjectRepository.Insert] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
 
@@ -99,34 +105,38 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@Budget", entity.Budget)
+                    new SqlParameter("@Budget", entity.Budget),
+                    new SqlParameter("@CreatedBy", entity.CreatedBy)
                  };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Insert", parameters);
+                string sql =
+                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy)
+                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @Budget, @CreatedBy)";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.Insert] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.Insert] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Updates an existing project
-        /// Validates StartDate <= EndDate before update
-        /// Calls sp_Project_Update stored procedure
+        /// Cập nhật thông tin dự án
+        /// Kiểm tra StartDate <= EndDate trước khi cập nhật
         /// </summary>
-        /// <param name="entity">Project object with updated data</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="entity">Đối tượng Project với dữ liệu cập nhật</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Update(Project entity)
         {
             try
             {
-                // Validate StartDate <= EndDate
+                // Kiểm tra StartDate <= EndDate
                 if (entity.EndDate.HasValue && entity.StartDate > entity.EndDate.Value)
                 {
-                    Console.WriteLine("[ProjectRepository.Update] Validation Error: StartDate must be <= EndDate");
+                    Console.WriteLine("[ProjectRepository.Update] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
 
@@ -141,22 +151,31 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Budget", entity.Budget)
                  };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Update", parameters);
+                string sql =
+                    @"UPDATE Projects
+                    SET ProjectName = @ProjectName,
+                    Description = @Description,
+                    StartDate = @StartDate,
+                    EndDate = @EndDate,
+                    Status = @Status,
+                    Budget = @Budget
+                    WHERE ProjectID = @ProjectID";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.Update] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.Update] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
         /// <summary>
-        /// Deletes a project
-        /// Calls sp_Project_Delete stored procedure
+        /// Xóa một dự án
         /// </summary>
-        /// <param name="id">Project ID to delete</param>
-        /// <returns>True if successful, false otherwise</returns>
+        /// <param name="id">ID dự án cần xóa</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
         public bool Delete(int id)
         {
             try
@@ -166,21 +185,17 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", id)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Delete", parameters);
+                string sql = "DELETE FROM Projects WHERE ProjectID = @ProjectID";
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.Delete] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.Delete] Lỗi: {ex.Message}");
                 return false;
             }
         }
 
-        /// <summary>
-        /// Retrieves projects by status
-        /// </summary>
-        /// <param name="status">Project status (e.g., "Planning", "In Progress", "Completed")</param>
-        /// <returns>List of projects with matching status</returns>
         public List<Project> GetByStatus(string status)
         {
             List<Project> projects = new List<Project>();
@@ -188,13 +203,17 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
-                {
+                           {
                     new SqlParameter("@Status", status ?? (object)DBNull.Value)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetByStatus", parameters);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects
+                    WHERE Status = @Status";
 
-                // Map DataTable rows to Project objects
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -202,7 +221,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.GetByStatus] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.GetByStatus] Lỗi: {ex.Message}");
                 throw;
             }
 
@@ -210,31 +229,42 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Retrieves project statistics including task completion
-        /// Queries vw_ProjectSummary view
+        /// Lấy thống kê dự án bao gồm tiến độ hoàn thành task
         /// </summary>
-        /// <param name="projectId">Project ID</param>
-        /// <returns>ProjectStats object or null if not found</returns>
+        /// <param name="projectId">ID dự án</param>
+        /// <returns>Đối tượng ProjectStats hoặc null nếu không tìm thấy</returns>
         public ProjectStats GetProjectStats(int projectId)
         {
             try
             {
-                // Query vw_ProjectSummary view
-                string sql = "SELECT * FROM vw_ProjectSummary WHERE ProjectID = @ProjectID";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@ProjectID", projectId)
                 };
 
+                string sql =
+                    @"SELECT
+                    p.ProjectID,
+                    p.ProjectName,
+                    COUNT(t.TaskID) AS TotalTasks,
+                    SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS CompletedTasks,
+                    CASE
+                    WHEN COUNT(t.TaskID) > 0 THEN
+                    CAST(SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS DECIMAL(10,2)) / COUNT(t.TaskID) * 100
+                    ELSE 0
+                    END AS CompletionPercentage
+                    FROM Projects p
+                    LEFT JOIN Tasks t ON p.ProjectID = t.ProjectID
+                    WHERE p.ProjectID = @ProjectID
+                    GROUP BY p.ProjectID, p.ProjectName";
+
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Return null if no stats found
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Map first row to ProjectStats object
                 DataRow row = dt.Rows[0];
                 return new ProjectStats
                 {
@@ -247,40 +277,40 @@ namespace EmployeeManagement.DAL.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ProjectRepository.GetProjectStats] Error: {ex.Message}");
+                Console.WriteLine($"[ProjectRepository.GetProjectStats] Lỗi: {ex.Message}");
                 throw;
             }
         }
 
         /// <summary>
-        /// Maps a DataRow to a Project object
-        /// Handles NULL values and type conversions
+        /// Chuyển đổi một DataRow thành đối tượng Project
+        /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
         /// </summary>
-        /// <param name="row">DataRow from query result</param>
-        /// <returns>Project object</returns>
+        /// <param name="row">DataRow từ kết quả query</param>
+        /// <returns>Đối tượng Project</returns>
         private Project MapDataRowToProject(DataRow row)
         {
             return new Project
             {
-                // Map ProjectID (required field)
+                // Mapping ProjectID (trường bắt buộc)
                 ProjectID = row["ProjectID"] != DBNull.Value ? Convert.ToInt32(row["ProjectID"]) : 0,
 
-                // Map ProjectName (nullable string)
+                // Mapping ProjectName (nullable string)
                 ProjectName = row["ProjectName"] != DBNull.Value ? row["ProjectName"].ToString() : null,
 
-                // Map Description (nullable string)
+                // Mapping Description (nullable string)
                 Description = row["Description"] != DBNull.Value ? row["Description"].ToString() : null,
 
-                // Map StartDate (required DateTime)
+                // Mapping StartDate (DateTime bắt buộc)
                 StartDate = row["StartDate"] != DBNull.Value ? Convert.ToDateTime(row["StartDate"]) : DateTime.MinValue,
 
-                // Map EndDate (nullable DateTime)
+                // Mapping EndDate (nullable DateTime)
                 EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
 
-                // Map Status (nullable string)
+                // Mapping Status (nullable string)
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
 
-                // Map Budget (required decimal)
+                // Mapping Budget (decimal bắt buộc)
                 Budget = row["Budget"] != DBNull.Value ? Convert.ToDecimal(row["Budget"]) : 0m
             };
         }
