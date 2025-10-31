@@ -11,5 +11,6 @@ namespace EmployeeManagement.Models
         public DateTime? EndDate { get; set; }
         public string Status { get; set; }
         public decimal Budget { get; set; }
+        public int CreatedBy { get; set; }
     }
 }
