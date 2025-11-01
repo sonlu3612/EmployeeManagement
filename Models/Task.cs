@@ -14,7 +14,6 @@ namespace EmployeeManagement.Models
         public string EmployeeName { get; set; } // For display
         public string Status { get; set; }
         public string Priority { get; set; }
-        public int Progress { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
     }
