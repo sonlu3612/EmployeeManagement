@@ -1,4 +1,7 @@
-﻿using EmployeeManagement.Auth;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.Models;
+using EmployeeManagement.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +18,13 @@ namespace EmployeeManagement
         [STAThread]
         static void Main()
         {
+            IRepository<Employee> repository = new EmployeeRepository();
+            MessageBox.Show(repository.GetAll().First().FullName);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmLogin());
+            Application.Run(new frmMain());
+
         }
     }
 }
