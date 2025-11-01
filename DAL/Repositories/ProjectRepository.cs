@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -15,7 +15,6 @@ namespace EmployeeManagement.DAL.Repositories
     {
         /// <summary>
         /// Lấy danh sách tất cả dự án từ database
-        /// Gọi stored procedure sp_Project_GetAll
         /// </summary>
         /// <returns>Danh sách tất cả dự án</returns>
         public List<Project> GetAll()
@@ -24,7 +23,11 @@ namespace EmployeeManagement.DAL.Repositories
 
             try
             {
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetAll", null);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
                 // Chuyển đổi các dòng DataTable thành đối tượng Project
                 foreach (DataRow row in dt.Rows)
@@ -43,7 +46,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Lấy thông tin một dự án theo ID
-        /// Gọi stored procedure sp_Project_GetById
         /// </summary>
         /// <param name="id">ID dự án</param>
         /// <returns>Đối tượng Project hoặc null nếu không tìm thấy</returns>
@@ -56,7 +58,12 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", id)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetById", parameters);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects
+                    WHERE ProjectID = @ProjectID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
                 // Trả về null nếu không tìm thấy dự án
                 if (dt.Rows.Count == 0)
@@ -77,7 +84,6 @@ namespace EmployeeManagement.DAL.Repositories
         /// <summary>
         /// Thêm mới một dự án
         /// Kiểm tra StartDate <= EndDate trước khi thêm
-        /// Gọi stored procedure sp_Project_Insert
         /// </summary>
         /// <param name="entity">Đối tượng Project cần thêm</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -99,10 +105,15 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@Budget", entity.Budget)
+                    new SqlParameter("@Budget", entity.Budget),
+                    new SqlParameter("@CreatedBy", entity.CreatedBy)
                  };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Insert", parameters);
+                string sql =
+                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy)
+                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @Budget, @CreatedBy)";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -115,7 +126,6 @@ namespace EmployeeManagement.DAL.Repositories
         /// <summary>
         /// Cập nhật thông tin dự án
         /// Kiểm tra StartDate <= EndDate trước khi cập nhật
-        /// Gọi stored procedure sp_Project_Update
         /// </summary>
         /// <param name="entity">Đối tượng Project với dữ liệu cập nhật</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -141,7 +151,17 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Budget", entity.Budget)
                  };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Update", parameters);
+                string sql =
+                    @"UPDATE Projects
+                    SET ProjectName = @ProjectName,
+                    Description = @Description,
+                    StartDate = @StartDate,
+                    EndDate = @EndDate,
+                    Status = @Status,
+                    Budget = @Budget
+                    WHERE ProjectID = @ProjectID";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -153,7 +173,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Xóa một dự án
-        /// Gọi stored procedure sp_Project_Delete
         /// </summary>
         /// <param name="id">ID dự án cần xóa</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -166,7 +185,8 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", id)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Project_Delete", parameters);
+                string sql = "DELETE FROM Projects WHERE ProjectID = @ProjectID";
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -176,11 +196,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
         }
 
-        /// <summary>
-        /// Lấy danh sách dự án theo trạng thái
-        /// </summary>
-        /// <param name="status">Trạng thái dự án (ví dụ: "Planning", "InProgress", "Completed")</param>
-        /// <returns>Danh sách dự án có trạng thái phù hợp</returns>
         public List<Project> GetByStatus(string status)
         {
             List<Project> projects = new List<Project>();
@@ -188,13 +203,17 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
-                {
+                           {
                     new SqlParameter("@Status", status ?? (object)DBNull.Value)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Project_GetByStatus", parameters);
+                string sql =
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    FROM Projects
+                    WHERE Status = @Status";
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Project
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -211,7 +230,6 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Lấy thống kê dự án bao gồm tiến độ hoàn thành task
-        /// Truy vấn view vw_ProjectSummary
         /// </summary>
         /// <param name="projectId">ID dự án</param>
         /// <returns>Đối tượng ProjectStats hoặc null nếu không tìm thấy</returns>
@@ -219,22 +237,34 @@ namespace EmployeeManagement.DAL.Repositories
         {
             try
             {
-                // Truy vấn view vw_ProjectSummary
-                string sql = "SELECT * FROM vw_ProjectSummary WHERE ProjectID = @ProjectID";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@ProjectID", projectId)
                 };
 
+                string sql =
+                    @"SELECT
+                    p.ProjectID,
+                    p.ProjectName,
+                    COUNT(t.TaskID) AS TotalTasks,
+                    SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS CompletedTasks,
+                    CASE
+                    WHEN COUNT(t.TaskID) > 0 THEN
+                    CAST(SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS DECIMAL(10,2)) / COUNT(t.TaskID) * 100
+                    ELSE 0
+                    END AS CompletionPercentage
+                    FROM Projects p
+                    LEFT JOIN Tasks t ON p.ProjectID = t.ProjectID
+                    WHERE p.ProjectID = @ProjectID
+                    GROUP BY p.ProjectID, p.ProjectName";
+
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Trả về null nếu không tìm thấy thống kê
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Chuyển đổi dòng đầu tiên thành đối tượng ProjectStats
                 DataRow row = dt.Rows[0];
                 return new ProjectStats
                 {

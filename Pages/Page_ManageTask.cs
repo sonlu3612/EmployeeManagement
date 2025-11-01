@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EmployeeManagement.Dialogs
+namespace EmployeeManagement.Pages
 {
-    public partial class frmEmployee : Form
+    public partial class Page_ManageTask : UserControl
     {
-        public frmEmployee()
+        public Page_ManageTask()
         {
             InitializeComponent();
         }

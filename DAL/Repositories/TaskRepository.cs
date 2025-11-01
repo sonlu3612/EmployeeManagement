@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -24,11 +24,17 @@ namespace EmployeeManagement.DAL.Repositories
 
             try
             {
-                // Truy vấn view vw_TaskDetails để lấy thông tin đầy đủ
-                string sql = "SELECT * FROM vw_TaskDetails";
+                string sql =
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    p.ProjectName,
+                    e.FullName AS EmployeeName
+                    FROM Tasks t
+                    LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
+                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID";
+
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Task
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -52,22 +58,28 @@ namespace EmployeeManagement.DAL.Repositories
         {
             try
             {
-                // Truy vấn view vw_TaskDetails để lấy thông tin đầy đủ
-                string sql = "SELECT * FROM vw_TaskDetails WHERE TaskID = @TaskID";
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@TaskID", id)
                 };
 
+                string sql =
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    p.ProjectName,
+                    e.FullName AS EmployeeName
+                    FROM Tasks t
+                    LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
+                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
+                    WHERE t.TaskID = @TaskID";
+
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
-                // Trả về null nếu không tìm thấy task
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
 
-                // Chuyển đổi dòng đầu tiên thành đối tượng Task
                 return MapDataRowToTask(dt.Rows[0]);
             }
             catch (Exception ex)
@@ -93,12 +105,18 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@TaskName", entity.TaskName ?? (object)DBNull.Value),
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@AssignedTo", entity.AssignedTo ?? (object)DBNull.Value),
+                    new SqlParameter("@CreatedBy", entity.CreatedBy),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
+                    new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
                     new SqlParameter("@Progress", entity.Progress),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Task_Insert", parameters);
+                string sql =
+                    @"INSERT INTO Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Status, Priority, Progress, Deadline)
+                    VALUES (@ProjectID, @TaskName, @Description, @AssignedTo, @CreatedBy, @Status, @Priority, @Progress, @Deadline)";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -126,11 +144,25 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@AssignedTo", entity.AssignedTo ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
+                    new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
                     new SqlParameter("@Progress", entity.Progress),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Task_Update", parameters);
+                string sql =
+                    @"UPDATE Tasks
+                    SET ProjectID = @ProjectID,
+                    TaskTitle = @TaskName,
+                    Description = @Description,
+                    AssignedTo = @AssignedTo,
+                    Status = @Status,
+                    Priority = @Priority,
+                    Progress = @Progress,
+                    Deadline = @Deadline,
+                    UpdatedDate = GETDATE()
+                    WHERE TaskID = @TaskID";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -155,7 +187,8 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@TaskID", id)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Task_Delete", parameters);
+                string sql = "DELETE FROM Tasks WHERE TaskID = @TaskID";
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -181,9 +214,18 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", projectId)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Task_GetByProject", parameters);
+                string sql =
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    p.ProjectName,
+                    e.FullName AS EmployeeName
+                    FROM Tasks t
+                    LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
+                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
+                    WHERE t.ProjectID = @ProjectID";
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Task
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -214,9 +256,18 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@EmployeeID", employeeId)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteStoredProcedure("sp_Task_GetByEmployee", parameters);
+                string sql =
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    p.ProjectName,
+                    e.FullName AS EmployeeName
+                    FROM Tasks t
+                    LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
+                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
+                    WHERE t.AssignedTo = @EmployeeID";
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Task
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -241,15 +292,19 @@ namespace EmployeeManagement.DAL.Repositories
 
             try
             {
-                // Truy vấn vw_TaskDetails để lấy task quá hạn
                 string sql =
-                    @"SELECT * FROM vw_TaskDetails 
-                    WHERE Deadline < GETDATE() AND Status != 'Done'
-                    ORDER BY Deadline ASC";
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    p.ProjectName,
+                    e.FullName AS EmployeeName
+                    FROM Tasks t
+                    LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
+                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
+                    WHERE t.Deadline < GETDATE() AND t.Status != 'Done'
+                    ORDER BY t.Deadline ASC";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Task
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -281,7 +336,14 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Progress", progress)
                 };
 
-                DatabaseHelper.ExecuteStoredProcedure("sp_Task_UpdateProgress", parameters);
+                string sql =
+                    @"UPDATE Tasks
+                    SET Progress = @Progress,
+                    Status = CASE WHEN @Progress = 100 THEN 'Done' ELSE Status END,
+                    UpdatedDate = GETDATE()
+                    WHERE TaskID = @TaskID";
+
+                DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
             catch (Exception ex)
@@ -303,13 +365,12 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 string sql =
-                    @"SELECT Status, COUNT(*) AS TaskCount 
-                    FROM Tasks 
+                    @"SELECT Status, COUNT(*) AS TaskCount
+                    FROM Tasks
                     GROUP BY Status";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Chuyển đổi các dòng DataTable thành Dictionary
                 foreach (DataRow row in dt.Rows)
                 {
                     string status = row["Status"] != DBNull.Value ? row["Status"].ToString() : "Unknown";
