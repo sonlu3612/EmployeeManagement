@@ -75,6 +75,12 @@
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmInfor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmInfor.Designer.cs">
+      <DependentUpon>frmInfor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmManageTasks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -139,6 +145,9 @@
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmInfor.resx">
+      <DependentUpon>frmInfor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmManageTasks.resx">
       <DependentUpon>frmManageTasks.cs</DependentUpon>
     </EmbeddedResource>
@@ -195,6 +204,7 @@
   <ItemGroup>
     <None Include="Assets\Icons\note.png" />
     <Content Include="Assets\Icons\database-management-white.png" />
+    <None Include="Assets\Icons\info-white.png" />
     <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>

@@ -38,11 +38,15 @@
             this.image3D2 = new AntdUI.Image3D();
             this.image3D1 = new AntdUI.Image3D();
             this.pageHeader1 = new AntdUI.PageHeader();
+            this.cboxMatKhau = new AntdUI.Checkbox();
+            this.btnThoat = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnThoat);
+            this.panel1.Controls.Add(this.cboxMatKhau);
             this.panel1.Controls.Add(this.labelThongBao);
             this.panel1.Controls.Add(this.image3D3);
             this.panel1.Controls.Add(this.btnDangNhap);
@@ -113,6 +117,7 @@
             this.txtMatKhau.Name = "txtMatKhau";
             this.txtMatKhau.Size = new System.Drawing.Size(156, 34);
             this.txtMatKhau.TabIndex = 5;
+            this.txtMatKhau.UseSystemPasswordChar = true;
             // 
             // txtTaiKhoan
             // 
@@ -158,6 +163,33 @@
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Đăng nhập";
             // 
+            // cboxMatKhau
+            // 
+            this.cboxMatKhau.BackColor = System.Drawing.Color.Transparent;
+            this.cboxMatKhau.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboxMatKhau.Location = new System.Drawing.Point(330, 211);
+            this.cboxMatKhau.Name = "cboxMatKhau";
+            this.cboxMatKhau.Size = new System.Drawing.Size(103, 23);
+            this.cboxMatKhau.TabIndex = 10;
+            this.cboxMatKhau.Text = "Hiện mật khẩu";
+            this.cboxMatKhau.CheckedChanged += new AntdUI.BoolEventHandler(this.cboxMatKhau_CheckedChanged);
+            // 
+            // btnThoat
+            // 
+            this.btnThoat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(124)))), ((int)(((byte)(186)))));
+            this.btnThoat.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.BorderWidth = 2F;
+            this.btnThoat.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThoat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.ForeHover = System.Drawing.Color.White;
+            this.btnThoat.Location = new System.Drawing.Point(272, 251);
+            this.btnThoat.Name = "btnThoat";
+            this.btnThoat.Size = new System.Drawing.Size(104, 35);
+            this.btnThoat.TabIndex = 11;
+            this.btnThoat.Text = "Thoát";
+            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
+            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -187,5 +219,7 @@
         private AntdUI.Image3D image3D1;
         private AntdUI.Image3D image3D3;
         private System.Windows.Forms.Label labelThongBao;
+        private AntdUI.Checkbox cboxMatKhau;
+        private AntdUI.Button btnThoat;
     }
 }

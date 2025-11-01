@@ -47,13 +47,14 @@ namespace EmployeeManagement.Auth
                 
                 labelThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
                 btnDangNhap.Loading = false;
-                Task.Delay(1000).ContinueWith(t =>
+                txtTaiKhoan.Focus();
+                Task.Delay(2000).ContinueWith(t =>
                 {
                     this.Invoke((Action)(() =>
                     {
                         labelThongBao.Text = "";
-                        txtTaiKhoan.Text = "";
-                        txtMatKhau.Text = "";
+                        //txtTaiKhoan.Text = "";
+                        //txtMatKhau.Text = "";
                     }));
                 });
                 //labelThongBao.Text = "";
@@ -102,6 +103,23 @@ namespace EmployeeManagement.Auth
 
                 
                 
+        }
+
+        private void cboxMatKhau_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+            if(cboxMatKhau.Checked == false)
+            {
+                txtMatKhau.UseSystemPasswordChar = true;
+            }
+            else
+            {
+                txtMatKhau.UseSystemPasswordChar = false;
+            }
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
