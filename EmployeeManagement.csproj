@@ -37,6 +37,7 @@
       <HintPath>packages\AntdUI.2.1.13\lib\net48\AntdUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
@@ -103,7 +104,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Content Include="Database\scripts.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
