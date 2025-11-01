@@ -39,8 +39,6 @@ namespace EmployeeManagement
             AntdUI.MenuItem menuItem6 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem7 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem8 = new AntdUI.MenuItem();
-            AntdUI.MenuItem menuItem9 = new AntdUI.MenuItem();
-            AntdUI.MenuItem menuItem10 = new AntdUI.MenuItem();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.panel1 = new AntdUI.Panel();
             this.tabs1 = new AntdUI.Tabs();
@@ -372,31 +370,25 @@ namespace EmployeeManagement
             menuItem3.Text = "Employees";
             menuItem4.Expand = false;
             menuItem4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem4.IconSvg = "SettingOutlined";
-            menuItem5.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem5.Text = "    Company";
-            menuItem6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem6.Text = "    Database";
-            menuItem4.Sub.Add(menuItem5);
-            menuItem4.Sub.Add(menuItem6);
-            menuItem4.Text = "Setting";
-            menuItem7.Expand = false;
-            menuItem7.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem7.IconSvg = "UserOutlined";
-            menuItem8.Text = "My Profile";
-            menuItem9.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem9.Text = "Change Password";
-            menuItem10.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem10.Text = "Log out";
-            menuItem7.Sub.Add(menuItem8);
-            menuItem7.Sub.Add(menuItem9);
-            menuItem7.Sub.Add(menuItem10);
-            menuItem7.Text = "Account";
+            menuItem4.IconSvg = "DatabaseOutlined";
+            menuItem4.Text = "Database";
+            menuItem5.Expand = false;
+            menuItem5.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            menuItem5.IconSvg = "UserOutlined";
+            menuItem6.Text = "My Profile";
+            menuItem7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            menuItem7.Text = "Change Password";
+            menuItem8.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            menuItem8.Text = "Log out";
+            menuItem5.Sub.Add(menuItem6);
+            menuItem5.Sub.Add(menuItem7);
+            menuItem5.Sub.Add(menuItem8);
+            menuItem5.Text = "Account";
             this.menu1.Items.Add(menuItem1);
             this.menu1.Items.Add(menuItem2);
             this.menu1.Items.Add(menuItem3);
             this.menu1.Items.Add(menuItem4);
-            this.menu1.Items.Add(menuItem7);
+            this.menu1.Items.Add(menuItem5);
             this.menu1.Location = new System.Drawing.Point(44, 142);
             this.menu1.Name = "menu1";
             this.menu1.Size = new System.Drawing.Size(212, 485);
@@ -471,6 +463,7 @@ namespace EmployeeManagement
             this.tabMyProfile.Size = new System.Drawing.Size(1023, 658);
             this.tabMyProfile.TabIndex = 6;
             this.tabMyProfile.Text = "Account.MyProfile";
+            this.tabMyProfile.Visible = false;
             // 
             // phTrangChu
             // 

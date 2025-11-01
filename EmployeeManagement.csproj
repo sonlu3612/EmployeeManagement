@@ -194,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Icons\note.png" />
+    <Content Include="Assets\Icons\database-management-white.png" />
     <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>
