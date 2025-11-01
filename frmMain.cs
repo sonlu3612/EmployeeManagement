@@ -18,10 +18,6 @@ namespace EmployeeManagement
         {
             InitializeComponent();
             InitNhanVienTable();
-
-            // Gán sự kiện
-            //btnDelete.Click += BtnDelete_Click;
-            //tblNhanVien.Click += TblNhanVien_Click;
         }
 
         private void InitNhanVienTable()
@@ -40,6 +36,7 @@ namespace EmployeeManagement
 
             // Nạp dữ liệu
             LoadNhanVienData();
+
         }
 
         private void LoadNhanVienData()
@@ -48,10 +45,12 @@ namespace EmployeeManagement
             {
                 // Lấy danh sách nhân viên active
                 var employees = _employeeRepo.GetAll()
-                                             .Where(emp => emp.IsActive) // chỉ nhân viên chưa xóa
+                                             .Where(emp => emp.IsActive)
                                              .ToList();
 
+                // 🔹 Gán nguồn dữ liệu cho bảng
                 tblNhanVien.DataSource = employees;
+
                 _selectedEmployee = null; // reset chọn nhân viên
             }
             catch (Exception ex)
@@ -63,19 +62,7 @@ namespace EmployeeManagement
         // Khi click vào dòng trong bảng
         private void TblNhanVien_Click(object sender, EventArgs e)
         {
-            // Lấy danh sách nguồn dữ liệu
-            var employees = tblNhanVien.DataSource as List<Employee>;
-            if (employees == null || employees.Count == 0) return;
 
-            // Lấy index dòng được chọn
-            int index = tblNhanVien.SelectedIndex; // không trừ 1 nữa
-            if (index < 0 || index >= employees.Count) return;
-
-            // Lấy nhân viên tương ứng
-            _selectedEmployee = employees[index];
-
-            // Debug
-            Console.WriteLine($"Đã chọn nhân viên: {_selectedEmployee.EmployeeID} - {_selectedEmployee.FullName}");
         }
 
         // Nút Delete
@@ -117,12 +104,6 @@ namespace EmployeeManagement
 
         private void tblNhanVien_CellClick(object sender, TableClickEventArgs e)
         {
-            if (e.RowIndex < 0) return;  // Bỏ qua nếu click header hoặc ngoài dữ liệu
-
-            var employees = tblNhanVien.DataSource as List<Employee>;
-            if (employees == null || employees.Count == 0 || e.RowIndex >= employees.Count) return;
-
-            _selectedEmployee = employees[e.RowIndex];
         }
     }
 }
