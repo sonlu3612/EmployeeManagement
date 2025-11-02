@@ -9,9 +9,9 @@ Quản Lý Dự Án với các yêu cầu sau:
 - Repository Pattern cho DAL
 
 **Project Structure (Hiện tại):**
-- EmployeeManagement.Pages (WinForms project)
-- EmployeeManagement.DAL (Class Library - Data Access Layer)
-- EmployeeManagement.Models (Class Library - DTOs/Entities)
+- ~~EmployeeManagement.Pages (WinForms project)~~
+- EmployeeManagement.DAL (Data Access Layer)
+- EmployeeManagement.Models
 
 **Coding Standards:**
 - Naming: PascalCase cho classes/methods, camelCase cho variables
