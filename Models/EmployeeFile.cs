@@ -13,6 +13,8 @@ namespace EmployeeManagement.Models
         public DateTime CreatedAt
         {
             get; set; // For display
+        }
+
         public string EmployeeName { get; set; }
 
         public string CreatedByName { get; set; }
