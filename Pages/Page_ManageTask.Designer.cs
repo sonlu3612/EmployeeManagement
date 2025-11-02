@@ -36,7 +36,7 @@
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
-            this.table1 = new AntdUI.Table();
+            this.tbTask = new AntdUI.Table();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -150,21 +150,21 @@
             this.input1.Size = new System.Drawing.Size(216, 35);
             this.input1.TabIndex = 0;
             // 
-            // table1
+            // tbTask
             // 
-            this.table1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.table1.Gap = 12;
-            this.table1.Location = new System.Drawing.Point(0, 41);
-            this.table1.Name = "table1";
-            this.table1.Size = new System.Drawing.Size(798, 416);
-            this.table1.TabIndex = 1;
-            this.table1.Text = "table1";
+            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTask.Gap = 12;
+            this.tbTask.Location = new System.Drawing.Point(0, 41);
+            this.tbTask.Name = "tbTask";
+            this.tbTask.Size = new System.Drawing.Size(798, 416);
+            this.tbTask.TabIndex = 1;
+            this.tbTask.Text = "table1";
             // 
             // Page_ManageTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.table1);
+            this.Controls.Add(this.tbTask);
             this.Controls.Add(this.panel1);
             this.Name = "Page_ManageTask";
             this.Size = new System.Drawing.Size(798, 457);
@@ -183,6 +183,6 @@
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.Button btnAdd;
-        private AntdUI.Table table1;
+        private AntdUI.Table tbTask;
     }
 }

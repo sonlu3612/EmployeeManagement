@@ -29,7 +29,6 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("StartDate", "Start Date"));
             tbProject.Columns.Add(new Column("EndDate", "End Date"));
             tbProject.Columns.Add(new Column("Status", "Status"));
-            tbProject.Columns.Add(new Column("Budget", "Budget"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
             tbProject.Columns.Add(new Column("CreatedDate", "Created Date"));
 
@@ -41,24 +40,6 @@ namespace EmployeeManagement.Pages
             tbProject.DataSource = _projectRepository.GetAll().ToList();
         }
 
-        // Replace all usages of 'new Message.Config()' with 'var msgConfig = new Message.Config();'
-        // Since CS1729 means Message.Config does not have a public parameterless constructor, 
-        // you should use the provided static methods or factory methods if available.
-        // However, based on the signature context, Message.Config is a class with public properties and methods, 
-        // but no public constructor. You should use the static methods on Message instead.
-
-        // For showing messages, replace:
-        // new Message.Config() { ... }.Show();
-        // with:
-        // Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
-        // Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
-        // Message.error(this.FindForm(), "Lỗi khi xoá dự án: " + ex.Message);
-        // Message.success(this.FindForm(), "Xóa dự án thành công!");
-
-        // For modal confirmation, if Modal.Config has the same issue, use its static or factory methods if available.
-        // If not, you may need to provide more info about Modal.Config.
-
-        // Example fix for btnXoa_Click:
         private void btnXoa_Click(object sender, EventArgs e)
         {
             var selectedIndex = tbProject.SelectedIndex - 1;
@@ -153,27 +134,9 @@ namespace EmployeeManagement.Pages
 
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
-            var selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is List<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
-            {
-                var project = projects[selectedIndex];
-
-                frmProject frm = new frmProject(project);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    var updatedProject = frm.Tag as Project;
-                    if (updatedProject != null)
-                    {
-                        _projectRepository.Update(updatedProject);
-                        LoadData();
-                        Message.success(this.FindForm(), "Cập nhật dự án thành công!");
-                    }
-                }
-            }
-            else
-            {
-                Message.warn(this.FindForm(), "Vui lòng chọn dự án cần sửa!");
-            }
+            frmManageTasks frm = new frmManageTasks();
+            frm.frmManageTasks_Load();
+            frm.ShowDialog(); 
         }
     }
 }
