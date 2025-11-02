@@ -3,6 +3,9 @@ using System.IO;
 
 namespace EmployeeManagement.DAL.Helpers
 {
+    /// <summary>
+    /// Lớp trợ giúp cho việc xử lý tệp tin
+    /// </summary>
     public static class FileHelper
     {
         private static readonly string BasePath = Path.Combine(
