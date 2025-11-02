@@ -58,6 +58,7 @@
     <Compile Include="DAL\Repositories\TaskFileRepository.cs" />
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
+    <Compile Include="DAL\Services\FileService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +88,7 @@
     <None Include=".github\copilot-instructions.md" />
     <None Include="App.config" />
     <None Include="App.config.template" />
+    <None Include="DAL\Services\FileService_UsageGuide.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
