@@ -46,7 +46,9 @@ namespace EmployeeManagement
             if (select == "Projects")
             {
 
-                tabs1.SelectedTab = tabProject;
+                //tabs1.SelectedTab = tabProject;
+                frmManageTasks frmManageTasks = new frmManageTasks();
+                frmManageTasks.Show();
             }
             // if (select == "Employee")
             // {
@@ -77,6 +79,7 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tabMyProfile;
             }
+           
 
 
 

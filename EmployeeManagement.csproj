@@ -75,6 +75,12 @@
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmInforHuy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmInforHuy.Designer.cs">
+      <DependentUpon>frmInforHuy.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmInfor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmInforHuy.resx">
+      <DependentUpon>frmInforHuy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmInfor.resx">
       <DependentUpon>frmInfor.cs</DependentUpon>

@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panel1 = new AntdUI.Panel();
+            this.btnThoat = new AntdUI.Button();
+            this.cboxMatKhau = new AntdUI.Checkbox();
             this.labelThongBao = new System.Windows.Forms.Label();
             this.image3D3 = new AntdUI.Image3D();
             this.btnDangNhap = new AntdUI.Button();
@@ -38,8 +40,6 @@
             this.image3D2 = new AntdUI.Image3D();
             this.image3D1 = new AntdUI.Image3D();
             this.pageHeader1 = new AntdUI.PageHeader();
-            this.cboxMatKhau = new AntdUI.Checkbox();
-            this.btnThoat = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,13 +63,40 @@
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
             // 
+            // btnThoat
+            // 
+            this.btnThoat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(124)))), ((int)(((byte)(186)))));
+            this.btnThoat.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.BorderWidth = 2F;
+            this.btnThoat.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThoat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.btnThoat.ForeHover = System.Drawing.Color.White;
+            this.btnThoat.Location = new System.Drawing.Point(272, 251);
+            this.btnThoat.Name = "btnThoat";
+            this.btnThoat.Size = new System.Drawing.Size(104, 35);
+            this.btnThoat.TabIndex = 11;
+            this.btnThoat.Text = "Thoát";
+            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
+            // 
+            // cboxMatKhau
+            // 
+            this.cboxMatKhau.BackColor = System.Drawing.Color.Transparent;
+            this.cboxMatKhau.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboxMatKhau.Location = new System.Drawing.Point(330, 211);
+            this.cboxMatKhau.Name = "cboxMatKhau";
+            this.cboxMatKhau.Size = new System.Drawing.Size(103, 23);
+            this.cboxMatKhau.TabIndex = 10;
+            this.cboxMatKhau.Text = "Hiện mật khẩu";
+            this.cboxMatKhau.CheckedChanged += new AntdUI.BoolEventHandler(this.cboxMatKhau_CheckedChanged);
+            // 
             // labelThongBao
             // 
             this.labelThongBao.AutoSize = true;
             this.labelThongBao.BackColor = System.Drawing.Color.Transparent;
             this.labelThongBao.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelThongBao.ForeColor = System.Drawing.Color.Red;
-            this.labelThongBao.Location = new System.Drawing.Point(278, 217);
+            this.labelThongBao.Location = new System.Drawing.Point(278, 231);
             this.labelThongBao.Name = "labelThongBao";
             this.labelThongBao.Size = new System.Drawing.Size(0, 17);
             this.labelThongBao.TabIndex = 9;
@@ -162,33 +189,6 @@
             this.pageHeader1.Size = new System.Drawing.Size(566, 34);
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Đăng nhập";
-            // 
-            // cboxMatKhau
-            // 
-            this.cboxMatKhau.BackColor = System.Drawing.Color.Transparent;
-            this.cboxMatKhau.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboxMatKhau.Location = new System.Drawing.Point(330, 211);
-            this.cboxMatKhau.Name = "cboxMatKhau";
-            this.cboxMatKhau.Size = new System.Drawing.Size(103, 23);
-            this.cboxMatKhau.TabIndex = 10;
-            this.cboxMatKhau.Text = "Hiện mật khẩu";
-            this.cboxMatKhau.CheckedChanged += new AntdUI.BoolEventHandler(this.cboxMatKhau_CheckedChanged);
-            // 
-            // btnThoat
-            // 
-            this.btnThoat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(124)))), ((int)(((byte)(186)))));
-            this.btnThoat.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
-            this.btnThoat.BorderWidth = 2F;
-            this.btnThoat.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
-            this.btnThoat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThoat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
-            this.btnThoat.ForeHover = System.Drawing.Color.White;
-            this.btnThoat.Location = new System.Drawing.Point(272, 251);
-            this.btnThoat.Name = "btnThoat";
-            this.btnThoat.Size = new System.Drawing.Size(104, 35);
-            this.btnThoat.TabIndex = 11;
-            this.btnThoat.Text = "Thoát";
-            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
             // frmLogin
             // 

@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.panel1 = new AntdUI.Panel();
-            this.input1 = new AntdUI.Input();
+            this.btnAdd = new AntdUI.Button();
+            this.btnDelete = new AntdUI.Button();
+            this.ddownEmployee = new AntdUI.Dropdown();
+            this.ddownStatus = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
-            this.ddownStatus = new AntdUI.Dropdown();
-            this.ddownEmployee = new AntdUI.Dropdown();
-            this.btnDelete = new AntdUI.Button();
-            this.btnAdd = new AntdUI.Button();
+            this.input1 = new AntdUI.Input();
             this.table1 = new AntdUI.Table();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -57,14 +57,60 @@
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
             // 
-            // input1
+            // btnAdd
             // 
-            this.input1.Location = new System.Drawing.Point(3, 3);
-            this.input1.Name = "input1";
-            this.input1.PlaceholderText = "Tìm kiếm ...";
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
+            this.btnAdd.BackHover = System.Drawing.Color.White;
+            this.btnAdd.BorderWidth = 2F;
+            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.ForeColor = System.Drawing.Color.White;
+            this.btnAdd.Location = new System.Drawing.Point(692, 3);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(74, 35);
+            this.btnAdd.TabIndex = 6;
+            this.btnAdd.Text = "Thêm";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackHover = System.Drawing.Color.White;
+            this.btnDelete.BorderWidth = 2F;
+            this.btnDelete.DefaultBack = System.Drawing.Color.Red;
+            this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
+            this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelete.ForeActive = System.Drawing.Color.Red;
+            this.btnDelete.ForeColor = System.Drawing.Color.White;
+            this.btnDelete.Location = new System.Drawing.Point(612, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(74, 35);
+            this.btnDelete.TabIndex = 5;
+            this.btnDelete.Text = "Xóa";
+            // 
+            // ddownEmployee
+            // 
+            this.ddownEmployee.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownEmployee.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownEmployee.ForeColor = System.Drawing.Color.White;
+            this.ddownEmployee.Location = new System.Drawing.Point(471, 3);
+            this.ddownEmployee.Name = "ddownEmployee";
+            this.ddownEmployee.ShowArrow = true;
+            this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
+            this.ddownEmployee.TabIndex = 4;
+            this.ddownEmployee.Text = "Nhân viên";
+            // 
+            // ddownStatus
+            // 
+            this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownStatus.ForeColor = System.Drawing.Color.White;
+            this.ddownStatus.Location = new System.Drawing.Point(330, 3);
+            this.ddownStatus.Name = "ddownStatus";
+            this.ddownStatus.ShowArrow = true;
+            this.ddownStatus.Size = new System.Drawing.Size(135, 35);
+            this.ddownStatus.TabIndex = 3;
+            this.ddownStatus.Text = "Trạng thái";
             // 
             // btnSync
             // 
@@ -94,59 +140,14 @@
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
             // 
-            // ddownStatus
+            // input1
             // 
-            this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownStatus.ForeColor = System.Drawing.Color.White;
-            this.ddownStatus.Location = new System.Drawing.Point(330, 3);
-            this.ddownStatus.Name = "ddownStatus";
-            this.ddownStatus.ShowArrow = true;
-            this.ddownStatus.Size = new System.Drawing.Size(135, 35);
-            this.ddownStatus.TabIndex = 3;
-            this.ddownStatus.Text = "Trạng thái";
-            // 
-            // ddownEmployee
-            // 
-            this.ddownEmployee.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownEmployee.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownEmployee.ForeColor = System.Drawing.Color.White;
-            this.ddownEmployee.Location = new System.Drawing.Point(471, 3);
-            this.ddownEmployee.Name = "ddownEmployee";
-            this.ddownEmployee.ShowArrow = true;
-            this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
-            this.ddownEmployee.TabIndex = 4;
-            this.ddownEmployee.Text = "Nhân viên";
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackHover = System.Drawing.Color.White;
-            this.btnDelete.BorderWidth = 2F;
-            this.btnDelete.DefaultBack = System.Drawing.Color.Red;
-            this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
-            this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.ForeActive = System.Drawing.Color.Red;
-            this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(612, 3);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(74, 35);
-            this.btnDelete.TabIndex = 5;
-            this.btnDelete.Text = "Xóa";
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.BackHover = System.Drawing.Color.White;
-            this.btnAdd.BorderWidth = 2F;
-            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(692, 3);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 35);
-            this.btnAdd.TabIndex = 6;
-            this.btnAdd.Text = "Thêm";
+            this.input1.Location = new System.Drawing.Point(3, 3);
+            this.input1.Name = "input1";
+            this.input1.PlaceholderText = "Tìm kiếm ...";
+            this.input1.Radius = 10;
+            this.input1.Size = new System.Drawing.Size(216, 35);
+            this.input1.TabIndex = 0;
             // 
             // table1
             // 
@@ -158,13 +159,13 @@
             this.table1.TabIndex = 1;
             this.table1.Text = "table1";
             // 
-            // Page_Task
+            // Page_ManageTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.table1);
             this.Controls.Add(this.panel1);
-            this.Name = "Page_Task";
+            this.Name = "Page_ManageTask";
             this.Size = new System.Drawing.Size(798, 457);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);

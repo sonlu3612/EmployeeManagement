@@ -35,6 +35,10 @@ namespace EmployeeManagement.Auth
         {
             btnDangNhap.Loading = true;
 
+            
+            txtTaiKhoan.Text = "admin@company.com";
+            txtMatKhau.Text = "Admin@123!";
+
             string name = txtTaiKhoan.Text;
             string pass = hp.Hash(txtMatKhau.Text);
 

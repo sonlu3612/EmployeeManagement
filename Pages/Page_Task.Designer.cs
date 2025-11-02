@@ -82,18 +82,27 @@
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
             this.ddownEmployee.Text = "Nhân viên";
+            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
             // 
             this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddownStatus.ForeColor = System.Drawing.Color.White;
+            this.ddownStatus.Items.AddRange(new object[] {
+            "Tất cả",
+            "Cần làm",
+            "Đang làm",
+            "Đang xem xét",
+            "Hoàn thành",
+            "Quá hạn"});
             this.ddownStatus.Location = new System.Drawing.Point(330, 3);
             this.ddownStatus.Name = "ddownStatus";
             this.ddownStatus.ShowArrow = true;
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -104,10 +113,11 @@
             this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
             this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(273, 3);
+            this.btnSync.Location = new System.Drawing.Point(273, 4);
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -136,12 +146,14 @@
             // 
             this.tableTask.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
             this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableTask.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tableTask.Gap = 12;
             this.tableTask.Location = new System.Drawing.Point(0, 41);
             this.tableTask.Name = "tableTask";
             this.tableTask.Size = new System.Drawing.Size(798, 416);
             this.tableTask.TabIndex = 1;
             this.tableTask.Text = "table1";
+            this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
             // 
             // Page_Task
             // 
@@ -151,6 +163,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Page_Task";
             this.Size = new System.Drawing.Size(798, 457);
+            this.Load += new System.EventHandler(this.Page_Task_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

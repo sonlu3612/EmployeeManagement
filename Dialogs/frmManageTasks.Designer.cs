@@ -56,8 +56,9 @@
             this.page_Task1.Name = "page_Task1";
             this.page_Task1.Size = new System.Drawing.Size(800, 411);
             this.page_Task1.TabIndex = 1;
+            this.page_Task1.Load += new System.EventHandler(this.page_Task1_Load);
             // 
-            // frmManagerTasks
+            // frmManageTasks
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -66,7 +67,7 @@
             this.Controls.Add(this.page_Task1);
             this.Controls.Add(this.pageTasks);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frmManagerTasks";
+            this.Name = "frmManageTasks";
             this.Text = "frmTasks";
             this.ResumeLayout(false);
 

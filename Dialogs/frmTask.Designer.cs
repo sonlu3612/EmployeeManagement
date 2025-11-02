@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pageHeader1 = new AntdUI.PageHeader();
             this.label1 = new AntdUI.Label();
             this.label5 = new AntdUI.Label();
             this.label3 = new AntdUI.Label();
@@ -37,31 +36,14 @@
             this.label7 = new AntdUI.Label();
             this.ddownProjectID = new AntdUI.Dropdown();
             this.txtTaskName = new AntdUI.Input();
-            this.input2 = new AntdUI.Input();
+            this.txtDescription = new AntdUI.Input();
             this.ddownOwnerID = new AntdUI.Dropdown();
             this.ddownStatus = new AntdUI.Dropdown();
             this.dateStart = new AntdUI.DatePicker();
             this.btnLuu = new AntdUI.Button();
             this.btnHuy = new AntdUI.Button();
+            this.pageHeader1 = new AntdUI.PageHeader();
             this.SuspendLayout();
-            // 
-            // pageHeader1
-            // 
-            this.pageHeader1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.pageHeader1.CancelButton = true;
-            this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pageHeader1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pageHeader1.ForeColor = System.Drawing.Color.White;
-            this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.menu_burger_white;
-            this.pageHeader1.Location = new System.Drawing.Point(0, 0);
-            this.pageHeader1.Name = "pageHeader1";
-            this.pageHeader1.ShowButton = true;
-            this.pageHeader1.ShowIcon = true;
-            this.pageHeader1.Size = new System.Drawing.Size(536, 36);
-            this.pageHeader1.TabIndex = 0;
-            this.pageHeader1.Text = "Task";
-            this.pageHeader1.UseForeColorDrawIcons = true;
-            this.pageHeader1.UseSystemStyleColor = true;
             // 
             // label1
             // 
@@ -137,16 +119,16 @@
             this.txtTaskName.Size = new System.Drawing.Size(217, 34);
             this.txtTaskName.TabIndex = 12;
             // 
-            // input2
+            // txtDescription
             // 
-            this.input2.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.input2.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.input2.BorderWidth = 2F;
-            this.input2.Location = new System.Drawing.Point(223, 178);
-            this.input2.Multiline = true;
-            this.input2.Name = "input2";
-            this.input2.Size = new System.Drawing.Size(217, 102);
-            this.input2.TabIndex = 14;
+            this.txtDescription.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.txtDescription.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.txtDescription.BorderWidth = 2F;
+            this.txtDescription.Location = new System.Drawing.Point(223, 178);
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.Size = new System.Drawing.Size(217, 102);
+            this.txtDescription.TabIndex = 14;
             // 
             // ddownOwnerID
             // 
@@ -190,6 +172,7 @@
             this.btnLuu.TabIndex = 18;
             this.btnLuu.Text = "Lưu";
             this.btnLuu.Type = AntdUI.TTypeMini.Primary;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // btnHuy
             // 
@@ -204,6 +187,25 @@
             this.btnHuy.Size = new System.Drawing.Size(85, 41);
             this.btnHuy.TabIndex = 19;
             this.btnHuy.Text = "Hủy";
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
+            // 
+            // pageHeader1
+            // 
+            this.pageHeader1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.pageHeader1.CancelButton = true;
+            this.pageHeader1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pageHeader1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.pageHeader1.ForeColor = System.Drawing.Color.White;
+            this.pageHeader1.Icon = global::EmployeeManagement.Properties.Resources.menu_burger_white;
+            this.pageHeader1.Location = new System.Drawing.Point(0, 0);
+            this.pageHeader1.Name = "pageHeader1";
+            this.pageHeader1.ShowButton = true;
+            this.pageHeader1.ShowIcon = true;
+            this.pageHeader1.Size = new System.Drawing.Size(536, 36);
+            this.pageHeader1.TabIndex = 0;
+            this.pageHeader1.Text = "Task";
+            this.pageHeader1.UseForeColorDrawIcons = true;
+            this.pageHeader1.UseSystemStyleColor = true;
             // 
             // frmTask
             // 
@@ -215,7 +217,7 @@
             this.Controls.Add(this.dateStart);
             this.Controls.Add(this.ddownStatus);
             this.Controls.Add(this.ddownOwnerID);
-            this.Controls.Add(this.input2);
+            this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.txtTaskName);
             this.Controls.Add(this.ddownProjectID);
             this.Controls.Add(this.label7);
@@ -228,6 +230,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmTask";
             this.Text = "frmTasks";
+            this.Load += new System.EventHandler(this.frmTask_Load);
             this.ResumeLayout(false);
 
         }
@@ -243,7 +246,7 @@
         private AntdUI.Label label7;
         private AntdUI.Dropdown ddownProjectID;
         private AntdUI.Input txtTaskName;
-        private AntdUI.Input input2;
+        private AntdUI.Input txtDescription;
         private AntdUI.Dropdown ddownOwnerID;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.DatePicker dateStart;

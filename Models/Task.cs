@@ -17,5 +17,6 @@ namespace EmployeeManagement.Models
         public int Progress { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
     }
 }

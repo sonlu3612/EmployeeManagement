@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagement.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,12 @@ namespace EmployeeManagement.Pages
         public Page_ManageTask()
         {
             InitializeComponent();
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            frmTask frmTask = new frmTask(null);
+            frmTask.Show();
         }
     }
 }
