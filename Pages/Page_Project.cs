@@ -134,9 +134,29 @@ namespace EmployeeManagement.Pages
 
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
+            var selectedIndex = tbProject.SelectedIndex - 1;
+            int id = -1;
+
+            if (tbProject.DataSource is IList<Project> projects && selectedIndex < projects.Count)
+            {
+                var record = projects[selectedIndex];
+
+                if (record == null)
+                {
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
+                    return;
+                }
+                id = record.ProjectID;
+
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
+            }
+
             frmManageTasks frm = new frmManageTasks();
-            frm.frmManageTasks_Load();
-            frm.ShowDialog(); 
+            frm.frmManageTasks_Load(id);
+            frm.ShowDialog();
         }
     }
 }

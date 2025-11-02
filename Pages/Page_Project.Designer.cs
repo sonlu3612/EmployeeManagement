@@ -49,7 +49,6 @@
             this.tbProject.Size = new System.Drawing.Size(1023, 617);
             this.tbProject.TabIndex = 3;
             this.tbProject.Text = "table1";
-            this.tbProject.CellClick += new AntdUI.Table.ClickEventHandler(this.tbProject_CellClick);
             // 
             // panel1
             // 

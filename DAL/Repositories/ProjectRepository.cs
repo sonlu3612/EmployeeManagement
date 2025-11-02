@@ -25,7 +25,7 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
                     FROM Projects";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
@@ -60,7 +60,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
                     FROM Projects
                     WHERE ProjectID = @ProjectID";
 
@@ -111,8 +111,8 @@ namespace EmployeeManagement.DAL.Repositories
                  };
 
                 string sql =
-                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy)
-                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @Budget, @CreatedBy)";
+                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy)
+                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy)";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -159,7 +159,6 @@ namespace EmployeeManagement.DAL.Repositories
                     StartDate = @StartDate,
                     EndDate = @EndDate,
                     Status = @Status,
-                    Budget = @Budget
                     WHERE ProjectID = @ProjectID";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -209,7 +208,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, Budget, CreatedBy, CreatedDate
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
                     FROM Projects
                     WHERE Status = @Status";
 
@@ -310,9 +309,6 @@ namespace EmployeeManagement.DAL.Repositories
 
                 // Mapping Status (nullable string)
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
-
-                // Mapping Budget (decimal bắt buộc)
-                Budget = row["Budget"] != DBNull.Value ? Convert.ToDecimal(row["Budget"]) : 0m
             };
         }
     }

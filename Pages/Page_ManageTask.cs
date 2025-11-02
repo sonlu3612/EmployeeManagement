@@ -16,14 +16,14 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_ManageTask : UserControl
     {
-        public IRepository<Task> _taskRepository = new TaskRepository();
+        public TaskRepository _taskRepository = new TaskRepository();
 
         public Page_ManageTask()
         {
             InitializeComponent();
         }
 
-        public void Page_ManageTask_Load()
+        public void Page_ManageTask_Load(int id)
         {
             tbTask.Columns.Add(new Column("TaskID", "ID"));
             tbTask.Columns.Add(new Column("ProjectID", "Project ID"));
@@ -38,7 +38,7 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("CreatedDate", "Created Date"));
             tbTask.Columns.Add(new Column("UpdateDate", "Update Date"));
 
-            tbTask.DataSource = _taskRepository.GetAll().ToList();
+            tbTask.DataSource = _taskRepository.GetByProject(id);
         }
     }
 }

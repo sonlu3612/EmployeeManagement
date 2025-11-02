@@ -70,8 +70,8 @@
     <Compile Include="Auth\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\HashPassword.cs" />
+    <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
     <Compile Include="DAL\Helpers\FileHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
     <Compile Include="DAL\Repositories\DepartmentRepository.cs" />
@@ -124,6 +124,7 @@
     <Compile Include="Managers\frmManager.Designer.cs">
       <DependentUpon>frmManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeFile.cs" />
     <Compile Include="Models\Project.cs" />
