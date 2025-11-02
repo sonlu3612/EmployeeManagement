@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.DAL.Interfaces;
+﻿using EmployeeManagement.DAL.Helpers;
+using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
-                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
                     LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
@@ -63,7 +64,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
-                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
                     LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
@@ -102,15 +103,15 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
                     new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
-                    new SqlParameter("@ImagePath", entity.ImagePath ?? (object)DBNull.Value),
+                    new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
                     new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
                 };
 
                 string sql =
-                    @"INSERT INTO Employees (EmployeeID, FullName, Position, DepartmentID, ImagePath, Address, HireDate, IsActive)
-                    VALUES (@EmployeeID, @FullName, @Position, @DepartmentID, @ImagePath, @Address, @HireDate, @IsActive)";
+                    @"INSERT INTO Employees (EmployeeID, FullName, Position, DepartmentID, AvatarPath, Address, HireDate, IsActive)
+                    VALUES (@EmployeeID, @FullName, @Position, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -137,7 +138,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
                     new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
-                    new SqlParameter("@ImagePath", entity.ImagePath ?? (object)DBNull.Value),
+                    new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
                     new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
@@ -148,8 +149,8 @@ namespace EmployeeManagement.DAL.Repositories
                     SET FullName = @FullName,
                     Position = @Position,
                     DepartmentID = @DepartmentID,
-                    ImagePath = @ImagePath,
-                    Address = @Address
+                    AvatarPath = @AvatarPath,
+                    Address = @Address,
                     HireDate = @HireDate,
                     IsActive = @IsActive
                     WHERE EmployeeID = @EmployeeID";
@@ -207,7 +208,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
-                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
                     LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
@@ -248,7 +249,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
-                    e.ImagePath, e.Address, e.HireDate, e.IsActive,
+                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
                     LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
@@ -300,8 +301,8 @@ namespace EmployeeManagement.DAL.Repositories
               ? row["DepartmentName"].ToString()
                 : null,
 
-                // Mapping ImagePath (nullable string)
-                ImagePath = row["ImagePath"] != DBNull.Value ? row["ImagePath"].ToString() : null,
+                // Mapping AvatarPath (nullable string)
+                AvatarPath = row["AvatarPath"] != DBNull.Value ? row["AvatarPath"].ToString() : null,
 
                 // Mapping Address (nullable string)
                 Address = row["Address"] != DBNull.Value ? row["Address"].ToString() : null,

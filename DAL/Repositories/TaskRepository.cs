@@ -1,9 +1,10 @@
-﻿using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using EmployeeManagement.DAL.Helpers;
+using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -26,7 +27,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql =
                     @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
                     p.ProjectName,
                     e.FullName AS EmployeeName
                     FROM Tasks t
@@ -65,7 +66,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
                     p.ProjectName,
                     e.FullName AS EmployeeName
                     FROM Tasks t
@@ -108,13 +109,12 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@CreatedBy", entity.CreatedBy),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
                     new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
-                    new SqlParameter("@Progress", entity.Progress),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
 
                 string sql =
-                    @"INSERT INTO Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Status, Priority, Progress, Deadline)
-                    VALUES (@ProjectID, @TaskName, @Description, @AssignedTo, @CreatedBy, @Status, @Priority, @Progress, @Deadline)";
+                    @"INSERT INTO Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Status, Priority, Deadline)
+                    VALUES (@ProjectID, @TaskName, @Description, @AssignedTo, @CreatedBy, @Status, @Priority, @Deadline)";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -145,7 +145,6 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@AssignedTo", entity.AssignedTo ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
                     new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
-                    new SqlParameter("@Progress", entity.Progress),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
 
@@ -157,7 +156,6 @@ namespace EmployeeManagement.DAL.Repositories
                     AssignedTo = @AssignedTo,
                     Status = @Status,
                     Priority = @Priority,
-                    Progress = @Progress,
                     Deadline = @Deadline,
                     UpdatedDate = GETDATE()
                     WHERE TaskID = @TaskID";
@@ -216,7 +214,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
                     p.ProjectName,
                     e.FullName AS EmployeeName
                     FROM Tasks t
@@ -258,7 +256,7 @@ namespace EmployeeManagement.DAL.Repositories
 
                 string sql =
                     @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
                     p.ProjectName,
                     e.FullName AS EmployeeName
                     FROM Tasks t
@@ -294,7 +292,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql =
                     @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.Progress, t.CreatedDate, t.UpdatedDate,
+                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
                     p.ProjectName,
                     e.FullName AS EmployeeName
                     FROM Tasks t
@@ -317,40 +315,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
 
             return tasks;
-        }
-
-        /// <summary>
-        /// Cập nhật tiến độ task và tự động đặt Status = 'Done' nếu Progress = 100
-        /// Gọi stored procedure sp_Task_UpdateProgress
-        /// </summary>
-        /// <param name="taskId">ID task</param>
-        /// <param name="progress">Phần trăm tiến độ (0-100)</param>
-        /// <returns>True nếu thành công, false nếu thất bại</returns>
-        public bool UpdateProgress(int taskId, int progress)
-        {
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@TaskID", taskId),
-                    new SqlParameter("@Progress", progress)
-                };
-
-                string sql =
-                    @"UPDATE Tasks
-                    SET Progress = @Progress,
-                    Status = CASE WHEN @Progress = 100 THEN 'Done' ELSE Status END,
-                    UpdatedDate = GETDATE()
-                    WHERE TaskID = @TaskID";
-
-                DatabaseHelper.ExecuteNonQuery(sql, parameters);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[TaskRepository.UpdateProgress] Lỗi: {ex.Message}");
-                return false;
-            }
         }
 
         /// <summary>
@@ -425,8 +389,8 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping Status (nullable string)
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
 
-                // Mapping Progress (int bắt buộc)
-                Progress = row["Progress"] != DBNull.Value ? Convert.ToInt32(row["Progress"]) : 0,
+                // Mapping Priority (nullable string)
+                Priority = row["Priority"] != DBNull.Value ? row["Priority"].ToString() : null,
 
                 // Mapping Deadline (nullable DateTime)
                 Deadline = row["Deadline"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["Deadline"]) : null,

@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace EmployeeManagement.DAL
+namespace EmployeeManagement.DAL.Helpers
 {
     /// <summary>
     /// Class helper tĩnh cho các thao tác database sử dụng ADO.NET

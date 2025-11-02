@@ -67,9 +67,14 @@
     </Compile>
     <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\HashPassword.cs" />
+    <Compile Include="DAL\Helpers\FileHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
+    <Compile Include="DAL\Repositories\DepartmentRepository.cs" />
+    <Compile Include="DAL\Repositories\EmployeeFileRepository.cs" />
     <Compile Include="DAL\Repositories\EmployeeRepository.cs" />
+    <Compile Include="DAL\Repositories\ProjectFileRepository.cs" />
     <Compile Include="DAL\Repositories\ProjectRepository.cs" />
+    <Compile Include="DAL\Repositories\TaskFileRepository.cs" />
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="Auth\frmLogin.Designer.cs">
@@ -81,6 +86,7 @@
     <Compile Include="Dialogs\frmInforHuy.Designer.cs">
       <DependentUpon>frmInforHuy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Department.cs" />
     <Compile Include="Dialogs\frmInfor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,9 +130,12 @@
       <DependentUpon>frmManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\EmployeeFile.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ProjectFile.cs" />
     <Compile Include="Models\ProjectStats.cs" />
     <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TaskFile.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>
