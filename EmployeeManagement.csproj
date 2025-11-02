@@ -65,7 +65,6 @@
     <Compile Include="Auth\frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DAL\DatabaseHelper.cs" />
     <Compile Include="DAL\HashPassword.cs" />
     <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
     <Compile Include="DAL\Helpers\FileHelper.cs" />
