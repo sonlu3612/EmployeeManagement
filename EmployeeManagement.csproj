@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAL\DatabaseHelper.cs" />
+    <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
     <Compile Include="DAL\Helpers\FileHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
     <Compile Include="DAL\Repositories\DepartmentRepository.cs" />
