@@ -87,7 +87,7 @@ CREATE TABLE dbo.Employees (
     EmployeeID INT PRIMARY KEY,
     FullName NVARCHAR(100) NOT NULL,
     Position NVARCHAR(100),
- DepartmentID INT NULL,
+    DepartmentID INT NULL,
     AvatarPath NVARCHAR(500),
     Address NVARCHAR(500),
     HireDate DATE NOT NULL DEFAULT (GETDATE()),
@@ -139,22 +139,22 @@ GO
    - 1 Task có nhiều TaskFiles (TaskFiles.TaskID)
 */
 CREATE TABLE dbo.Tasks (
-  TaskID INT IDENTITY(1,1) PRIMARY KEY,
+    TaskID INT IDENTITY(1,1) PRIMARY KEY,
     ProjectID INT NOT NULL,
     TaskTitle NVARCHAR(200) NOT NULL,
-  Description NVARCHAR(MAX),
+    Description NVARCHAR(MAX),
     AssignedTo INT NULL,
     CreatedBy INT NOT NULL,
     Deadline DATE NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Todo','InProgress','Review','Done')),
     Priority NVARCHAR(20) NOT NULL CHECK (Priority IN ('Low','Medium','High','Critical')),
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
- UpdatedDate DATETIME NULL,
+    UpdatedDate DATETIME NULL,
     
     CONSTRAINT FK_Tasks_Projects FOREIGN KEY (ProjectID) 
-   REFERENCES dbo.Projects(ProjectID) ON DELETE CASCADE,
+    REFERENCES dbo.Projects(ProjectID) ON DELETE CASCADE,
     CONSTRAINT FK_Tasks_Employees_Assigned FOREIGN KEY (AssignedTo) 
-        REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL,
+    REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL,
     CONSTRAINT FK_Tasks_Employees_Created FOREIGN KEY (CreatedBy) 
     REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
@@ -166,7 +166,7 @@ GO
 */
 CREATE TABLE dbo.Subtasks (
     SubtaskID INT IDENTITY(1,1) PRIMARY KEY,
-TaskID INT NOT NULL,
+    TaskID INT NOT NULL,
     SubtaskTitle NVARCHAR(200) NOT NULL,
     Description NVARCHAR(MAX),
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Todo','InProgress','Done')) DEFAULT ('Todo'),
@@ -177,9 +177,9 @@ TaskID INT NOT NULL,
     UpdatedDate DATETIME NULL,
     
     CONSTRAINT FK_Subtasks_Tasks FOREIGN KEY (TaskID) 
-  REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
+    REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
     CONSTRAINT FK_Subtasks_Employees FOREIGN KEY (AssignedTo) 
-   REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL
+    REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL
 );
 PRINT 'Table [Subtasks] created.';
 GO

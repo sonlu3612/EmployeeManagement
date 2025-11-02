@@ -61,18 +61,16 @@ namespace EmployeeManagement.Pages
 
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
-            var selectedIndex = tableTask.SelectedIndex - 1;
-            if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
-            {
-                var task = datalist[selectedIndex];
+            menuStrip.Show(tableTask, e.Location);
+            //var selectedIndex = tableTask.SelectedIndex - 1;
+            //if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+            //{
+            //    var task = datalist[selectedIndex];
+            //    frmTask frmTask = new frmTask(task);
+            //    frmTask.Show();
 
-
-
-                frmTask frmTask = new frmTask(task);
-                frmTask.Show();
-
-                //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
-            }
+            //    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+            //}
 
         }
 
@@ -152,6 +150,49 @@ namespace EmployeeManagement.Pages
             //{
             //    MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             //}
+        }
+
+        private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if(e.ClickedItem.Text == "Cập nhật")
+            {
+                var selectedIndex = tableTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+                {
+                    var task = datalist[selectedIndex];
+
+
+
+                    frmTask frmTask = new frmTask(task);
+                    frmTask.Show();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+           
+            
+
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            var selectedIndex = tableTask.SelectedIndex - 1;
+            if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+            {
+                var task = datalist[selectedIndex];
+                string massage = "Bạn có muốn xóa?";
+                frmInforXoa frmInforXoa = new frmInforXoa(massage);
+                if(frmInforXoa.ShowDialog() == DialogResult.OK)
+                {
+                    TaskRepository taskRepository = new TaskRepository();
+                    taskRepository.Delete(task.TaskID);
+                    loadData();
+
+                }
+
+
+
+            }
         }
     }
 }

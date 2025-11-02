@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new AntdUI.Panel();
             this.btnDelete = new AntdUI.Button();
             this.ddownEmployee = new AntdUI.Dropdown();
@@ -36,7 +37,11 @@
             this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
             this.tableTask = new AntdUI.Table();
+            this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -70,6 +75,7 @@
             this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 
@@ -155,6 +161,27 @@
             this.tableTask.Text = "table1";
             this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
             // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.xóaToolStripMenuItem,
+            this.quảnLýToolStripMenuItem});
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(123, 48);
+            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
+            // 
+            // xóaToolStripMenuItem
+            // 
+            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.xóaToolStripMenuItem.Text = "Xem";
+            // 
+            // quảnLýToolStripMenuItem
+            // 
+            this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
+            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.quảnLýToolStripMenuItem.Text = "Cập nhật";
+            // 
             // Page_Task
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -165,6 +192,7 @@
             this.Size = new System.Drawing.Size(798, 457);
             this.Load += new System.EventHandler(this.Page_Task_Load);
             this.panel1.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -179,5 +207,8 @@
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.Table tableTask;
+        private System.Windows.Forms.ContextMenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
     }
 }

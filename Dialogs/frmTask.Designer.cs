@@ -43,6 +43,8 @@
             this.btnLuu = new AntdUI.Button();
             this.btnHuy = new AntdUI.Button();
             this.pageHeader1 = new AntdUI.PageHeader();
+            this.ddownPriority = new AntdUI.Dropdown();
+            this.label2 = new AntdUI.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -108,6 +110,7 @@
             this.ddownProjectID.Size = new System.Drawing.Size(217, 32);
             this.ddownProjectID.TabIndex = 11;
             this.ddownProjectID.Text = "                                    ";
+            this.ddownProjectID.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownProjectID_SelectedValueChanged);
             // 
             // txtTaskName
             // 
@@ -139,6 +142,7 @@
             this.ddownOwnerID.Size = new System.Drawing.Size(217, 32);
             this.ddownOwnerID.TabIndex = 15;
             this.ddownOwnerID.Text = "                                    ";
+            this.ddownOwnerID.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownOwnerID_SelectedValueChanged);
             // 
             // ddownStatus
             // 
@@ -149,6 +153,7 @@
             this.ddownStatus.Size = new System.Drawing.Size(217, 32);
             this.ddownStatus.TabIndex = 16;
             this.ddownStatus.Text = "                                    ";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // dateStart
             // 
@@ -166,7 +171,7 @@
             this.btnLuu.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLuu.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.btnLuu.Location = new System.Drawing.Point(382, 444);
+            this.btnLuu.Location = new System.Drawing.Point(387, 531);
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(85, 41);
             this.btnLuu.TabIndex = 18;
@@ -182,7 +187,7 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.btnHuy.ForeHover = System.Drawing.Color.White;
-            this.btnHuy.Location = new System.Drawing.Point(291, 444);
+            this.btnHuy.Location = new System.Drawing.Point(296, 531);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(85, 41);
             this.btnHuy.TabIndex = 19;
@@ -207,11 +212,36 @@
             this.pageHeader1.UseForeColorDrawIcons = true;
             this.pageHeader1.UseSystemStyleColor = true;
             // 
+            // ddownPriority
+            // 
+            this.ddownPriority.BorderWidth = 2F;
+            this.ddownPriority.Items.AddRange(new object[] {
+            "Medium"});
+            this.ddownPriority.Location = new System.Drawing.Point(223, 436);
+            this.ddownPriority.Name = "ddownPriority";
+            this.ddownPriority.ShowArrow = true;
+            this.ddownPriority.Size = new System.Drawing.Size(217, 32);
+            this.ddownPriority.TabIndex = 21;
+            this.ddownPriority.Text = "                                    ";
+            this.ddownPriority.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownPriority_SelectedValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(40, 436);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 27);
+            this.label2.TabIndex = 20;
+            this.label2.Text = "Priority";
+            // 
             // frmTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(536, 507);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(536, 585);
+            this.Controls.Add(this.ddownPriority);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.btnHuy);
             this.Controls.Add(this.btnLuu);
             this.Controls.Add(this.dateStart);
@@ -252,5 +282,7 @@
         private AntdUI.DatePicker dateStart;
         private AntdUI.Button btnLuu;
         private AntdUI.Button btnHuy;
+        private AntdUI.Dropdown ddownPriority;
+        private AntdUI.Label label2;
     }
 }
