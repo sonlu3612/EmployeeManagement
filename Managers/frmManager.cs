@@ -1,28 +1,34 @@
-﻿using AntdUI;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.UI.WebControls;
+using System.Windows.Forms;
+using AntdUI;
 using EmployeeManagement.Auth;
 using EmployeeManagement.DAL;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
-using System;
-using System.Drawing;
 
 
 namespace EmployeeManagement
 {
-    public partial class frmMain : AntdUI.Window
+    public partial class frmManager : AntdUI.Window
     {
         private User _currentUser;
-        public frmMain(User currentUser)
+        public frmManager(User currentUser)
         {
             InitializeComponent();
             _currentUser = currentUser;
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void frmManager_Load(object sender, EventArgs e)
         {
 
-            tabChangePassword.Visible = false;
-            page_Project1.Page_Project_Load();
         }
 
         private void phTrangChu_Click(object sender, EventArgs e)
@@ -35,46 +41,12 @@ namespace EmployeeManagement
             string select = menu1.GetSelectItem().ToString().Trim();
 
             //Console.WriteLine(select);
-            if (select == "Change Password")
+           if(select=="Change Password")
             {
                 tabChangePassword.Visible = true;
                 tabs1.SelectedTab = tabChangePassword;
 
             }
-            if (select == "Projects")
-            {
-
-                tabs1.SelectedTab = tabProject;
-            }
-            // if (select == "Employee")
-            // {
-            //     tabs1.SelectedTab = tabEmployees;
-            //}
-            if (select == "Company")
-            {
-                tabs1.SelectedTab = tabCompany;
-            }
-            if (select == "Tasks")
-            {
-                tabs1.SelectedTab = tabTask;
-                phTrangChu.Text = "Tasks";
-                phTrangChu.Icon = Properties.Resources.note;
-            }
-            if (select == "Database")
-            {
-                tabs1.SelectedTab = tabDatabase;
-            }
-            if (select == "Log out")
-            {
-                frmMain.ActiveForm.Close();
-                frmLogin loginForm = new frmLogin();
-                loginForm.Show();
-            }
-            if(select == "My Profile")
-            {
-                tabs1.SelectedTab = tabMyProfile;
-            }
-
 
 
         }
@@ -87,11 +59,11 @@ namespace EmployeeManagement
             int userID = _currentUser.UserID;
             string oldPass = hp.Hash(txtMKC.Text);
 
-            if (oldPass == _currentUser.PasswordHash)
+            if(oldPass == _currentUser.PasswordHash)
             {
                 string newPass = txtMKM.Text;
                 string confirmPass = txtXNMK.Text;
-                if (newPass.Length < 8)
+                if(newPass.Length < 8)
                 {
                     labelMatKhau.Text = "Mật khẩu mới phải có ít nhất 8 ký tự!";
                     txtMKM.Text = "";
