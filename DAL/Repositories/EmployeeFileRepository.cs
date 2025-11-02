@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.Models;
 

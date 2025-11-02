@@ -11,9 +11,7 @@ namespace EmployeeManagement.DAL.Helpers
         );
 
         public static string GetUploadsPath()
-        {
-            return BasePath;
-        }
+            => BasePath;
 
         public static void EnsureDirectoryExists(string path)
         {
@@ -23,24 +21,22 @@ namespace EmployeeManagement.DAL.Helpers
             }
         }
 
-        //public static string GenerateTimestampFileName(string originalFileName)
-        //{
-        //    string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-        //    string extension = Path.GetExtension(originalFileName);
-        //    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(originalFileName);
-        //    return string.Format("{0}_{1}{2}", timestamp, fileNameWithoutExt, extension);
-        //}
-
-        public static string GetFullPath(string fileName)
+        public static string GenerateTimestampFileName(string originalFileName)
         {
-            return Path.Combine(BasePath, fileName);
+            string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string extension = Path.GetExtension(originalFileName);
+            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(originalFileName);
+            return string.Format("{0}_{1}{2}", timestamp, fileNameWithoutExt, extension);
         }
 
-        //public static long GetFileSize(string filePath)
-        //{
-        //    FileInfo fileInfo = new FileInfo(filePath);
-        //    return fileInfo.Length;
-        //}
+        public static string GetFullPath(string fileName)
+            => Path.Combine(BasePath, fileName);
+
+        public static long GetFileSize(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            return fileInfo.Length;
+        }
 
         //public static string GetMimeType(string extension)
         //{
@@ -94,17 +90,17 @@ namespace EmployeeManagement.DAL.Helpers
         //    }
         //}
 
-        //public static bool IsImageFile(string extension)
-        //{
-        //    string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
-        //    return Array.IndexOf(imageExtensions, extension.ToLower()) >= 0;
-        //}
+        public static bool IsImageFile(string extension)
+        {
+            string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+            return Array.IndexOf(imageExtensions, extension.ToLower()) >= 0;
+        }
 
-        //public static bool IsDocumentFile(string extension)
-        //{
-        //    string[] docExtensions = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt" };
-        //    return Array.IndexOf(docExtensions, extension.ToLower()) >= 0;
-        //}
+        public static bool IsDocumentFile(string extension)
+        {
+            string[] docExtensions = { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt" };
+            return Array.IndexOf(docExtensions, extension.ToLower()) >= 0;
+        }
 
         //public static string FormatFileSize(long bytes)
         //{
@@ -124,51 +120,49 @@ namespace EmployeeManagement.DAL.Helpers
         //    EnsureDirectoryExists(BasePath);
         //}
 
-        //public static bool DeleteFile(string fileName)
-        //{
-        //    try
-        //    {
-        //        string fullPath = GetFullPath(fileName);
-        //        if (File.Exists(fullPath))
-        //        {
-        //            File.Delete(fullPath);
-        //            return true;
-        //        }
-        //        return false;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(string.Format("[FileHelper.DeleteFile] Lỗi: {0}", ex.Message));
-        //        return false;
-        //    }
-        //}
+        public static bool DeleteFile(string fileName)
+        {
+            try
+            {
+                string fullPath = GetFullPath(fileName);
+                if (File.Exists(fullPath))
+                {
+                    File.Delete(fullPath);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("[FileHelper.DeleteFile] Lỗi: {0}", ex.Message));
+                return false;
+            }
+        }
 
-        //public static bool CopyFile(string sourcePath, string destinationFileName)
-        //{
-        //    try
-        //    {
-        //        EnsureDirectoryExists(BasePath);
-        //        string destinationPath = GetFullPath(destinationFileName);
+        public static bool CopyFile(string sourcePath, string destinationFileName)
+        {
+            try
+            {
+                EnsureDirectoryExists(BasePath);
+                string destinationPath = GetFullPath(destinationFileName);
 
-        //        File.Copy(sourcePath, destinationPath, true);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(string.Format("[FileHelper.CopyFile] Lỗi: {0}", ex.Message));
-        //        return false;
-        //    }
-        //}
+                File.Copy(sourcePath, destinationPath, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(string.Format("[FileHelper.CopyFile] Lỗi: {0}", ex.Message));
+                return false;
+            }
+        }
 
-        //public static bool FileExists(string fileName)
-        //{
-        //    string fullPath = GetFullPath(fileName);
-        //    return File.Exists(fullPath);
-        //}
+        public static bool FileExists(string fileName)
+        {
+            string fullPath = GetFullPath(fileName);
+            return File.Exists(fullPath);
+        }
 
-        //public static string GetRelativePath(string fileName)
-        //{
-        //    return string.Format("/Uploads/{0}", fileName);
-        //}
+        public static string GetRelativePath(string fileName)
+            => string.Format("/Uploads/{0}", fileName);
     }
 }
