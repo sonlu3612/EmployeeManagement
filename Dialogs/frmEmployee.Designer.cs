@@ -237,7 +237,7 @@
             this.pageHeader1.Name = "pageHeader1";
             this.pageHeader1.ShowButton = true;
             this.pageHeader1.ShowIcon = true;
-            this.pageHeader1.Size = new System.Drawing.Size(519, 36);
+            this.pageHeader1.Size = new System.Drawing.Size(536, 36);
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Nhân viên";
             this.pageHeader1.UseForeColorDrawIcons = true;
@@ -305,7 +305,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(536, 486);
+            this.ClientSize = new System.Drawing.Size(553, 486);
             this.Controls.Add(this.txtGioiTinh);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtDienThoai);

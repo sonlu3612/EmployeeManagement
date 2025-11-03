@@ -122,6 +122,12 @@
     <Compile Include="Models\ProjectStats.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Account.Profile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Account.Profile.Designer.cs">
+      <DependentUpon>Page_Account.Profile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Department.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -178,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Account.Profile.resx">
+      <DependentUpon>Page_Account.Profile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Department.resx">
       <DependentUpon>Page_Department.cs</DependentUpon>
