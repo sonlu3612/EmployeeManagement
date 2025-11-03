@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new AntdUI.Panel();
             this.btnDelete = new AntdUI.Button();
             this.ddownEmployee = new AntdUI.Dropdown();
@@ -35,8 +36,12 @@
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
-            this.table1 = new AntdUI.Table();
+            this.tableTask = new AntdUI.Table();
+            this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -70,6 +75,7 @@
             this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 
@@ -82,18 +88,27 @@
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
             this.ddownEmployee.Text = "Nhân viên";
+            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
             // 
             this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddownStatus.ForeColor = System.Drawing.Color.White;
+            this.ddownStatus.Items.AddRange(new object[] {
+            "Tất cả",
+            "Cần làm",
+            "Đang làm",
+            "Đang xem xét",
+            "Hoàn thành",
+            "Quá hạn"});
             this.ddownStatus.Location = new System.Drawing.Point(330, 3);
             this.ddownStatus.Name = "ddownStatus";
             this.ddownStatus.ShowArrow = true;
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -104,10 +119,11 @@
             this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
             this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(273, 3);
+            this.btnSync.Location = new System.Drawing.Point(273, 4);
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -132,25 +148,51 @@
             this.input1.Size = new System.Drawing.Size(216, 35);
             this.input1.TabIndex = 0;
             // 
-            // table1
+            // tableTask
             // 
-            this.table1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.table1.Gap = 12;
-            this.table1.Location = new System.Drawing.Point(0, 41);
-            this.table1.Name = "table1";
-            this.table1.Size = new System.Drawing.Size(798, 416);
-            this.table1.TabIndex = 1;
-            this.table1.Text = "table1";
+            this.tableTask.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
+            this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableTask.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tableTask.Gap = 12;
+            this.tableTask.Location = new System.Drawing.Point(0, 41);
+            this.tableTask.Name = "tableTask";
+            this.tableTask.Size = new System.Drawing.Size(798, 416);
+            this.tableTask.TabIndex = 1;
+            this.tableTask.Text = "table1";
+            this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.xóaToolStripMenuItem,
+            this.quảnLýToolStripMenuItem});
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(123, 48);
+            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
+            // 
+            // xóaToolStripMenuItem
+            // 
+            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.xóaToolStripMenuItem.Text = "Xem";
+            // 
+            // quảnLýToolStripMenuItem
+            // 
+            this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
+            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.quảnLýToolStripMenuItem.Text = "Cập nhật";
             // 
             // Page_Task
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.table1);
+            this.Controls.Add(this.tableTask);
             this.Controls.Add(this.panel1);
             this.Name = "Page_Task";
             this.Size = new System.Drawing.Size(798, 457);
+            this.Load += new System.EventHandler(this.Page_Task_Load);
             this.panel1.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -164,6 +206,9 @@
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
-        private AntdUI.Table table1;
+        private AntdUI.Table tableTask;
+        private System.Windows.Forms.ContextMenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
     }
 }

@@ -84,6 +84,28 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
+    <Compile Include="Auth\frmLogin.Designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frmInforXoa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmInforXoa.Designer.cs">
+      <DependentUpon>frmInforXoa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\frmInforHuy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmInforHuy.Designer.cs">
+      <DependentUpon>frmInforHuy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Department.cs" />
+    <Compile Include="Dialogs\frmInfor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmInfor.Designer.cs">
+      <DependentUpon>frmInfor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmManageTasks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,7 +148,6 @@
     <Compile Include="Managers\frmManager.Designer.cs">
       <DependentUpon>frmManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Department.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeFile.cs" />
     <Compile Include="Models\Project.cs" />
@@ -170,6 +191,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmInforXoa.resx">
+      <DependentUpon>frmInforXoa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmInforHuy.resx">
+      <DependentUpon>frmInforHuy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmInfor.resx">
+      <DependentUpon>frmInfor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmManageTasks.resx">
       <DependentUpon>frmManageTasks.cs</DependentUpon>

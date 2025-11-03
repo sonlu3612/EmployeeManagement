@@ -272,6 +272,8 @@ namespace EmployeeManagement.DAL.Repositories
             return employees;
         }
 
+
+
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Employee
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu

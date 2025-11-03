@@ -2,6 +2,7 @@
 using EmployeeManagement.Auth;
 using EmployeeManagement.DAL;
 using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
 using System.Drawing;
@@ -44,7 +45,9 @@ namespace EmployeeManagement
             if (select == "Projects")
             {
 
-                tabs1.SelectedTab = tabProject;
+                //tabs1.SelectedTab = tabProject;
+                frmManageTasks frmManageTasks = new frmManageTasks();
+                frmManageTasks.Show();
             }
             // if (select == "Employee")
             // {
@@ -66,14 +69,16 @@ namespace EmployeeManagement
             }
             if (select == "Log out")
             {
-                frmMain.ActiveForm.Close();
-                frmLogin loginForm = new frmLogin();
-                loginForm.Show();
+                string message = "Bạn có muốn đăng xuất?";
+                frmInfor frmInfor = new frmInfor(message,this);
+                frmInfor.ShowDialog();
+                
             }
             if(select == "My Profile")
             {
                 tabs1.SelectedTab = tabMyProfile;
             }
+           
 
 
 
@@ -117,6 +122,11 @@ namespace EmployeeManagement
                 {
                     labelMatKhau.Text = "Mật khẩu mới và xác nhận mật khẩu không khớp!";
                 }
+            }
+            else
+            {
+                labelMatKhau.Text = "Mật khẩu cũ không đúng!";
+                txtMKC.Focus();
             }
 
         }

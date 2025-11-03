@@ -16,5 +16,6 @@ namespace EmployeeManagement.Models
         public string Priority { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
     }
 }
