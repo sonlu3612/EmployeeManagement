@@ -106,7 +106,6 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@Budget", entity.Budget),
                     new SqlParameter("@CreatedBy", entity.CreatedBy)
                  };
 
@@ -148,8 +147,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
-                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@Budget", entity.Budget)
+                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value)
                  };
 
                 string sql =
@@ -158,7 +156,8 @@ namespace EmployeeManagement.DAL.Repositories
                     Description = @Description,
                     StartDate = @StartDate,
                     EndDate = @EndDate,
-                    Status = @Status,
+                    Status = @Status
+                    Budget = @Budget
                     WHERE ProjectID = @ProjectID";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -307,8 +306,8 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping EndDate (nullable DateTime)
                 EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
 
-                // Mapping Status (nullable string)
-                Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
+                Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null
+                Budget = row["Budget"] != DBNull.Value ? Convert.ToDecimal(row["Budget"]) : 0m
             };
         }
     }
