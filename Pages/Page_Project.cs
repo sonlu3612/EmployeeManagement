@@ -30,7 +30,6 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("EndDate", "End Date"));
             tbProject.Columns.Add(new Column("Status", "Status"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
-            tbProject.Columns.Add(new Column("CreatedDate", "Created Date"));
 
             LoadData();
         }
@@ -38,6 +37,14 @@ namespace EmployeeManagement.Pages
         private void LoadData()
         {
             tbProject.DataSource = _projectRepository.GetAll().ToList();
+            if (cbNhanVien.Items.Count == 0)
+            {
+                cbNhanVien.Items.AddRange(_projectRepository.GetAll().Select(p => p.CreatedBy.ToString()).Distinct().ToArray());
+            }
+            if (cbTrangThai.Items.Count == 0)
+            {
+                cbTrangThai.Items.AddRange(_projectRepository.GetAll().Select(p => p.Status).Distinct().ToArray());
+            }
         }
 
         private void btnXoa_Click(object sender, EventArgs e)
@@ -134,26 +141,24 @@ namespace EmployeeManagement.Pages
 
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
+
         }
 
         private void tbProject_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                // Nếu control đã có SelectedIndex hợp lệ thì dùng luôn
-                int sel = tbProject.SelectedIndex; // theo code bạn dùng trước đó
+                int sel = tbProject.SelectedIndex;
                 if (sel >= 0)
                 {
-                    // hiển thị context menu tại con trỏ
                     ctm1.Show(Cursor.Position);
                 }
             }
         }
 
-        // Click của menu "Task"
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int selectedIndex = tbProject.SelectedIndex - 1; // theo logic cũ của bạn
+            int selectedIndex = tbProject.SelectedIndex - 1;
             if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
@@ -169,5 +174,77 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string q = txtTim.Text?.Trim() ?? "";
+
+                var projects = _projectRepository.GetAll().AsEnumerable();
+
+                if (!string.IsNullOrWhiteSpace(q))
+                {
+                    projects = projects.Where(p =>
+                        !string.IsNullOrEmpty(p.ProjectName) &&
+                        p.ProjectName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                if (!string.IsNullOrWhiteSpace(cbNhanVien.Text) && cbNhanVien.Text != "Nhân viên")
+                {
+                    string empFilter = cbNhanVien.Text.Trim();
+                    projects = projects.Where(p => p.CreatedBy.ToString().Contains(empFilter));
+                }
+
+                if (!string.IsNullOrWhiteSpace(cbTrangThai.Text) && cbTrangThai.Text != "Trạng thái")
+                {
+                    string statusFilter = cbTrangThai.Text.Trim();
+                    projects = projects.Where(p => !string.IsNullOrEmpty(p.Status) &&
+                                                   p.Status.IndexOf(statusFilter, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
+
+                var result = projects.ToList();
+
+                tbProject.DataSource = result;
+
+                if (result.Count == 0)
+                {
+                    Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
+                }
+                else
+                {
+                    Message.success(this.FindForm(), $"Tìm thấy {result.Count} dự án.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
+            }
+        }
+
+
+        private void cbNhanVien_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        {
+            cbNhanVien.Text = e.Value?.ToString() ?? "";
+            var filteredProjects = _projectRepository.GetAll()
+                .Where(p => p.CreatedBy.ToString().Contains(cbNhanVien.Text))
+                .ToList();
+            tbProject.DataSource = filteredProjects;
+        }
+
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            LoadData();
+            cbNhanVien.Text = "Nhân viên";
+            cbTrangThai.Text = "Trạng thái";
+        }
+
+        private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        {
+            cbTrangThai.Text = e.Value?.ToString() ?? "";
+            var filteredProjects = _projectRepository.GetAll()
+                .Where(p => p.Status.Contains(cbTrangThai.Text))
+                .ToList();
+            tbProject.DataSource = filteredProjects;
+        }
     }
 }

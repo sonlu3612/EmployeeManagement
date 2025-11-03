@@ -1,4 +1,7 @@
-﻿using EmployeeManagement.Models;
+﻿using EmployeeManagement.DAL.Helpers;
+using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.Models;
 using System;
 using System.Windows.Forms;
 
@@ -8,6 +11,8 @@ namespace EmployeeManagement.Dialogs
     {
         private readonly Project _project;
         private readonly bool _isEdit;
+        private IRepository<Project> _projectRepository = new ProjectRepository();
+        private User currentUser = SessionManager.CurrentUser;
 
         public frmProject(Project project = null)
         {
@@ -24,7 +29,6 @@ namespace EmployeeManagement.Dialogs
                 txtDescription.Text = _project.Description;
                 dtStartDate.Value = _project.StartDate;
                 dtEndDate.Value = _project.EndDate;
-                cboStatus.Text = _project.Status;
             }
             else
             {
@@ -32,7 +36,8 @@ namespace EmployeeManagement.Dialogs
                 txtDescription.Clear();
                 dtStartDate.Value = DateTime.Now;
                 dtEndDate.Value = DateTime.Now;
-                cboStatus.SelectedValue = -1;
+                cbCreate.Text = currentUser.UserID.ToString();
+                cboStatus.Text = "Planning";
             }
         }
 
@@ -44,8 +49,9 @@ namespace EmployeeManagement.Dialogs
                 Description = txtDescription.Text.Trim(),
                 StartDate = (DateTime)dtStartDate.Value,
                 EndDate = dtEndDate.Value,
-                Status = cboStatus.Text,
-                Budget = 100
+                Status = "Planning",
+                CreatedBy = int.Parse(cbCreate.Text)
+
             };
 
             if (_isEdit)

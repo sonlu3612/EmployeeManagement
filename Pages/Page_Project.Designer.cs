@@ -33,11 +33,11 @@
             this.panel1 = new AntdUI.Panel();
             this.btnXoa = new AntdUI.Button();
             this.btnThem = new AntdUI.Button();
-            this.ddownEmployee = new AntdUI.Dropdown();
-            this.ddownStatus = new AntdUI.Dropdown();
+            this.cbNhanVien = new AntdUI.Dropdown();
+            this.cbTrangThai = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
-            this.input1 = new AntdUI.Input();
+            this.txtTim = new AntdUI.Input();
             this.ctm1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tasksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.documentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,11 +62,11 @@
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.btnXoa);
             this.panel1.Controls.Add(this.btnThem);
-            this.panel1.Controls.Add(this.ddownEmployee);
-            this.panel1.Controls.Add(this.ddownStatus);
+            this.panel1.Controls.Add(this.cbNhanVien);
+            this.panel1.Controls.Add(this.cbTrangThai);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
-            this.panel1.Controls.Add(this.input1);
+            this.panel1.Controls.Add(this.txtTim);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -108,29 +108,31 @@
             this.btnThem.Text = "Thêm";
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
             // 
-            // ddownEmployee
+            // cbNhanVien
             // 
-            this.ddownEmployee.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownEmployee.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownEmployee.ForeColor = System.Drawing.Color.White;
-            this.ddownEmployee.Location = new System.Drawing.Point(471, 3);
-            this.ddownEmployee.Name = "ddownEmployee";
-            this.ddownEmployee.ShowArrow = true;
-            this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
-            this.ddownEmployee.TabIndex = 4;
-            this.ddownEmployee.Text = "Nhân viên";
+            this.cbNhanVien.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.cbNhanVien.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbNhanVien.ForeColor = System.Drawing.Color.White;
+            this.cbNhanVien.Location = new System.Drawing.Point(471, 3);
+            this.cbNhanVien.Name = "cbNhanVien";
+            this.cbNhanVien.ShowArrow = true;
+            this.cbNhanVien.Size = new System.Drawing.Size(135, 35);
+            this.cbNhanVien.TabIndex = 4;
+            this.cbNhanVien.Text = "Nhân viên";
+            this.cbNhanVien.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
             // 
-            // ddownStatus
+            // cbTrangThai
             // 
-            this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownStatus.ForeColor = System.Drawing.Color.White;
-            this.ddownStatus.Location = new System.Drawing.Point(330, 3);
-            this.ddownStatus.Name = "ddownStatus";
-            this.ddownStatus.ShowArrow = true;
-            this.ddownStatus.Size = new System.Drawing.Size(135, 35);
-            this.ddownStatus.TabIndex = 3;
-            this.ddownStatus.Text = "Trạng thái";
+            this.cbTrangThai.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.cbTrangThai.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbTrangThai.ForeColor = System.Drawing.Color.White;
+            this.cbTrangThai.Location = new System.Drawing.Point(330, 3);
+            this.cbTrangThai.Name = "cbTrangThai";
+            this.cbTrangThai.ShowArrow = true;
+            this.cbTrangThai.Size = new System.Drawing.Size(135, 35);
+            this.cbTrangThai.TabIndex = 3;
+            this.cbTrangThai.Text = "Trạng thái";
+            this.cbTrangThai.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbTrangThai_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -145,6 +147,7 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -159,15 +162,16 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // input1
+            // txtTim
             // 
-            this.input1.Location = new System.Drawing.Point(3, 3);
-            this.input1.Name = "input1";
-            this.input1.PlaceholderText = "Tìm kiếm ...";
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm theo tên...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
             // 
             // ctm1
             // 
@@ -175,19 +179,19 @@
             this.tasksToolStripMenuItem,
             this.documentsToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(181, 70);
+            this.ctm1.Size = new System.Drawing.Size(136, 48);
             // 
             // tasksToolStripMenuItem
             // 
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
-            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.tasksToolStripMenuItem.Text = "Tasks";
             this.tasksToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
             // documentsToolStripMenuItem
             // 
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
-            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.documentsToolStripMenuItem.Text = "Documents";
             // 
             // Page_Project
@@ -210,11 +214,11 @@
         private AntdUI.Panel panel1;
         private AntdUI.Button btnXoa;
         private AntdUI.Button btnThem;
-        private AntdUI.Dropdown ddownEmployee;
-        private AntdUI.Dropdown ddownStatus;
+        private AntdUI.Dropdown cbNhanVien;
+        private AntdUI.Dropdown cbTrangThai;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
-        private AntdUI.Input input1;
+        private AntdUI.Input txtTim;
         private System.Windows.Forms.ContextMenuStrip ctm1;
         private System.Windows.Forms.ToolStripMenuItem tasksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem documentsToolStripMenuItem;

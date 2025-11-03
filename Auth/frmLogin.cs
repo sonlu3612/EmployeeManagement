@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.DAL;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
 using System;
@@ -75,8 +76,9 @@ namespace EmployeeManagement.Auth
 
                     }));
                 });
+                SessionManager.SetCurrentUser(user);
 
-                if(user.Role == "Admin")
+                if (user.Role == "Admin")
                 {
                     frmMain mainForm = new frmMain(user);
                     mainForm.Show();
@@ -93,6 +95,7 @@ namespace EmployeeManagement.Auth
                     frmEmployee employeeForm = new frmEmployee(user);
                     //MessageBox.Show("Đăng nhập thành công với quyền Nhân viên!");
                 }
+
 
                 
                 this.Hide();

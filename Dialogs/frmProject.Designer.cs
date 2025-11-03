@@ -33,8 +33,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.dtEndDate = new AntdUI.DatePicker();
             this.label7 = new AntdUI.Label();
-            this.datePicker1 = new AntdUI.DatePicker();
-            this.label4 = new AntdUI.Label();
             this.hyperlinkLabel1 = new AntdUI.HyperlinkLabel();
             this.cboStatus = new AntdUI.Dropdown();
             this.label1 = new AntdUI.Label();
@@ -44,7 +42,7 @@
             this.btnHuy = new AntdUI.Button();
             this.button1 = new AntdUI.Button();
             this.dtStartDate = new AntdUI.DatePicker();
-            this.ddownDepartment = new AntdUI.Dropdown();
+            this.cbCreate = new AntdUI.Dropdown();
             this.txtProjectName = new AntdUI.Input();
             this.label6 = new AntdUI.Label();
             this.label3 = new AntdUI.Label();
@@ -58,8 +56,6 @@
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.dtEndDate);
             this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.datePicker1);
-            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.hyperlinkLabel1);
             this.panel1.Controls.Add(this.cboStatus);
             this.panel1.Controls.Add(this.label1);
@@ -69,7 +65,7 @@
             this.panel1.Controls.Add(this.btnHuy);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.dtStartDate);
-            this.panel1.Controls.Add(this.ddownDepartment);
+            this.panel1.Controls.Add(this.cbCreate);
             this.panel1.Controls.Add(this.txtProjectName);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label3);
@@ -98,24 +94,6 @@
             this.label7.TabIndex = 76;
             this.label7.Text = "Ngày hoàn thành:";
             // 
-            // datePicker1
-            // 
-            this.datePicker1.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.datePicker1.BorderWidth = 2F;
-            this.datePicker1.Location = new System.Drawing.Point(160, 432);
-            this.datePicker1.Name = "datePicker1";
-            this.datePicker1.Size = new System.Drawing.Size(321, 33);
-            this.datePicker1.TabIndex = 75;
-            // 
-            // label4
-            // 
-            this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(33, 432);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 27);
-            this.label4.TabIndex = 74;
-            this.label4.Text = "Ngày thêm:";
-            // 
             // hyperlinkLabel1
             // 
             this.hyperlinkLabel1.HoverStyle = linkAppearance1;
@@ -129,6 +107,10 @@
             // cboStatus
             // 
             this.cboStatus.BorderWidth = 2F;
+            this.cboStatus.Items.AddRange(new object[] {
+            "Đang chờ",
+            "Đang thực hiện",
+            "Hoàn thành"});
             this.cboStatus.Location = new System.Drawing.Point(160, 283);
             this.cboStatus.Name = "cboStatus";
             this.cboStatus.ShowArrow = true;
@@ -184,7 +166,7 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(225)))));
             this.btnHuy.ForeHover = System.Drawing.Color.White;
-            this.btnHuy.Location = new System.Drawing.Point(300, 481);
+            this.btnHuy.Location = new System.Drawing.Point(299, 432);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(76, 41);
             this.btnHuy.TabIndex = 67;
@@ -198,7 +180,7 @@
             this.button1.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.button1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.button1.Location = new System.Drawing.Point(396, 481);
+            this.button1.Location = new System.Drawing.Point(396, 432);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(85, 41);
             this.button1.TabIndex = 66;
@@ -215,15 +197,15 @@
             this.dtStartDate.Size = new System.Drawing.Size(321, 33);
             this.dtStartDate.TabIndex = 65;
             // 
-            // ddownDepartment
+            // cbCreate
             // 
-            this.ddownDepartment.BorderWidth = 2F;
-            this.ddownDepartment.Location = new System.Drawing.Point(160, 245);
-            this.ddownDepartment.Name = "ddownDepartment";
-            this.ddownDepartment.ShowArrow = true;
-            this.ddownDepartment.Size = new System.Drawing.Size(321, 32);
-            this.ddownDepartment.TabIndex = 64;
-            this.ddownDepartment.Text = "                                    ";
+            this.cbCreate.BorderWidth = 2F;
+            this.cbCreate.Location = new System.Drawing.Point(160, 245);
+            this.cbCreate.Name = "cbCreate";
+            this.cbCreate.ShowArrow = true;
+            this.cbCreate.Size = new System.Drawing.Size(321, 32);
+            this.cbCreate.TabIndex = 64;
+            this.cbCreate.Text = "                                    ";
             // 
             // txtProjectName
             // 
@@ -301,8 +283,6 @@
         private System.Windows.Forms.Panel panel1;
         private AntdUI.DatePicker dtEndDate;
         private AntdUI.Label label7;
-        private AntdUI.DatePicker datePicker1;
-        private AntdUI.Label label4;
         private AntdUI.HyperlinkLabel hyperlinkLabel1;
         private AntdUI.Dropdown cboStatus;
         private AntdUI.Label label1;
@@ -312,7 +292,7 @@
         private AntdUI.Button btnHuy;
         private AntdUI.Button button1;
         private AntdUI.DatePicker dtStartDate;
-        private AntdUI.Dropdown ddownDepartment;
+        private AntdUI.Dropdown cbCreate;
         private AntdUI.Input txtProjectName;
         private AntdUI.Label label6;
         private AntdUI.Label label3;

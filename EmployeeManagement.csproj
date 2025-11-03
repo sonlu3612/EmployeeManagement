@@ -71,6 +71,7 @@
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="DAL\HashPassword.cs" />
+    <Compile Include="DAL\Helpers\SessionManager.cs" />
     <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
     <Compile Include="DAL\Helpers\FileHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="DAL\Repositories\TaskFileRepository.cs" />
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
+    <Compile Include="DAL\Services\FileService.cs" />
     <Compile Include="Dialogs\frmManageTasks.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,6 +210,7 @@
   <!-- Content / None files -->
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DAL\Services\FileService_UsageGuide.md" />
     <None Include="packages.config" />
     <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
     <None Include="packages\AntdUI.2.1.13\AntdUI.2.1.13.nupkg" />

@@ -35,7 +35,7 @@
             this.ddownStatus = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
-            this.input1 = new AntdUI.Input();
+            this.txtTim = new AntdUI.Input();
             this.tbTask = new AntdUI.Table();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -49,7 +49,7 @@
             this.panel1.Controls.Add(this.ddownStatus);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
-            this.panel1.Controls.Add(this.input1);
+            this.panel1.Controls.Add(this.txtTim);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -142,14 +142,14 @@
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
             // 
-            // input1
+            // txtTim
             // 
-            this.input1.Location = new System.Drawing.Point(3, 3);
-            this.input1.Name = "input1";
-            this.input1.PlaceholderText = "Tìm kiếm ...";
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
             // 
             // tbTask
             // 
@@ -178,7 +178,7 @@
 
         private AntdUI.Panel panel1;
         private AntdUI.Button btnSearch;
-        private AntdUI.Input input1;
+        private AntdUI.Input txtTim;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownEmployee;
