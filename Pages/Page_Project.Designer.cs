@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbProject = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnXoa = new AntdUI.Button();
@@ -37,7 +38,11 @@
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
+            this.ctm1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tasksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.documentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.ctm1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbProject
@@ -49,6 +54,8 @@
             this.tbProject.Size = new System.Drawing.Size(1023, 617);
             this.tbProject.TabIndex = 3;
             this.tbProject.Text = "table1";
+            this.tbProject.CellClick += new AntdUI.Table.ClickEventHandler(this.tbProject_CellClick);
+            this.tbProject.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbProject_MouseDown);
             // 
             // panel1
             // 
@@ -162,6 +169,27 @@
             this.input1.Size = new System.Drawing.Size(216, 35);
             this.input1.TabIndex = 0;
             // 
+            // ctm1
+            // 
+            this.ctm1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tasksToolStripMenuItem,
+            this.documentsToolStripMenuItem});
+            this.ctm1.Name = "ctm1";
+            this.ctm1.Size = new System.Drawing.Size(181, 70);
+            // 
+            // tasksToolStripMenuItem
+            // 
+            this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tasksToolStripMenuItem.Text = "Tasks";
+            this.tasksToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
+            // 
+            // documentsToolStripMenuItem
+            // 
+            this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.documentsToolStripMenuItem.Text = "Documents";
+            // 
             // Page_Project
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -171,6 +199,7 @@
             this.Name = "Page_Project";
             this.Size = new System.Drawing.Size(1023, 658);
             this.panel1.ResumeLayout(false);
+            this.ctm1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -186,5 +215,8 @@
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
         private AntdUI.Input input1;
+        private System.Windows.Forms.ContextMenuStrip ctm1;
+        private System.Windows.Forms.ToolStripMenuItem tasksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem documentsToolStripMenuItem;
     }
 }

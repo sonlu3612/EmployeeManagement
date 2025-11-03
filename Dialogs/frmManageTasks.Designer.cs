@@ -56,6 +56,7 @@
             this.page_Task1.Name = "page_Task1";
             this.page_Task1.Size = new System.Drawing.Size(808, 457);
             this.page_Task1.TabIndex = 1;
+            this.page_Task1.Load += new System.EventHandler(this.page_Task1_Load);
             // 
             // frmManageTasks
             // 

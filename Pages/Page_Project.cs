@@ -134,29 +134,40 @@ namespace EmployeeManagement.Pages
 
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
-            var selectedIndex = tbProject.SelectedIndex - 1;
-            int id = -1;
+        }
 
-            if (tbProject.DataSource is IList<Project> projects && selectedIndex < projects.Count)
+        private void tbProject_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Nếu control đã có SelectedIndex hợp lệ thì dùng luôn
+                int sel = tbProject.SelectedIndex; // theo code bạn dùng trước đó
+                if (sel >= 0)
+                {
+                    // hiển thị context menu tại con trỏ
+                    ctm1.Show(Cursor.Position);
+                }
+            }
+        }
+
+        // Click của menu "Task"
+        private void taskToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbProject.SelectedIndex - 1; // theo logic cũ của bạn
+            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
-
-                if (record == null)
-                {
-                    Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
-                    return;
-                }
-                id = record.ProjectID;
-
+                if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
+                int id = record.ProjectID;
+                frmManageTasks frm = new frmManageTasks();
+                frm.frmManageTasks_Load(id);
+                frm.ShowDialog();
             }
             else
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
-
-            frmManageTasks frm = new frmManageTasks();
-            frm.frmManageTasks_Load(id);
-            frm.ShowDialog();
         }
+
     }
 }

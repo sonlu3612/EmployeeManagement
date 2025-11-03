@@ -88,6 +88,7 @@
             this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 

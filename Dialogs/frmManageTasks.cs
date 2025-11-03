@@ -21,5 +21,10 @@ namespace EmployeeManagement.Dialogs
         {
             page_Task1.Page_ManageTask_Load(id);
         }
+
+        private void page_Task1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
