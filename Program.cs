@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EmployeeManagement.Auth;
 
 namespace EmployeeManagement
 {
@@ -23,7 +24,7 @@ namespace EmployeeManagement
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain());
+            Application.Run(new frmLogin());
 
         }
     }

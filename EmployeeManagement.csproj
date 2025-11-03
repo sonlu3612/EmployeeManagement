@@ -93,6 +93,12 @@
     <Compile Include="Dialogs\frmTask.Designer.cs">
       <DependentUpon>frmTask.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ManageEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ManageEmployee.Designer.cs">
+      <DependentUpon>ManageEmployee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Employees\frmEmployee.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +122,18 @@
     <Compile Include="Models\ProjectStats.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Department.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Department.Designer.cs">
+      <DependentUpon>Page_Department.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_Employee.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Employee.Designer.cs">
+      <DependentUpon>Page_Employee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -149,6 +167,9 @@
     <EmbeddedResource Include="Dialogs\frmTask.resx">
       <DependentUpon>frmTask.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ManageEmployee.resx">
+      <DependentUpon>ManageEmployee.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Employees\frmEmployee.resx">
       <DependentUpon>frmEmployee.cs</DependentUpon>
     </EmbeddedResource>
@@ -157,6 +178,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Department.resx">
+      <DependentUpon>Page_Department.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Employee.resx">
+      <DependentUpon>Page_Employee.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Task.resx">
       <DependentUpon>Page_Task.cs</DependentUpon>

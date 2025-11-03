@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Pages
 {
-    partial class Page_ManageTask
+    partial class Page_Department
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.table1 = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnAdd = new AntdUI.Button();
             this.btnDelete = new AntdUI.Button();
@@ -36,9 +37,18 @@
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
-            this.table1 = new AntdUI.Table();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // table1
+            // 
+            this.table1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.table1.Gap = 12;
+            this.table1.Location = new System.Drawing.Point(0, 41);
+            this.table1.Name = "table1";
+            this.table1.Size = new System.Drawing.Size(769, 454);
+            this.table1.TabIndex = 5;
+            this.table1.Text = "table1";
             // 
             // panel1
             // 
@@ -53,10 +63,9 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(798, 41);
-            this.panel1.TabIndex = 0;
+            this.panel1.Size = new System.Drawing.Size(769, 41);
+            this.panel1.TabIndex = 4;
             this.panel1.Text = "panel1";
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
             // 
             // btnAdd
             // 
@@ -72,7 +81,6 @@
             this.btnAdd.Size = new System.Drawing.Size(74, 35);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDelete
             // 
@@ -88,7 +96,6 @@
             this.btnDelete.Size = new System.Drawing.Size(74, 35);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 
@@ -101,7 +108,6 @@
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
             this.ddownEmployee.Text = "Nhân viên";
-            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
             // 
@@ -114,7 +120,6 @@
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
-            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -129,7 +134,6 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
-            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -144,7 +148,6 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // input1
             // 
@@ -154,27 +157,15 @@
             this.input1.Radius = 10;
             this.input1.Size = new System.Drawing.Size(216, 35);
             this.input1.TabIndex = 0;
-            this.input1.TextChanged += new System.EventHandler(this.input1_TextChanged);
             // 
-            // table1
-            // 
-            this.table1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.table1.Gap = 12;
-            this.table1.Location = new System.Drawing.Point(0, 41);
-            this.table1.Name = "table1";
-            this.table1.Size = new System.Drawing.Size(798, 416);
-            this.table1.TabIndex = 1;
-            this.table1.Text = "table1";
-            this.table1.CellClick += new AntdUI.Table.ClickEventHandler(this.table1_CellClick);
-            // 
-            // Page_ManageTask
+            // Page_Department
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.table1);
             this.Controls.Add(this.panel1);
-            this.Name = "Page_ManageTask";
-            this.Size = new System.Drawing.Size(798, 457);
+            this.Name = "Page_Department";
+            this.Size = new System.Drawing.Size(769, 495);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -182,14 +173,14 @@
 
         #endregion
 
+        private AntdUI.Table table1;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnSearch;
-        private AntdUI.Input input1;
-        private AntdUI.Button btnSync;
+        private AntdUI.Button btnAdd;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
-        private AntdUI.Button btnAdd;
-        private AntdUI.Table table1;
+        private AntdUI.Button btnSync;
+        private AntdUI.Button btnSearch;
+        private AntdUI.Input input1;
     }
 }

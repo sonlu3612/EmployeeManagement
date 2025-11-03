@@ -16,8 +16,6 @@ namespace EmployeeManagement
         {
             InitializeComponent();
             _currentUser = currentUser;
-
-
         }
 
         // Khi click vào dòng trong bảng
@@ -72,7 +70,7 @@ namespace EmployeeManagement
                 frmLogin loginForm = new frmLogin();
                 loginForm.Show();
             }
-            if(select == "My Profile")
+            if (select == "My Profile")
             {
                 tabs1.SelectedTab = tabMyProfile;
             }
@@ -120,9 +118,6 @@ namespace EmployeeManagement
                     labelMatKhau.Text = "Mật khẩu mới và xác nhận mật khẩu không khớp!";
                 }
             }
-
-        private void tblNhanVien_CellClick(object sender, TableClickEventArgs e)
-        {
         }
     }
 }
