@@ -19,7 +19,25 @@ namespace EmployeeManagement.DAL.Helpers
         {
             get
             {
-                return ConfigurationManager.ConnectionStrings["ProjectManagementDB"].ConnectionString;
+                ConnectionStringSettings connectionSetting = ConfigurationManager.ConnectionStrings["ProjectManagementDB"];
+
+                if (connectionSetting == null)
+                {
+                    throw new ConfigurationErrorsException(
+                        "Connection string 'ProjectManagementDB' không tìm thấy trong App.config. " +
+                        "Vui lòng kiểm tra lại file App.config và đảm bảo có entry: " +
+                        "<add name=\"ProjectManagementDB\" connectionString=\"...\" />"
+                    );
+                }
+
+                if (string.IsNullOrEmpty(connectionSetting.ConnectionString))
+                {
+                    throw new ConfigurationErrorsException(
+                        "Connection string 'ProjectManagementDB' rỗng trong App.config."
+                    );
+                }
+
+                return connectionSetting.ConnectionString;
             }
         }
 
