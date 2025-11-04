@@ -8,13 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EmployeeManagement
+namespace EmployeeManagement.Dialogs
 {
-    public partial class Form1 : Form
+    public partial class frmManageTasks : Form
     {
-        public Form1()
+        public frmManageTasks()
         {
             InitializeComponent();
+        }
+
+        private void page_Task1_Load(object sender, EventArgs e)
+        {
+            //frmTask frmTask = new frmTask(null);
         }
     }
 }

@@ -10,11 +10,7 @@ namespace EmployeeManagement.Models
         public string FileName { get; set; }
         public int CreatedBy { get; set; }
 
-        public DateTime CreatedAt
-        {
-            get; set; // For display
-        }
-
+        public DateTime CreatedAt{ get; set; } // For display
         public string EmployeeName { get; set; }
 
         public string CreatedByName { get; set; }

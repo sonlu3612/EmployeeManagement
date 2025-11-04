@@ -19,7 +19,7 @@ namespace EmployeeManagement.DAL.Helpers
         {
             get
             {
-                return ConfigurationManager.ConnectionStrings["EmployeeManagementDB"].ConnectionString;
+                return ConfigurationManager.ConnectionStrings["ProjectManagementDB"].ConnectionString;
             }
         }
 

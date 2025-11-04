@@ -10,53 +10,31 @@ namespace EmployeeManagement.DAL.Repositories
 {
     public class UserRepository : IRepository<User>
     {
-        public User ValidateLogin(string phoneOrEmail, string passwordHash)
+        /// <summary>
+        /// Validates user login credentials
+        /// Password must be pre-hashed before calling this method
+        /// Only returns active users (IsActive = 1)
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <param name="passwordHash">Pre-hashed password</param>
+        /// <returns>User object if valid, null if invalid</returns>
+        public User ValidateLogin(string email, string passwordHash)
         {
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@PhoneOrEmail", phoneOrEmail ?? (object)DBNull.Value),
+                    new SqlParameter("@Email", email ?? (object)DBNull.Value),
                     new SqlParameter("@PasswordHash", passwordHash ?? (object)DBNull.Value)
                 };
 
-                string sql =
-                    @"SELECT u.UserID, u.Phone, u.Email, u.Role, u.IsActive, u.CreatedDate
-                    FROM Users u
-                    INNER JOIN Employees e ON u.UserID = e.EmployeeID
-                    WHERE (u.Phone = @PhoneOrEmail OR u.Email = @PhoneOrEmail)
-                    AND u.PasswordHash = @PasswordHash
-                    AND u.IsActive = 1";
-
-                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return null;
-                }
-
-                return MapDataRowToUserWithoutPassword(dt.Rows[0]);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[UserRepository.ValidateLogin] Lỗi: {ex.Message}");
-                return null;
-            }
-        }
-
-        public User GetByPhone(string phone)
-        {
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@Phone", phone ?? (object)DBNull.Value)
-                };
-
-                string sql =
-                    @"SELECT UserID, Phone, Email, Role, IsActive, CreatedDate
-                    FROM Users
-                    WHERE Phone = @Phone";
+                // Query with username, password hash, and check IsActive = 1
+                string sql = 
+                    @"SELECT UserID,Phone, Email, Role, IsActive, CreatedDate 
+                    FROM Users 
+                    WHERE Email = @Email
+                    AND PasswordHash = @PasswordHash 
+                    AND IsActive = 1";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
 
@@ -104,35 +82,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
         }
 
-        public User GetByEmployeeId(int employeeId)
-        {
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@EmployeeID", employeeId)
-                };
-
-                string sql =
-                    @"SELECT UserID, Phone, Email, Role, IsActive, CreatedDate
-                    FROM Users
-                    WHERE UserID = @EmployeeID";
-
-                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
-                if (dt.Rows.Count == 0)
-                {
-                    return null;
-                }
-
-                return MapDataRowToUserWithoutPassword(dt.Rows[0]);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[UserRepository.GetByEmployeeId] Lỗi: {ex.Message}");
-                throw;
-            }
-        }
 
         public List<User> GetAll()
         {
