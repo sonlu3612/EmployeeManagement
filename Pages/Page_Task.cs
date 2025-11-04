@@ -62,15 +62,6 @@ namespace EmployeeManagement.Pages
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
             menuStrip.Show(tableTask, e.Location);
-            //var selectedIndex = tableTask.SelectedIndex - 1;
-            //if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
-            //{
-            //    var task = datalist[selectedIndex];
-            //    frmTask frmTask = new frmTask(task);
-            //    frmTask.Show();
-
-            //    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
-            //}
 
         }
 
@@ -92,10 +83,6 @@ namespace EmployeeManagement.Pages
                 string displayText = $"{emp.EmployeeID} - {emp.FullName}";
                 ddownEmployee.Items.Add(displayText);
             }
-            
-
-
-
         }
 
         private void ddownEmployee_SelectedValueChanged(object sender, EventArgs e)
@@ -121,8 +108,6 @@ namespace EmployeeManagement.Pages
                     tableTask.DataSource = tasks.ToList();
 
                 }
-
-                
             }
             catch (Exception ex)
             {
@@ -169,9 +154,6 @@ namespace EmployeeManagement.Pages
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
             }
-           
-            
-
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -189,9 +171,6 @@ namespace EmployeeManagement.Pages
                     loadData();
 
                 }
-
-
-
             }
         }
     }

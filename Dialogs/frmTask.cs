@@ -37,6 +37,7 @@ namespace EmployeeManagement.Dialogs
             ddownOwnerID.Text = _task.AssignedTo.HasValue ? _task.AssignedTo.Value.ToString() : "";
             ddownStatus.Text = _task.Status;
             dateStart.Value = _task.CreatedDate;
+            dateEnd.Value = _task.Deadline;
 
             loadProjectsID();
             loadEmployeesID();
@@ -74,12 +75,6 @@ namespace EmployeeManagement.Dialogs
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            //int id = _task.TaskID;
-
-           
-
-
-            
             try
             {
                 if(_task.TaskID == 0)
@@ -114,7 +109,8 @@ namespace EmployeeManagement.Dialogs
                         Status = ddownStatus.Text,
                         //CreatedDate = DateTime.Now
                         CreatedDate = _task.CreatedDate,
-                        Priority = ddownPriority.Text
+                        Priority = ddownPriority.Text,
+                        Deadline = dateEnd.Value
                     };
 
                     TaskRepository taskRepository = new TaskRepository();
@@ -147,6 +143,11 @@ namespace EmployeeManagement.Dialogs
         private void ddownPriority_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             ddownPriority.Text = ddownPriority.SelectedValue.ToString();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
