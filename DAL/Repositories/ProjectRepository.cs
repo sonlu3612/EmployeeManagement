@@ -24,13 +24,23 @@ namespace EmployeeManagement.DAL.Repositories
 
             try
             {
-                string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
-                    FROM Projects";
+                string sql = @"
+            SELECT 
+                p.ProjectID,
+                p.ProjectName,
+                p.Description,
+                p.StartDate,
+                p.EndDate,
+                p.Status,
+                p.CreatedBy,
+                e.FullName AS CreatedByName,
+                p.CreatedDate
+            FROM Projects p
+            LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
+            ORDER BY p.ProjectID DESC";
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Project
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -44,6 +54,7 @@ namespace EmployeeManagement.DAL.Repositories
 
             return projects;
         }
+
 
         /// <summary>
         /// Lấy thông tin một dự án theo ID
@@ -106,7 +117,6 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    //new SqlParameter("@Budget", entity.Budget),
                     new SqlParameter("@CreatedBy", entity.CreatedBy)
                  };
 
@@ -148,8 +158,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
-                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    //new SqlParameter("@Budget", entity.Budget)
+                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value)
                  };
 
                 string sql =
@@ -158,8 +167,8 @@ namespace EmployeeManagement.DAL.Repositories
                     Description = @Description,
                     StartDate = @StartDate,
                     EndDate = @EndDate,
-                    Status = @Status,
-                 
+                    Status = @Status
+                    Budget = @Budget
                     WHERE ProjectID = @ProjectID";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -308,11 +317,9 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping EndDate (nullable DateTime)
                 EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
 
-                // Mapping Status (nullable string)
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
 
-                // Mapping Budget (decimal bắt buộc)
-                //Budget = row["Budget"] != DBNull.Value ? Convert.ToDecimal(row["Budget"]) : 0m
+                CreatedBy = row["CreatedBy"] != DBNull.Value ? Convert.ToInt32(row["CreatedBy"]) : 0,
             };
         }
     }

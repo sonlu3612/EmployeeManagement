@@ -17,9 +17,14 @@ namespace EmployeeManagement.Dialogs
             InitializeComponent();
         }
 
+        public void frmManageTasks_Load(int id)
+        {
+            page_Task1.Page_ManageTask_Load(id);
+        }
+
         private void page_Task1_Load(object sender, EventArgs e)
         {
-            //frmTask frmTask = new frmTask(null);
+
         }
     }
 }

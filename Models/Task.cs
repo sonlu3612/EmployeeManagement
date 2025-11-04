@@ -6,12 +6,12 @@ namespace EmployeeManagement.Models
     {
         public int TaskID { get; set; }
         public int ProjectID { get; set; }
-        public string ProjectName { get; set; } // For display
+        public string ProjectName { get; set; } 
         public string TaskName { get; set; }
         public string Description { get; set; }
         public int? AssignedTo { get; set; }
         public int CreatedBy { get; set; }
-        public string EmployeeName { get; set; } // For display
+        public string EmployeeName { get; set; } 
         public string Status { get; set; }
         public string Priority { get; set; }
         public DateTime? Deadline { get; set; }

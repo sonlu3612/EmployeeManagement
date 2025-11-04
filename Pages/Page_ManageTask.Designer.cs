@@ -35,8 +35,8 @@
             this.ddownStatus = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
-            this.input1 = new AntdUI.Input();
-            this.tableTask = new AntdUI.Table();
+            this.txtTim = new AntdUI.Input();
+            this.tbTask = new AntdUI.Table();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,7 +49,7 @@
             this.panel1.Controls.Add(this.ddownStatus);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
-            this.panel1.Controls.Add(this.input1);
+            this.panel1.Controls.Add(this.txtTim);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -63,15 +63,15 @@
             this.btnAdd.BorderWidth = 2F;
             this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(692, 3);
+            this.btnAdd.Location = new System.Drawing.Point(650, 0);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 35);
+            this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDelete
             // 
@@ -79,14 +79,16 @@
             this.btnDelete.BorderWidth = 2F;
             this.btnDelete.DefaultBack = System.Drawing.Color.Red;
             this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
+            this.btnDelete.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDelete.ForeActive = System.Drawing.Color.Red;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(612, 3);
+            this.btnDelete.Location = new System.Drawing.Point(724, 0);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(74, 35);
+            this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 
@@ -140,30 +142,30 @@
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
             // 
-            // input1
+            // txtTim
             // 
-            this.input1.Location = new System.Drawing.Point(3, 3);
-            this.input1.Name = "input1";
-            this.input1.PlaceholderText = "Tìm kiếm ...";
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
             // 
-            // tableTask
+            // tbTask
             // 
-            this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableTask.Gap = 12;
-            this.tableTask.Location = new System.Drawing.Point(0, 41);
-            this.tableTask.Name = "tableTask";
-            this.tableTask.Size = new System.Drawing.Size(798, 416);
-            this.tableTask.TabIndex = 1;
-            this.tableTask.Text = "table1";
+            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTask.Gap = 12;
+            this.tbTask.Location = new System.Drawing.Point(0, 41);
+            this.tbTask.Name = "tbTask";
+            this.tbTask.Size = new System.Drawing.Size(798, 416);
+            this.tbTask.TabIndex = 1;
+            this.tbTask.Text = "table1";
             // 
             // Page_ManageTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tableTask);
+            this.Controls.Add(this.tbTask);
             this.Controls.Add(this.panel1);
             this.Name = "Page_ManageTask";
             this.Size = new System.Drawing.Size(798, 457);
@@ -176,12 +178,12 @@
 
         private AntdUI.Panel panel1;
         private AntdUI.Button btnSearch;
-        private AntdUI.Input input1;
+        private AntdUI.Input txtTim;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.Button btnAdd;
-        private AntdUI.Table tableTask;
+        private AntdUI.Table tbTask;
     }
 }
