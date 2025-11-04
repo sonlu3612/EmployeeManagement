@@ -84,9 +84,6 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
-    <Compile Include="Auth\frmLogin.Designer.cs">
-      <DependentUpon>frmLogin.cs</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\frmInforXoa.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,6 +170,12 @@
     </Compile>
     <Compile Include="Pages\Page_Employee.Designer.cs">
       <DependentUpon>Page_Employee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_Project.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Project.Designer.cs">
+      <DependentUpon>Page_Project.cs</DependentUpon>
     </Compile>
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>

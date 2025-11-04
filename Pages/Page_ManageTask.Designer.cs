@@ -56,7 +56,6 @@
             this.panel1.Size = new System.Drawing.Size(798, 41);
             this.panel1.TabIndex = 0;
             this.panel1.Text = "panel1";
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
             // 
             // btnAdd
             // 

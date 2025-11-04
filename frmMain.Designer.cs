@@ -167,7 +167,6 @@ namespace EmployeeManagement
             // 
             // tabProject
             // 
-            this.tabProject.Controls.Add(this.page_Project1);
             this.tabProject.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabProject.Location = new System.Drawing.Point(0, 0);
             this.tabProject.Name = "tabProject";
