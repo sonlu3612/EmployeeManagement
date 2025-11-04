@@ -19,7 +19,8 @@ namespace EmployeeManagement
             _currentUser = currentUser;
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        // Khi click vào dòng trong bảng
+        private void TblNhanVien_Click(object sender, EventArgs e)
         {
 
             tabChangePassword.Visible = false;
@@ -74,7 +75,7 @@ namespace EmployeeManagement
                 frmInfor.ShowDialog();
                 
             }
-            if(select == "My Profile")
+            if (select == "My Profile")
             {
                 tabs1.SelectedTab = tabMyProfile;
             }
@@ -128,7 +129,6 @@ namespace EmployeeManagement
                 labelMatKhau.Text = "Mật khẩu cũ không đúng!";
                 txtMKC.Focus();
             }
-
         }
     }
 }

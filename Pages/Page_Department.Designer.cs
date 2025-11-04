@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Pages
 {
-    partial class Page_ManageTask
+    partial class Page_Department
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.table1 = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnAdd = new AntdUI.Button();
             this.btnDelete = new AntdUI.Button();
@@ -35,10 +36,19 @@
             this.ddownStatus = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
-            this.txtTim = new AntdUI.Input();
-            this.tbTask = new AntdUI.Table();
+            this.input1 = new AntdUI.Input();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // table1
+            // 
+            this.table1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.table1.Gap = 12;
+            this.table1.Location = new System.Drawing.Point(0, 41);
+            this.table1.Name = "table1";
+            this.table1.Size = new System.Drawing.Size(769, 454);
+            this.table1.TabIndex = 5;
+            this.table1.Text = "table1";
             // 
             // panel1
             // 
@@ -49,14 +59,13 @@
             this.panel1.Controls.Add(this.ddownStatus);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
-            this.panel1.Controls.Add(this.txtTim);
+            this.panel1.Controls.Add(this.input1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(798, 41);
-            this.panel1.TabIndex = 0;
+            this.panel1.Size = new System.Drawing.Size(769, 41);
+            this.panel1.TabIndex = 4;
             this.panel1.Text = "panel1";
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
             // 
             // btnAdd
             // 
@@ -64,13 +73,12 @@
             this.btnAdd.BorderWidth = 2F;
             this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(650, 0);
+            this.btnAdd.Location = new System.Drawing.Point(692, 3);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 41);
+            this.btnAdd.Size = new System.Drawing.Size(74, 35);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
             // 
@@ -80,16 +88,14 @@
             this.btnDelete.BorderWidth = 2F;
             this.btnDelete.DefaultBack = System.Drawing.Color.Red;
             this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
-            this.btnDelete.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDelete.ForeActive = System.Drawing.Color.Red;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(724, 0);
+            this.btnDelete.Location = new System.Drawing.Point(612, 3);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(74, 41);
+            this.btnDelete.Size = new System.Drawing.Size(74, 35);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownEmployee
             // 
@@ -128,7 +134,6 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
-            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -144,33 +149,23 @@
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
             // 
-            // txtTim
+            // input1
             // 
-            this.txtTim.Location = new System.Drawing.Point(3, 3);
-            this.txtTim.Name = "txtTim";
-            this.txtTim.PlaceholderText = "Tìm kiếm ...";
-            this.txtTim.Radius = 10;
-            this.txtTim.Size = new System.Drawing.Size(216, 35);
-            this.txtTim.TabIndex = 0;
+            this.input1.Location = new System.Drawing.Point(3, 3);
+            this.input1.Name = "input1";
+            this.input1.PlaceholderText = "Tìm kiếm ...";
+            this.input1.Radius = 10;
+            this.input1.Size = new System.Drawing.Size(216, 35);
+            this.input1.TabIndex = 0;
             // 
-            // tbTask
-            // 
-            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbTask.Gap = 12;
-            this.tbTask.Location = new System.Drawing.Point(0, 41);
-            this.tbTask.Name = "tbTask";
-            this.tbTask.Size = new System.Drawing.Size(798, 416);
-            this.tbTask.TabIndex = 1;
-            this.tbTask.Text = "table1";
-            // 
-            // Page_ManageTask
+            // Page_Department
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tbTask);
+            this.Controls.Add(this.table1);
             this.Controls.Add(this.panel1);
-            this.Name = "Page_ManageTask";
-            this.Size = new System.Drawing.Size(798, 457);
+            this.Name = "Page_Department";
+            this.Size = new System.Drawing.Size(769, 495);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -178,14 +173,14 @@
 
         #endregion
 
+        private AntdUI.Table table1;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnSearch;
-        private AntdUI.Input txtTim;
-        private AntdUI.Button btnSync;
+        private AntdUI.Button btnAdd;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownEmployee;
         private AntdUI.Dropdown ddownStatus;
-        private AntdUI.Button btnAdd;
-        private AntdUI.Table tbTask;
+        private AntdUI.Button btnSync;
+        private AntdUI.Button btnSearch;
+        private AntdUI.Input input1;
     }
 }
