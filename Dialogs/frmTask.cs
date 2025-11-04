@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.DAL.Repositories;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -37,10 +38,13 @@ namespace EmployeeManagement.Dialogs
             ddownOwnerID.Text = _task.AssignedTo.HasValue ? _task.AssignedTo.Value.ToString() : "";
             ddownStatus.Text = _task.Status;
             dateStart.Value = _task.CreatedDate;
+            ddownPriority.Text = _task.Priority;
             dateEnd.Value = _task.Deadline;
 
             loadProjectsID();
             loadEmployeesID();
+
+            ddownProjectID.Enabled = false;
 
         }
 
@@ -63,6 +67,17 @@ namespace EmployeeManagement.Dialogs
             foreach (var id in IDs)
             {
                 ddownOwnerID.Items.Add(id.EmployeeID);
+            }
+        }
+
+        private TaskRepository taskRepository = new TaskRepository();
+        private void loadPriority()
+        {
+            var Prioritys = taskRepository.GetAll();
+            ddownPriority.Items.Clear();
+            foreach(var id in Prioritys)
+            {
+                ddownPriority.Items.Add(id.Priority);
             }
         }
 
