@@ -101,6 +101,10 @@ CREATE TABLE dbo.Employees (
 PRINT 'Table [Employees] created with AvatarPath.';
 GO
 
+ALTER TABLE dbo.Employees
+    ADD GENDER NVARCHAR(20) NOT NULL DEFAULT ('NotSpecified')
+
+
 ALTER TABLE dbo.Departments
     ADD CONSTRAINT FK_Departments_Manager FOREIGN KEY (ManagerID) 
    REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL;

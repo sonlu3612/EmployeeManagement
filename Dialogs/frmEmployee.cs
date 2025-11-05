@@ -1,8 +1,12 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +16,162 @@ namespace EmployeeManagement.Dialogs
 {
     public partial class frmEmployee : Form
     {
+        private readonly IRepository<Employee> _employeeRepository = new EmployeeRepository();
+        private readonly IRepository<Department> _departmentRepository = new DepartmentRepository();
+        private readonly UserRepository _userRepository = new UserRepository();
         public frmEmployee()
         {
             InitializeComponent();
+        }
+
+        private void frmEmployee_Load(object sender, EventArgs e)
+        {
+            ddownRole.Items.Add("Admin");
+            ddownRole.Items.Add("Employee");
+            ddownGT.Items.Add("Nam");
+            ddownGT.Items.Add("Nữ");
+            if (ddownDepartment.Items.Count == 0)
+            {
+                ddownDepartment.Items.AddRange(_departmentRepository.GetAll().Select(p => p.DepartmentName).Distinct().ToArray());
+            }
+        }
+
+        private void ddownRole_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            ddownRole.Text = ddownRole.SelectedValue.ToString();
+        }
+
+        private void ddownDepartment_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            ddownDepartment.Text = ddownDepartment.SelectedValue.ToString();
+        }
+
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (txtName == null || string.IsNullOrWhiteSpace(txtName.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập họ và tên!");
+                return;
+            }
+
+            if (txtEmail == null || string.IsNullOrWhiteSpace(txtEmail.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập email!");
+                return;
+            }
+
+            if (ddownRole == null || string.IsNullOrWhiteSpace(ddownRole.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn vai trò!");
+                return;
+            }
+
+            if (ddownGT == null || string.IsNullOrWhiteSpace(ddownGT.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn giới tính!");
+                return;
+            }
+
+            if (txtPosition == null || string.IsNullOrWhiteSpace(txtPosition.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập chức vụ!");
+                return;
+            }
+
+            if (ddownDepartment == null || string.IsNullOrWhiteSpace(ddownDepartment.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn phòng ban!");
+                return;
+            }
+
+            if (txtDienThoai == null || string.IsNullOrWhiteSpace(txtDienThoai.Text))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập điện thoại!");
+                return;
+            }
+
+            if (dateStart == null)
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn ngày bắt đầu!");
+                return;
+            }
+
+            var department = _departmentRepository.GetAll()
+                .FirstOrDefault(d => d.DepartmentName == ddownDepartment.Text);
+
+            var newUser = new User
+            {
+                Email = txtEmail.Text.Trim(),
+                Role = ddownRole.Text.Trim(),
+                PasswordHash = "123456",
+                CreatedDate = DateTime.Now,
+                IsActive = true
+            };
+
+            var userID = _userRepository.InsertAndReturnId(newUser);
+
+            var newEmployee = new Employee
+            {
+                AvatarPath = img.Tag?.ToString() ?? string.Empty,
+                EmployeeID = userID,
+                FullName = txtName.Text.Trim(),
+                Position = txtPosition.Text.Trim(),
+                Gender = string.IsNullOrWhiteSpace(ddownGT.Text) ? "NotSpecified" : ddownGT.Text.Trim(),
+                DepartmentID = department.DepartmentID,
+                HireDate = (DateTime)dateStart.Value,
+                IsActive = true
+            };
+
+            this.Tag = newEmployee;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+
+        private void ddownGT_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            ddownGT.Text = e.Value?.ToString();
+        }
+
+        private void btnAnh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Title = "Chọn ảnh đại diện";
+                    openFileDialog.Filter = "Ảnh (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png";
+                    openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string selectedFile = openFileDialog.FileName;
+
+                        string avatarFolder = Path.Combine(Application.StartupPath, "Assets", "Avatars");
+                        if (!Directory.Exists(avatarFolder))
+                            Directory.CreateDirectory(avatarFolder);
+
+                        string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(selectedFile)}";
+                        string destPath = Path.Combine(avatarFolder, newFileName);
+
+                        File.Copy(selectedFile, destPath, true);
+                        MessageBox.Show($"Ảnh được lưu tại:\n{destPath}");
+
+                        img.Image = Image.FromFile(destPath);
+
+                        img.Tag = $"Assets/Avatars/{newFileName}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AntdUI.Message.error(this.FindForm(), "Lỗi khi chọn ảnh: " + ex.Message);
+            }
         }
     }
 }

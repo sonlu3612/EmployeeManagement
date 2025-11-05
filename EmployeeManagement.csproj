@@ -265,6 +265,7 @@
   <!-- Content / None files -->
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="bin\Debug\EmployeeManagement.exe.config" />
     <None Include="DAL\Services\FileService_UsageGuide.md" />
     <None Include="packages.config" />
     <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
@@ -275,6 +276,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="bin\Debug\EmployeeManagement.exe" />
+    <Content Include="bin\Debug\EmployeeManagement.pdb" />
     <Content Include="Database\scripts.sql" />
     <Content Include="Database\schema.sql" />
     <Content Include="Database\stored_procedures.sql" />
@@ -304,6 +307,10 @@
     <Content Include="Assets\Icons\rotate-right-white.png" />
     <Content Include="Assets\Icons\user_blacl.png" />
     <Content Include="Assets\Images\back.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Avatars\" />
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

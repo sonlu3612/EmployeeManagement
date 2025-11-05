@@ -27,6 +27,7 @@ namespace EmployeeManagement.Pages
         private TaskRepository taskRepository = new TaskRepository();
         private void Page_Task_Load(object sender, EventArgs e)
         {
+            if (IsInDesignMode()) return;
             tableTask.Columns.Add(new Column("ProjectName", "Dự án"));
             tableTask.Columns.Add(new Column("TaskName", "Nhiệm vụ"));
             tableTask.Columns.Add(new Column("EmployeeName", "Tạo bởi"));
@@ -38,6 +39,12 @@ namespace EmployeeManagement.Pages
 
             loadData();
             loadEmployeesName();
+        }
+
+        private bool IsInDesignMode()
+        {
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || (this.Site != null && this.Site.DesignMode);
         }
 
         private void loadData()

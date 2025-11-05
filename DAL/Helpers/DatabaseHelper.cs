@@ -74,14 +74,8 @@ namespace EmployeeManagement.DAL.Helpers
             finally
             {
                 // Giải phóng tài nguyên đúng cách
-                if (adapter != null)
-                {
-                    adapter.Dispose();
-                }
-                if (command != null)
-                {
-                    command.Dispose();
-                }
+                adapter?.Dispose();
+                command?.Dispose();
                 if (connection != null && connection.State == ConnectionState.Open)
                 {
                     connection.Close();
@@ -232,14 +226,8 @@ namespace EmployeeManagement.DAL.Helpers
             finally
             {
                 // Giải phóng tài nguyên đúng cách
-                if (adapter != null)
-                {
-                    adapter.Dispose();
-                }
-                if (command != null)
-                {
-                    command.Dispose();
-                }
+                adapter?.Dispose();
+                command?.Dispose();
                 if (connection != null && connection.State == ConnectionState.Open)
                 {
                     connection.Close();

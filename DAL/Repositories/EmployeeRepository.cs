@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -25,7 +26,7 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 string sql =
-                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                     e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
@@ -63,7 +64,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                     e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
@@ -102,6 +103,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@EmployeeID", entity.EmployeeID),
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
                     new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
+                    new SqlParameter("@Gender", entity.Gender ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
                     new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
@@ -110,8 +112,8 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"INSERT INTO Employees (EmployeeID, FullName, Position, DepartmentID, AvatarPath, Address, HireDate, IsActive)
-                    VALUES (@EmployeeID, @FullName, @Position, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
+                    @"INSERT INTO Employees (EmployeeID, FullName, Position, Gender, DepartmentID, AvatarPath, Address, HireDate, IsActive)
+                    VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
 
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -137,6 +139,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@EmployeeID", entity.EmployeeID),
                     new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
                     new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
+                    new SqlParameter("@Gender", entity.Gender ?? (object)DBNull.Value),
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
                     new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
@@ -148,6 +151,7 @@ namespace EmployeeManagement.DAL.Repositories
                     @"UPDATE Employees
                     SET FullName = @FullName,
                     Position = @Position,
+                    Gender = @Gender,
                     DepartmentID = @DepartmentID,
                     AvatarPath = @AvatarPath,
                     Address = @Address,
@@ -207,7 +211,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                     e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
@@ -248,7 +252,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.DepartmentID,
+                    @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                     e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                     d.DepartmentName
                     FROM Employees e
@@ -293,6 +297,8 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping Position (nullable string)
                 Position = row["Position"] != DBNull.Value ? row["Position"].ToString() : null,
 
+                Gender = row["Gender"] != DBNull.Value ? row["Gender"].ToString() : null,
+
                 // Mapping DepartmentID (nullable int)
                 DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
 
@@ -313,6 +319,86 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping IsActive (bool bắt buộc)
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false
             };
+        }
+
+        public List<Employee> GetForGrid()
+        {
+            List<Employee> list = new List<Employee>();
+
+            try
+            {
+                string sql = @"
+                SELECT e.EmployeeID, e.FullName, e.Gender, e.AvatarPath,
+                       u.Email, u.Role,
+                       ISNULL((
+                           SELECT COUNT(DISTINCT p.ProjectID)
+                           FROM Projects p
+                           LEFT JOIN Tasks t ON t.ProjectID = p.ProjectID
+                           WHERE p.CreatedBy = e.EmployeeID OR t.AssignedTo = e.EmployeeID
+                       ), 0) AS TotalProjects,
+                       ISNULL((
+                           SELECT COUNT(DISTINCT p.ProjectID)
+                           FROM Projects p
+                           LEFT JOIN Tasks t ON t.ProjectID = p.ProjectID
+                           WHERE (p.CreatedBy = e.EmployeeID OR t.AssignedTo = e.EmployeeID)
+                             AND p.Status = 'Completed'
+                       ), 0) AS CompletedProjects,
+                       ISNULL((
+                           SELECT COUNT(*) FROM Tasks t2 WHERE t2.AssignedTo = e.EmployeeID
+                       ), 0) AS TotalTasks,
+                       ISNULL((
+                           SELECT COUNT(*) FROM Tasks t3 WHERE t3.AssignedTo = e.EmployeeID AND t3.Status = 'Done'
+                       ), 0) AS CompletedTasks
+                FROM Employees e
+                LEFT JOIN Users u ON u.UserID = e.EmployeeID
+                WHERE e.IsActive = 1;
+                ";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    Employee emp = new Employee
+                    {
+                        EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
+                        FullName = row["FullName"]?.ToString(),
+                        Gender = row["Gender"]?.ToString(),
+                        Email = row["Email"]?.ToString(),
+                        Role = row["Role"]?.ToString(),
+                        AvatarPath = row["AvatarPath"]?.ToString(),
+                    };
+
+                    int totalPrj = Convert.ToInt32(row["TotalProjects"]);
+                    int completedPrj = Convert.ToInt32(row["CompletedProjects"]);
+                    int totalTask = Convert.ToInt32(row["TotalTasks"]);
+                    int completedTask = Convert.ToInt32(row["CompletedTasks"]);
+
+                    emp.ProjectSummary = $"{completedPrj}/{totalPrj}";
+                    emp.TaskSummary = $"{completedTask}/{totalTask}";
+
+                    // Đọc ảnh từ đường dẫn
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(emp.AvatarPath) && File.Exists(emp.AvatarPath))
+                            emp.AvatarData = File.ReadAllBytes(emp.AvatarPath);
+                        else
+                            emp.AvatarData = null;
+                    }
+                    catch
+                    {
+                        emp.AvatarData = null;
+                    }
+
+                    list.Add(emp);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[EmployeeRepository.GetForGrid] Lỗi: {ex.Message}");
+                throw;
+            }
+
+            return list;
         }
     }
 }
