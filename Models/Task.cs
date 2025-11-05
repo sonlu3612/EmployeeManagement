@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EmployeeManagement.Models
 {
@@ -9,7 +10,6 @@ namespace EmployeeManagement.Models
         public string ProjectName { get; set; } 
         public string TaskName { get; set; }
         public string Description { get; set; }
-        public int? AssignedTo { get; set; }
         public int CreatedBy { get; set; }
         public string EmployeeName { get; set; } 
         public string Status { get; set; }
@@ -17,5 +17,8 @@ namespace EmployeeManagement.Models
         public DateTime? Deadline { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdatedDate { get; set; }
+
+        public List<int> AssignedEmployeeIds { get; set; } = new List<int>();  // List ID employees assigned
+        public List<string> AssignedEmployeeNames { get; set; } = new List<string>();
     }
 }

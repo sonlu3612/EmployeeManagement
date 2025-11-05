@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Policy;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -18,6 +19,8 @@ namespace EmployeeManagement.DAL.Repositories
         /// <param name="username">Username</param>
         /// <param name="passwordHash">Pre-hashed password</param>
         /// <returns>User object if valid, null if invalid</returns>
+
+        private readonly HashPassword hp = new HashPassword();
         public User ValidateLogin(string email, string passwordHash)
         {
             try
@@ -255,5 +258,26 @@ namespace EmployeeManagement.DAL.Repositories
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
             };
         }
+
+        public int InsertAndReturnId(User user)
+        {
+            string sql = @"
+                INSERT INTO Users (Phone, Email, PasswordHash, Role, IsActive, CreatedDate)
+                OUTPUT INSERTED.UserID
+                VALUES (@Phone, @Email, @PasswordHash, @Role, 1, GETDATE());
+            ";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+            new SqlParameter("@Phone", user.Phone ?? (object)DBNull.Value),
+            new SqlParameter("@Email", user.Email ?? (object)DBNull.Value),
+            new SqlParameter("@PasswordHash", hp.Hash(user.PasswordHash)),
+            new SqlParameter("@Role", user.Role)
+            };
+
+            object result = DatabaseHelper.ExecuteScalar(sql, parameters);
+            return Convert.ToInt32(result);
+        }
+
     }
 }

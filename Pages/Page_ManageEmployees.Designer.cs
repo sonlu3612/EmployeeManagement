@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Pages
 {
-    partial class Page_ManageTask
+    partial class Page_ManageEmployees
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,33 +28,43 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.tbNV = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnAdd = new AntdUI.Button();
             this.btnDelete = new AntdUI.Button();
-            this.ddownEmployee = new AntdUI.Dropdown();
-            this.ddownStatus = new AntdUI.Dropdown();
-            this.txtTim = new AntdUI.Input();
-            this.tbTask = new AntdUI.Table();
+            this.ddownGender = new AntdUI.Dropdown();
+            this.ddownRole = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
+            this.txtTim = new AntdUI.Input();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // tbNV
+            // 
+            this.tbNV.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbNV.Gap = 12;
+            this.tbNV.Location = new System.Drawing.Point(0, 41);
+            this.tbNV.Name = "tbNV";
+            this.tbNV.Size = new System.Drawing.Size(836, 482);
+            this.tbNV.TabIndex = 3;
+            this.tbNV.Text = "table1";
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.btnDelete);
-            this.panel1.Controls.Add(this.ddownEmployee);
-            this.panel1.Controls.Add(this.ddownStatus);
+            this.panel1.Controls.Add(this.ddownGender);
+            this.panel1.Controls.Add(this.ddownRole);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
             this.panel1.Controls.Add(this.txtTim);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(798, 41);
-            this.panel1.TabIndex = 0;
+            this.panel1.Size = new System.Drawing.Size(836, 41);
+            this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
             // 
             // btnAdd
@@ -67,7 +77,7 @@
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(650, 0);
+            this.btnAdd.Location = new System.Drawing.Point(688, 0);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
@@ -84,64 +94,38 @@
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDelete.ForeActive = System.Drawing.Color.Red;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(724, 0);
+            this.btnDelete.Location = new System.Drawing.Point(762, 0);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // ddownEmployee
+            // ddownGender
             // 
-            this.ddownEmployee.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownEmployee.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownEmployee.ForeColor = System.Drawing.Color.White;
-            this.ddownEmployee.Location = new System.Drawing.Point(471, 3);
-            this.ddownEmployee.Name = "ddownEmployee";
-            this.ddownEmployee.ShowArrow = true;
-            this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
-            this.ddownEmployee.TabIndex = 4;
-            this.ddownEmployee.Text = "Nhân viên";
-            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
+            this.ddownGender.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownGender.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownGender.ForeColor = System.Drawing.Color.White;
+            this.ddownGender.Location = new System.Drawing.Point(471, 3);
+            this.ddownGender.Name = "ddownGender";
+            this.ddownGender.ShowArrow = true;
+            this.ddownGender.Size = new System.Drawing.Size(135, 35);
+            this.ddownGender.TabIndex = 4;
+            this.ddownGender.Text = "Giới tính";
+            this.ddownGender.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownGender_SelectedValueChanged);
             // 
-            // ddownStatus
+            // ddownRole
             // 
-            this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownStatus.ForeColor = System.Drawing.Color.White;
-            this.ddownStatus.Items.AddRange(new object[] {
-            "Tất cả",
-            "Cần làm",
-            "Đang thực hiện",
-            "Hoàn thành",
-            "Quá hạn"});
-            this.ddownStatus.Location = new System.Drawing.Point(330, 3);
-            this.ddownStatus.Name = "ddownStatus";
-            this.ddownStatus.ShowArrow = true;
-            this.ddownStatus.Size = new System.Drawing.Size(135, 35);
-            this.ddownStatus.TabIndex = 3;
-            this.ddownStatus.Text = "Trạng thái";
-            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
-            // 
-            // txtTim
-            // 
-            this.txtTim.Location = new System.Drawing.Point(3, 3);
-            this.txtTim.Name = "txtTim";
-            this.txtTim.PlaceholderText = "Tìm kiếm ...";
-            this.txtTim.Radius = 10;
-            this.txtTim.Size = new System.Drawing.Size(216, 35);
-            this.txtTim.TabIndex = 0;
-            // 
-            // tbTask
-            // 
-            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbTask.Gap = 12;
-            this.tbTask.Location = new System.Drawing.Point(0, 41);
-            this.tbTask.Name = "tbTask";
-            this.tbTask.Size = new System.Drawing.Size(798, 416);
-            this.tbTask.TabIndex = 1;
-            this.tbTask.Text = "table1";
-            this.tbTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tbTask_CellClick);
+            this.ddownRole.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownRole.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownRole.ForeColor = System.Drawing.Color.White;
+            this.ddownRole.Location = new System.Drawing.Point(330, 3);
+            this.ddownRole.Name = "ddownRole";
+            this.ddownRole.ShowArrow = true;
+            this.ddownRole.Size = new System.Drawing.Size(135, 35);
+            this.ddownRole.TabIndex = 3;
+            this.ddownRole.Text = "Vai trò";
+            this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -171,15 +155,25 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
-            // Page_ManageTask
+            // txtTim
+            // 
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
+            // 
+            // Page_ManageEmployees
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tbTask);
+            this.Controls.Add(this.tbNV);
             this.Controls.Add(this.panel1);
-            this.Name = "Page_ManageTask";
-            this.Size = new System.Drawing.Size(798, 457);
+            this.Name = "Page_ManageEmployees";
+            this.Size = new System.Drawing.Size(836, 523);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -187,14 +181,14 @@
 
         #endregion
 
+        private AntdUI.Table tbNV;
         private AntdUI.Panel panel1;
+        private AntdUI.Button btnAdd;
+        private AntdUI.Button btnDelete;
+        private AntdUI.Dropdown ddownGender;
+        private AntdUI.Dropdown ddownRole;
+        private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
         private AntdUI.Input txtTim;
-        private AntdUI.Button btnSync;
-        private AntdUI.Button btnDelete;
-        private AntdUI.Dropdown ddownEmployee;
-        private AntdUI.Dropdown ddownStatus;
-        private AntdUI.Button btnAdd;
-        private AntdUI.Table tbTask;
     }
 }

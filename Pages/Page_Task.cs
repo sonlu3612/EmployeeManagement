@@ -28,6 +28,7 @@ namespace EmployeeManagement.Pages
         private TaskRepository taskRepository = new TaskRepository();
         private void Page_Task_Load(object sender, EventArgs e)
         {
+            if (IsInDesignMode()) return;
             tableTask.Columns.Add(new Column("ProjectName", "Dự án"));
             tableTask.Columns.Add(new Column("TaskName", "Nhiệm vụ"));
             tableTask.Columns.Add(new Column("EmployeeName", "Tạo bởi"));
@@ -39,8 +40,12 @@ namespace EmployeeManagement.Pages
 
             loadData();
             loadEmployeesName();
+        }
 
-
+        private bool IsInDesignMode()
+        {
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || (this.Site != null && this.Site.DesignMode);
         }
 
         private void loadData()
@@ -186,6 +191,12 @@ namespace EmployeeManagement.Pages
             }
             if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
             {
+                Message.warn(this.FindForm(), "Vui lòng chọn công việc cần xóa!");
+                return;
+            }
+
+            if (tableTask.DataSource is IList<MyTask> datalist && selectedIndex < datalist.Count)
+            {
                 var task = datalist[selectedIndex];
                 //string massage = "Bạn có muốn xóa?";
                 //frmInforXoa frmInforXoa = new frmInforXoa(massage);
@@ -242,6 +253,7 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
+
     }
 }
    

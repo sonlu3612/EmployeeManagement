@@ -9,5 +9,7 @@ namespace EmployeeManagement.Models
         public string Description { get; set; }
         public int? ManagerID { get; set; }
         public string ManagerName { get; set; } // For display
+        public int EmployeeCount { get; set; }
+
     }
 }

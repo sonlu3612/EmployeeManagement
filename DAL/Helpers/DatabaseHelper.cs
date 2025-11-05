@@ -74,14 +74,8 @@ namespace EmployeeManagement.DAL.Helpers
             finally
             {
                 // Giải phóng tài nguyên đúng cách
-                if (adapter != null)
-                {
-                    adapter.Dispose();
-                }
-                if (command != null)
-                {
-                    command.Dispose();
-                }
+                adapter?.Dispose();
+                command?.Dispose();
                 if (connection != null && connection.State == ConnectionState.Open)
                 {
                     connection.Close();
@@ -232,10 +226,43 @@ namespace EmployeeManagement.DAL.Helpers
             finally
             {
                 // Giải phóng tài nguyên đúng cách
-                if (adapter != null)
+                adapter?.Dispose();
+                command?.Dispose();
+                if (connection != null && connection.State == ConnectionState.Open)
                 {
-                    adapter.Dispose();
+                    connection.Close();
+                    connection.Dispose();
                 }
+            }
+        }
+
+        internal static void ExecuteNonQuery(string deleteSql, SqlParameter sqlParameter)
+        {
+            SqlConnection connection = null;
+            SqlCommand command = null;
+            try
+            {
+                connection = GetConnection();
+                connection.Open();
+                command = new SqlCommand(deleteSql, connection);
+                command.CommandType = CommandType.Text;
+                // Thêm single parameter nếu có (không null)
+                if (sqlParameter != null)
+                {
+                    command.Parameters.Add(sqlParameter);
+                }
+                command.ExecuteNonQuery();  // Không cần return rowsAffected vì void
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi ra console (chế độ development)
+                Console.WriteLine($"[DatabaseHelper.ExecuteNonQuery (single param)] Lỗi: {ex.Message}");
+                Console.WriteLine($"SQL: {deleteSql}");
+                throw;
+            }
+            finally
+            {
+                // Giải phóng tài nguyên đúng cách
                 if (command != null)
                 {
                     command.Dispose();

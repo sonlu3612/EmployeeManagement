@@ -1,10 +1,11 @@
-﻿using System;
+﻿using EmployeeManagement.DAL.Helpers;
+using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using EmployeeManagement.DAL.Helpers;
-using EmployeeManagement.DAL.Interfaces;
-using EmployeeManagement.Models;
+using System.Linq;
 
 namespace EmployeeManagement.DAL.Repositories
 {
@@ -15,27 +16,26 @@ namespace EmployeeManagement.DAL.Repositories
     public class TaskRepository : IRepository<Task>
     {
         /// <summary>
-        /// Lấy danh sách tất cả task từ database sử dụng view vw_TaskDetails
-        /// View cung cấp đầy đủ thông tin bao gồm ProjectName và EmployeeName
+        /// Lấy danh sách tất cả task từ database
+        /// Sử dụng STRING_AGG để aggregate list employee names (cho multiple assignees)
         /// </summary>
         /// <returns>Danh sách tất cả task</returns>
         public List<Task> GetAll()
         {
             List<Task> tasks = new List<Task>();
-
             try
             {
                 string sql =
-                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
-                    p.ProjectName,
-                    e.FullName AS EmployeeName
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description,
+                      t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
+                      p.ProjectName,
+                      STRING_AGG(e.FullName, ', ') AS AssignedEmployeeNames  -- Aggregate names
                     FROM Tasks t
                     LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
-                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID";
-
+                    LEFT JOIN TaskAssignments ta ON t.TaskID = ta.TaskID
+                    LEFT JOIN Employees e ON ta.EmployeeID = e.EmployeeID
+                    GROUP BY t.TaskID, t.ProjectID, t.TaskTitle, t.Description, t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate, p.ProjectName";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -46,12 +46,11 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[TaskRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
-
             return tasks;
         }
 
         /// <summary>
-        /// Lấy thông tin một task theo ID sử dụng view vw_TaskDetails
+        /// Lấy thông tin một task theo ID
         /// </summary>
         /// <param name="id">ID của task</param>
         /// <returns>Đối tượng Task hoặc null nếu không tìm thấy</returns>
@@ -63,24 +62,22 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@TaskID", id)
                 };
-
                 string sql =
-                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
-                    p.ProjectName,
-                    e.FullName AS EmployeeName
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description,
+                      t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
+                      p.ProjectName,
+                      STRING_AGG(e.FullName, ', ') AS AssignedEmployeeNames
                     FROM Tasks t
                     LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
-                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
-                    WHERE t.TaskID = @TaskID";
-
+                    LEFT JOIN TaskAssignments ta ON t.TaskID = ta.TaskID
+                    LEFT JOIN Employees e ON ta.EmployeeID = e.EmployeeID
+                    WHERE t.TaskID = @TaskID
+                    GROUP BY t.TaskID, t.ProjectID, t.TaskTitle, t.Description, t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate, p.ProjectName";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
-
                 return MapDataRowToTask(dt.Rows[0]);
             }
             catch (Exception ex)
@@ -92,7 +89,7 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Thêm mới một task
-        /// Gọi stored procedure sp_Task_Insert
+        /// Insert task trước, sau đó insert assignments nếu có (cần gọi riêng method AssignEmployees)
         /// </summary>
         /// <param name="entity">Đối tượng Task cần thêm</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -105,17 +102,14 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", entity.ProjectID),
                     new SqlParameter("@TaskName", entity.TaskName ?? (object)DBNull.Value),
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@AssignedTo", entity.AssignedTo ?? (object)DBNull.Value),
                     new SqlParameter("@CreatedBy", entity.CreatedBy),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
                     new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
-
                 string sql =
-                    @"INSERT INTO Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Status, Priority, Deadline)
-                    VALUES (@ProjectID, @TaskName, @Description, @AssignedTo, @CreatedBy, @Status, @Priority, @Deadline)";
-
+                    @"INSERT INTO Tasks (ProjectID, TaskTitle, Description, CreatedBy, Status, Priority, Deadline)
+                    VALUES (@ProjectID, @TaskName, @Description, @CreatedBy, @Status, @Priority, @Deadline)";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -128,7 +122,7 @@ namespace EmployeeManagement.DAL.Repositories
 
         /// <summary>
         /// Cập nhật thông tin task
-        /// Gọi stored procedure sp_Task_Update
+        /// Assignments cập nhật riêng (gọi method AssignEmployees)
         /// </summary>
         /// <param name="entity">Đối tượng Task với dữ liệu cập nhật</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -142,24 +136,20 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", entity.ProjectID),
                     new SqlParameter("@TaskName", entity.TaskName ?? (object)DBNull.Value),
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@AssignedTo", entity.AssignedTo ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
                     new SqlParameter("@Priority", entity.Priority ?? (object)DBNull.Value),
                     new SqlParameter("@Deadline", entity.Deadline ?? (object)DBNull.Value)
                 };
-
                 string sql =
                     @"UPDATE Tasks
                     SET ProjectID = @ProjectID,
                     TaskTitle = @TaskName,
                     Description = @Description,
-                    AssignedTo = @AssignedTo,
                     Status = @Status,
                     Priority = @Priority,
                     Deadline = @Deadline,
                     UpdatedDate = GETDATE()
                     WHERE TaskID = @TaskID";
-
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -171,8 +161,7 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Xóa một task
-        /// Gọi stored procedure sp_Task_Delete
+        /// Xóa một task (cascade xóa assignments)
         /// </summary>
         /// <param name="id">ID của task cần xóa</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -184,7 +173,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@TaskID", id)
                 };
-
                 string sql = "DELETE FROM Tasks WHERE TaskID = @TaskID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -204,26 +192,24 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Task> GetByProject(int projectId)
         {
             List<Task> tasks = new List<Task>();
-
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@ProjectID", projectId)
                 };
-
                 string sql =
-                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
-                    p.ProjectName,
-                    e.FullName AS EmployeeName
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description,
+                      t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
+                      p.ProjectName,
+                      STRING_AGG(e.FullName, ', ') AS AssignedEmployeeNames
                     FROM Tasks t
                     LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
-                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
-                    WHERE t.ProjectID = @ProjectID";
-
+                    LEFT JOIN TaskAssignments ta ON t.TaskID = ta.TaskID
+                    LEFT JOIN Employees e ON ta.EmployeeID = e.EmployeeID
+                    WHERE t.ProjectID = @ProjectID
+                    GROUP BY t.TaskID, t.ProjectID, t.TaskTitle, t.Description, t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate, p.ProjectName";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -234,38 +220,35 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[TaskRepository.GetByProject] Lỗi: {ex.Message}");
                 throw;
             }
-
             return tasks;
         }
 
         /// <summary>
-        /// Lấy danh sách task được giao cho một nhân viên cụ thể
+        /// Lấy danh sách task được giao cho một nhân viên cụ thể (qua TaskAssignments)
         /// </summary>
         /// <param name="employeeId">ID nhân viên</param>
         /// <returns>Danh sách task được giao cho nhân viên</returns>
         public List<Task> GetByEmployee(int employeeId)
         {
             List<Task> tasks = new List<Task>();
-
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@EmployeeID", employeeId)
                 };
-
                 string sql =
-                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
-                    p.ProjectName,
-                    e.FullName AS EmployeeName
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description,
+                      t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
+                      p.ProjectName,
+                      STRING_AGG(e.FullName, ', ') AS AssignedEmployeeNames
                     FROM Tasks t
                     LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
-                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
-                    WHERE t.AssignedTo = @EmployeeID";
-
+                    LEFT JOIN TaskAssignments ta ON t.TaskID = ta.TaskID
+                    LEFT JOIN Employees e ON ta.EmployeeID = e.EmployeeID
+                    WHERE ta.EmployeeID = @EmployeeID
+                    GROUP BY t.TaskID, t.ProjectID, t.TaskTitle, t.Description, t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate, p.ProjectName";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -276,7 +259,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[TaskRepository.GetByEmployee] Lỗi: {ex.Message}");
                 throw;
             }
-
             return tasks;
         }
 
@@ -287,22 +269,21 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Task> GetOverdueTasks()
         {
             List<Task> tasks = new List<Task>();
-
             try
             {
                 string sql =
-                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description, t.AssignedTo,
-                    t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
-                    p.ProjectName,
-                    e.FullName AS EmployeeName
+                    @"SELECT t.TaskID, t.ProjectID, t.TaskTitle AS TaskName, t.Description,
+                      t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate,
+                      p.ProjectName,
+                      STRING_AGG(e.FullName, ', ') AS AssignedEmployeeNames
                     FROM Tasks t
                     LEFT JOIN Projects p ON t.ProjectID = p.ProjectID
-                    LEFT JOIN Employees e ON t.AssignedTo = e.EmployeeID
+                    LEFT JOIN TaskAssignments ta ON t.TaskID = ta.TaskID
+                    LEFT JOIN Employees e ON ta.EmployeeID = e.EmployeeID
                     WHERE t.Deadline < GETDATE() AND t.Status != 'Done'
+                    GROUP BY t.TaskID, t.ProjectID, t.TaskTitle, t.Description, t.CreatedBy, t.Deadline, t.Status, t.Priority, t.CreatedDate, t.UpdatedDate, p.ProjectName
                     ORDER BY t.Deadline ASC";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     tasks.Add(MapDataRowToTask(row));
@@ -313,7 +294,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[TaskRepository.GetOverdueTasks] Lỗi: {ex.Message}");
                 throw;
             }
-
             return tasks;
         }
 
@@ -325,16 +305,13 @@ namespace EmployeeManagement.DAL.Repositories
         public Dictionary<string, int> GetTaskCountByStatus()
         {
             Dictionary<string, int> statusCounts = new Dictionary<string, int>();
-
             try
             {
                 string sql =
                     @"SELECT Status, COUNT(*) AS TaskCount
                     FROM Tasks
                     GROUP BY Status";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     string status = row["Status"] != DBNull.Value ? row["Status"].ToString() : "Unknown";
@@ -347,57 +324,78 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[TaskRepository.GetTaskCountByStatus] Lỗi: {ex.Message}");
                 throw;
             }
-
             return statusCounts;
         }
 
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Task
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
-        /// Hỗ trợ cả view vw_TaskDetails và kết quả từ sp_Task
         /// </summary>
         /// <param name="row">DataRow từ kết quả query</param>
         /// <returns>Đối tượng Task</returns>
         private Task MapDataRowToTask(DataRow row)
         {
-            return new Task
+            var task = new Task
             {
                 // Mapping TaskID (trường bắt buộc)
                 TaskID = row["TaskID"] != DBNull.Value ? Convert.ToInt32(row["TaskID"]) : 0,
-
                 // Mapping ProjectID (trường bắt buộc)
                 ProjectID = row["ProjectID"] != DBNull.Value ? Convert.ToInt32(row["ProjectID"]) : 0,
-
-                // Mapping ProjectName (cho hiển thị, từ view)
+                // Mapping ProjectName (cho hiển thị)
                 ProjectName = row.Table.Columns.Contains("ProjectName") && row["ProjectName"] != DBNull.Value
-                  ? row["ProjectName"].ToString()
-                 : null,
-
+                    ? row["ProjectName"].ToString()
+                    : null,
                 // Mapping TaskName (nullable string)
                 TaskName = row["TaskName"] != DBNull.Value ? row["TaskName"].ToString() : null,
-
                 // Mapping Description (nullable string)
                 Description = row["Description"] != DBNull.Value ? row["Description"].ToString() : null,
-
-                // Mapping AssignedTo (nullable int)
-                AssignedTo = row["AssignedTo"] != DBNull.Value ? (int?)Convert.ToInt32(row["AssignedTo"]) : null,
-
-                // Mapping EmployeeName (cho hiển thị, từ view)
-                EmployeeName = row.Table.Columns.Contains("EmployeeName") && row["EmployeeName"] != DBNull.Value
-                    ? row["EmployeeName"].ToString() : null,
-
+                // Mapping AssignedEmployeeNames (aggregate string, split thành list nếu cần)
+                AssignedEmployeeNames = row.Table.Columns.Contains("AssignedEmployeeNames") && row["AssignedEmployeeNames"] != DBNull.Value
+                    ? row["AssignedEmployeeNames"].ToString().Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                    : new List<string>(),
                 // Mapping Status (nullable string)
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
-
                 // Mapping Priority (nullable string)
                 Priority = row["Priority"] != DBNull.Value ? row["Priority"].ToString() : null,
-
                 // Mapping Deadline (nullable DateTime)
                 Deadline = row["Deadline"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["Deadline"]) : null,
-
                 // Mapping CreatedDate (DateTime bắt buộc)
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
             };
+            // Nếu cần AssignedEmployeeIds, thêm subquery riêng hoặc adjust SQL để SELECT STRING_AGG(ta.EmployeeID, ', ')
+            return task;
+        }
+
+        // Method mới: Assign employees to task (gọi sau Insert/Update)
+        public bool AssignEmployees(int taskId, List<int> employeeIds, int assignedBy)
+        {
+            try
+            {
+                // Xóa assignments cũ trước (nếu update)
+                string deleteSql = "DELETE FROM TaskAssignments WHERE TaskID = @TaskID";
+                DatabaseHelper.ExecuteNonQuery(deleteSql, new SqlParameter("@TaskID", taskId));
+
+                // Insert mới
+                foreach (int empId in employeeIds)
+                {
+                    SqlParameter[] paramsAssign = new SqlParameter[]
+                    {
+                        new SqlParameter("@TaskID", taskId),
+                        new SqlParameter("@EmployeeID", empId),
+                        new SqlParameter("@AssignedBy", assignedBy)
+                    };
+                    string insertSql =
+                        @"INSERT INTO TaskAssignments (TaskID, EmployeeID, AssignedBy)
+                        VALUES (@TaskID, @EmployeeID, @AssignedBy)";
+                    DatabaseHelper.ExecuteNonQuery(insertSql, paramsAssign);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TaskRepository.AssignEmployees] Lỗi: {ex.Message}");
+                return false;
+            }
         }
     }
 }

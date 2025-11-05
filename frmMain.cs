@@ -12,18 +12,20 @@ namespace EmployeeManagement
 {
     public partial class frmMain : AntdUI.Window
     {
-        private User _currentUser;
+        private readonly User _currentUser;
         public frmMain(User currentUser)
         {
             InitializeComponent();
             _currentUser = currentUser;
+            tabs1.SelectedTab = tabProject;
+            menu1.SelectIndex(0, true);
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        // Khi click vào dòng trong bảng
+        private void TblNhanVien_Click(object sender, EventArgs e)
         {
 
             tabChangePassword.Visible = false;
-            page_Project1.Page_Project_Load();
         }
 
         private void phTrangChu_Click(object sender, EventArgs e)
@@ -50,23 +52,16 @@ namespace EmployeeManagement
                 //frmManageTasks frmManageTasks = new frmManageTasks();
                 //frmManageTasks.Show();
             }
-            // if (select == "Employee")
-            // {
-            //     tabs1.SelectedTab = tabEmployees;
-            //}
             if (select == "Company")
             {
                 tabs1.SelectedTab = tabCompany;
+                phTrangChu.Text = "Company";
             }
             if (select == "Tasks")
             {
                 tabs1.SelectedTab = tabTask;
                 phTrangChu.Text = "Tasks";
                 phTrangChu.Icon = Properties.Resources.note;
-            }
-            if (select == "Database")
-            {
-                tabs1.SelectedTab = tabDatabase;
             }
             if (select == "Log out")
             {
@@ -75,18 +70,28 @@ namespace EmployeeManagement
                 frmInfor.ShowDialog();
                 
             }
-            if(select == "My Profile")
+            if (select == "My Profile")
             {
                 tabs1.SelectedTab = tabMyProfile;
+                phTrangChu.Text = "My Profile";
+            }
+            if (select == "Employees")
+            {
+                tabs1.SelectedTab = tabNV;
+                phTrangChu.Text = "Employees";
             }
            
-
+            if (select == "Phòng ban")
+            {
+                tabs1.SelectedTab = tpPhongBan;
+                phTrangChu.Text = "Phòng Ban";
+            }
 
 
         }
 
-        private HashPassword hp = new HashPassword();
-        private UserRepository userRepository = new UserRepository();
+        private readonly HashPassword hp = new HashPassword();
+        private readonly UserRepository userRepository = new UserRepository();
         private void btnChangePass_Click_1(object sender, EventArgs e)
         {
             btnChangePass.Loading = true;
@@ -129,7 +134,6 @@ namespace EmployeeManagement
                 labelMatKhau.Text = "Mật khẩu cũ không đúng!";
                 txtMKC.Focus();
             }
-
         }
     }
 }

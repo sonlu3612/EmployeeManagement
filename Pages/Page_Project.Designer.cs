@@ -202,6 +202,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Page_Project";
             this.Size = new System.Drawing.Size(1023, 658);
+            this.Load += new System.EventHandler(this.Page_Project_Load);
             this.panel1.ResumeLayout(false);
             this.ctm1.ResumeLayout(false);
             this.ResumeLayout(false);
