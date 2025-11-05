@@ -208,8 +208,9 @@ namespace EmployeeManagement.Pages
                 var record = departments[selectedIndex];
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!"); return; }
                 int id = record.DepartmentID;
+                string DepartmentName = record.DepartmentName;
                 ManageEmployee frm = new ManageEmployee();
-                frm.ManageEmployee_Load(id);
+                frm.ManageEmployee_Load(id, DepartmentName);
                 frm.ShowDialog();
             }
             else

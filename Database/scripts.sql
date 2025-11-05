@@ -279,6 +279,74 @@ GO
 PRINT '==> All 10 tables created successfully!';
 GO
 
+-- Bước 1: Tạo bảng trung gian TaskAssignments (nếu chưa tồn tại)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TaskAssignments]') AND type in (N'U'))
+BEGIN
+    /*
+    Table: TaskAssignments
+    Mô tả: Quản lý việc giao task cho nhiều nhân viên
+    Relationships:
+      - Nhiều TaskAssignments thuộc 1 Task (FK: TaskID) - CASCADE DELETE
+      - Nhiều TaskAssignments thuộc 1 Employee (FK: EmployeeID) - CASCADE DELETE
+    */
+    CREATE TABLE dbo.TaskAssignments (
+        TaskAssignmentID INT IDENTITY(1,1) PRIMARY KEY,
+        TaskID INT NOT NULL,
+        EmployeeID INT NOT NULL,
+        AssignedBy INT NULL,  -- Optional: Ai giao task (FK đến Employees)
+        AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
+        
+        CONSTRAINT FK_TaskAssignments_Tasks FOREIGN KEY (TaskID)
+            REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
+        CONSTRAINT FK_TaskAssignments_Employees FOREIGN KEY (EmployeeID)
+            REFERENCES dbo.Employees(EmployeeID) ON DELETE CASCADE,
+        CONSTRAINT FK_TaskAssignments_AssignedBy FOREIGN KEY (AssignedBy)
+            REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION,  -- Đổi thành NO ACTION để tránh multiple cascade paths
+        
+        -- Tránh duplicate: Một employee không được assign task 2 lần
+        CONSTRAINT UQ_TaskAssignments_TaskEmployee UNIQUE (TaskID, EmployeeID)
+    );
+    PRINT 'Table [TaskAssignments] created.';
+END
+GO
+
+-- Bước 2: Migrate dữ liệu từ Tasks.AssignedTo sang TaskAssignments
+-- (Chỉ chạy nếu cột AssignedTo còn tồn tại và có data)
+IF EXISTS (SELECT * FROM sys.columns WHERE Name = N'AssignedTo' AND Object_ID = Object_ID(N'dbo.Tasks'))
+BEGIN
+    INSERT INTO dbo.TaskAssignments (TaskID, EmployeeID, AssignedBy, AssignedDate)
+    SELECT t.TaskID, t.AssignedTo, t.CreatedBy, t.CreatedDate
+    FROM dbo.Tasks t
+    WHERE t.AssignedTo IS NOT NULL;
+    PRINT 'Data migrated from [Tasks.AssignedTo] to [TaskAssignments].';
+END
+GO
+
+-- Bước 3: Xóa constraint FK_Tasks_Employees_Assigned (nếu tồn tại)
+IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Tasks_Employees_Assigned]') AND parent_object_id = OBJECT_ID(N'[dbo].[Tasks]'))
+BEGIN
+    ALTER TABLE dbo.Tasks
+        DROP CONSTRAINT FK_Tasks_Employees_Assigned;
+    PRINT 'Constraint [FK_Tasks_Employees_Assigned] dropped.';
+END
+GO
+
+-- Bước 4: Xóa index IX_Tasks_AssignedTo (nếu tồn tại)
+IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Tasks]') AND name = N'IX_Tasks_AssignedTo')
+BEGIN
+    DROP INDEX IX_Tasks_AssignedTo ON dbo.Tasks;
+    PRINT 'Index [IX_Tasks_AssignedTo] dropped from [Tasks].';
+END
+GO
+
+-- Bước 5: Xóa cột AssignedTo khỏi Tasks (nếu tồn tại)
+IF EXISTS (SELECT * FROM sys.columns WHERE Name = N'AssignedTo' AND Object_ID = Object_ID(N'dbo.Tasks'))
+BEGIN
+    ALTER TABLE dbo.Tasks
+        DROP COLUMN AssignedTo;
+    PRINT 'Column [AssignedTo] dropped from [Tasks].';
+END
+GO
 -- =============================================
 -- INDEXES CREATION
 -- =============================================

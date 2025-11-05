@@ -13,7 +13,7 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_ManageTask : UserControl
     {
-        private readonly TaskRepository _taskRepository = new TaskRepository();
+        private TaskRepository _taskRepository = new TaskRepository();
         private int projectId;
         private List<Task> _cachedTasks = new List<Task>();
 
@@ -48,17 +48,17 @@ namespace EmployeeManagement.Pages
             _cachedTasks = _taskRepository.GetByProject(this.projectId).ToList();
 
             tbTask.DataSource = _cachedTasks;
-            if (ddownEmployee.Items.Count == 0)
-            {
-                var assignedList = _cachedTasks
-                    .Select(t => (t.AssignedTo ?? 0).ToString()) 
-                    .Distinct()
-                    .OrderBy(x => x)
-                    .ToArray();
+            //if (ddownEmployee.Items.Count == 0)
+            //{
+            //    var assignedList = _cachedTasks
+            //        .Select(t => (t.AssignedTo ?? 0).ToString()) 
+            //        .Distinct()
+            //        .OrderBy(x => x)
+            //        .ToArray();
 
-                if (assignedList.Length > 0)
-                    ddownStatus.Items.AddRange(assignedList);
-            }
+            //    if (assignedList.Length > 0)
+            //        ddownStatus.Items.AddRange(assignedList);
+            //}
 
             try
             {
@@ -195,11 +195,11 @@ namespace EmployeeManagement.Pages
                         t.TaskName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
 
-                if (!string.IsNullOrWhiteSpace(ddownStatus.Text) && ddownStatus.Text != "Người được giao")
-                {
-                    string assFilter = ddownStatus.Text.Trim();
-                    tasks = tasks.Where(t => (t.AssignedTo ?? 0).ToString().Contains(assFilter));
-                }
+                //if (!string.IsNullOrWhiteSpace(ddownStatus.Text) && ddownStatus.Text != "Người được giao")
+                //{
+                //    string assFilter = ddownStatus.Text.Trim();
+                //    tasks = tasks.Where(t => (t.AssignedTo ?? 0).ToString().Contains(assFilter));
+                //}
 
                 if (!string.IsNullOrWhiteSpace(ddownStatus.Text) && ddownStatus.Text != "Trạng thái")
                 {
@@ -220,13 +220,6 @@ namespace EmployeeManagement.Pages
             }
         }
 
-        private void ddownEmployee_SelectedValueChanged(object sender, ObjectNEventArgs e)
-        {
-            ddownStatus.Text = e.Value?.ToString() ?? "";
-            var filtered = _cachedTasks.Where(t => (t.AssignedTo ?? 0).ToString().Contains(ddownStatus.Text)).ToList();
-            tbTask.DataSource = filtered;
-        }
-
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             ddownStatus.Text = e.Value?.ToString() ?? "";
@@ -243,5 +236,10 @@ namespace EmployeeManagement.Pages
         }
 
         #endregion
+
+        private void tbTask_CellClick(object sender, TableClickEventArgs e)
+        {
+
+        }
     }
 }

@@ -84,6 +84,12 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
+    <Compile Include="Dialogs\frmAssignTask.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmAssignTask.Designer.cs">
+      <DependentUpon>frmAssignTask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmDepartment.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +171,12 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskFile.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_AssignTask.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_AssignTask.Designer.cs">
+      <DependentUpon>Page_AssignTask.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Department.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -219,6 +231,9 @@
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmAssignTask.resx">
+      <DependentUpon>frmAssignTask.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmDepartment.resx">
       <DependentUpon>frmDepartment.cs</DependentUpon>
     </EmbeddedResource>
@@ -255,6 +270,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_AssignTask.resx">
+      <DependentUpon>Page_AssignTask.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Department.resx">
       <DependentUpon>Page_Department.cs</DependentUpon>

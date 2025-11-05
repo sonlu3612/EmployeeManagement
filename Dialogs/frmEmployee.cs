@@ -24,26 +24,19 @@ namespace EmployeeManagement.Dialogs
             InitializeComponent();
         }
 
-        private void frmEmployee_Load(object sender, EventArgs e)
+        public void frmEmployee_Load(string DepartmentName)
         {
             ddownRole.Items.Add("Admin");
             ddownRole.Items.Add("Employee");
             ddownGT.Items.Add("Nam");
             ddownGT.Items.Add("Nữ");
-            if (ddownDepartment.Items.Count == 0)
-            {
-                ddownDepartment.Items.AddRange(_departmentRepository.GetAll().Select(p => p.DepartmentName).Distinct().ToArray());
-            }
+            ddownDepartment.Text = DepartmentName;
+            ddownDepartment.Enabled = false;
         }
 
         private void ddownRole_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             ddownRole.Text = ddownRole.SelectedValue.ToString();
-        }
-
-        private void ddownDepartment_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
-        {
-            ddownDepartment.Text = ddownDepartment.SelectedValue.ToString();
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -107,6 +100,7 @@ namespace EmployeeManagement.Dialogs
             var newUser = new User
             {
                 Email = txtEmail.Text.Trim(),
+                Phone = txtDienThoai?.Text.Trim(),
                 Role = ddownRole.Text.Trim(),
                 PasswordHash = "123456",
                 CreatedDate = DateTime.Now,
@@ -120,6 +114,7 @@ namespace EmployeeManagement.Dialogs
                 AvatarPath = img.Tag?.ToString() ?? string.Empty,
                 EmployeeID = userID,
                 FullName = txtName.Text.Trim(),
+                Address = txtDiaChi.Text.Trim(),
                 Position = txtPosition.Text.Trim(),
                 Gender = string.IsNullOrWhiteSpace(ddownGT.Text) ? "NotSpecified" : ddownGT.Text.Trim(),
                 DepartmentID = department.DepartmentID,
@@ -152,7 +147,9 @@ namespace EmployeeManagement.Dialogs
                     {
                         string selectedFile = openFileDialog.FileName;
 
-                        string avatarFolder = Path.Combine(Application.StartupPath, "Assets", "Avatars");
+                        string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
+                        string avatarFolder = Path.Combine(projectRoot, "Assets", "Avatars");
+                        Console.WriteLine(projectRoot);
                         if (!Directory.Exists(avatarFolder))
                             Directory.CreateDirectory(avatarFolder);
 

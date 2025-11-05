@@ -31,7 +31,6 @@
             this.tbNV = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnDelete = new AntdUI.Button();
-            this.btnAdd = new AntdUI.Button();
             this.ddownGender = new AntdUI.Dropdown();
             this.ddownRole = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
@@ -55,7 +54,6 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.btnDelete);
-            this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.ddownGender);
             this.panel1.Controls.Add(this.ddownRole);
             this.panel1.Controls.Add(this.btnSync);
@@ -79,29 +77,12 @@
             this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDelete.ForeActive = System.Drawing.Color.Red;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(770, 0);
+            this.btnDelete.Location = new System.Drawing.Point(844, 0);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(74, 41);
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.BackHover = System.Drawing.Color.White;
-            this.btnAdd.BorderWidth = 2F;
-            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(844, 0);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 41);
-            this.btnAdd.TabIndex = 6;
-            this.btnAdd.Text = "Thêm";
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // ddownGender
             // 
@@ -126,7 +107,7 @@
             this.ddownRole.ShowArrow = true;
             this.ddownRole.Size = new System.Drawing.Size(135, 35);
             this.ddownRole.TabIndex = 3;
-            this.ddownRole.Text = "Quyền";
+            this.ddownRole.Text = "Vai trò";
             this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // btnSync
@@ -186,7 +167,6 @@
 
         private AntdUI.Table tbNV;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnAdd;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownGender;
         private AntdUI.Dropdown ddownRole;

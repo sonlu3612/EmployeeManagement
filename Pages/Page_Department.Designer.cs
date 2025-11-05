@@ -32,7 +32,6 @@
             this.tbPB = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnDelete = new AntdUI.Button();
-            this.btnAdd = new AntdUI.Button();
             this.ddownTP = new AntdUI.Dropdown();
             this.txtTim = new AntdUI.Input();
             this.btnSync = new AntdUI.Button();
@@ -40,6 +39,7 @@
             this.ctm1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chỉnhSửaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAdd = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.ctm1.SuspendLayout();
             this.SuspendLayout();
@@ -88,23 +88,6 @@
             this.btnDelete.TabIndex = 5;
             this.btnDelete.Text = "Xóa";
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.BackHover = System.Drawing.Color.White;
-            this.btnAdd.BorderWidth = 2F;
-            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(839, 0);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 41);
-            this.btnAdd.TabIndex = 6;
-            this.btnAdd.Text = "Thêm";
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // ddownTP
             // 
@@ -164,7 +147,7 @@
             this.quảnLýToolStripMenuItem,
             this.chỉnhSửaToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(181, 70);
+            this.ctm1.Size = new System.Drawing.Size(128, 48);
             // 
             // quảnLýToolStripMenuItem
             // 
@@ -178,6 +161,23 @@
             this.chỉnhSửaToolStripMenuItem.Name = "chỉnhSửaToolStripMenuItem";
             this.chỉnhSửaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.chỉnhSửaToolStripMenuItem.Text = "Chỉnh sửa";
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.BackHover = System.Drawing.Color.White;
+            this.btnAdd.BorderWidth = 2F;
+            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnAdd.ForeColor = System.Drawing.Color.White;
+            this.btnAdd.Location = new System.Drawing.Point(839, 0);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(74, 41);
+            this.btnAdd.TabIndex = 6;
+            this.btnAdd.Text = "Thêm";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // Page_Department
             // 
@@ -198,7 +198,6 @@
 
         private AntdUI.Table tbPB;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnAdd;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownTP;
         private AntdUI.Button btnSync;
@@ -207,5 +206,6 @@
         private System.Windows.Forms.ContextMenuStrip ctm1;
         private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem chỉnhSửaToolStripMenuItem;
+        private AntdUI.Button btnAdd;
     }
 }

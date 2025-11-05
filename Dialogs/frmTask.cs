@@ -34,7 +34,7 @@ namespace EmployeeManagement.Dialogs
             txtTaskName.Text = _task.TaskName;
             ddownProjectID.Text = _task.ProjectID.ToString();
             txtDescription.Text = _task.Description;
-            ddownOwnerID.Text = _task.AssignedTo.HasValue ? _task.AssignedTo.Value.ToString() : "";
+            ddownOwnerID.Text = "123";
             ddownStatus.Text = _task.Status;
             dateStart.Value = _task.CreatedDate;
 
@@ -90,7 +90,7 @@ namespace EmployeeManagement.Dialogs
                         TaskName = txtTaskName.Text,
                         ProjectID = Convert.ToInt32(ddownProjectID.SelectedValue.ToString()),
                         Description = txtDescription.Text,
-                        AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.SelectedValue.ToString()),
+                        //AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.SelectedValue.ToString()),
                         Status = "Todo",
                         CreatedDate = DateTime.Now,
                         Priority = ddownPriority.Text,
@@ -110,7 +110,7 @@ namespace EmployeeManagement.Dialogs
                         TaskName = txtTaskName.Text,
                         ProjectID = Convert.ToInt32(ddownProjectID.Text),
                         Description = txtDescription.Text,
-                        AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.Text),
+                        //AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.Text),
                         Status = ddownStatus.Text,
                         //CreatedDate = DateTime.Now
                         CreatedDate = _task.CreatedDate,

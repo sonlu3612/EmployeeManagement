@@ -20,6 +20,7 @@ namespace EmployeeManagement.Pages
     {
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private int employeeId;
+        private string DepartmentName;
         public Page_ManageEmployees()
         {
             InitializeComponent();
@@ -35,9 +36,10 @@ namespace EmployeeManagement.Pages
 
         }
 
-        public void Page_ManageEmployee_Load(int id)
+        public void Page_ManageEmployee_Load(int id, string DepartmentName)
         {
             this.employeeId = id;
+            this.DepartmentName = DepartmentName;
 
             tbNV.Columns.Add(new Column("EmployeeID", "ID"));
             tbNV.Columns.Add(new Column("FullName", "Hợ tên"));
@@ -53,12 +55,28 @@ namespace EmployeeManagement.Pages
 
         private void LoadData()
         {
-            tbNV.DataSource = employeeRepository.GetForGrid2(employeeId); ;
+            tbNV.DataSource = employeeRepository.GetForGrid2(employeeId);
+            if (ddownGender.Items.Count == 0)
+            {
+                ddownGender.Items.Add("Tất cả");
+                ddownGender.Items.Add("Nam");
+                ddownGender.Items.Add("Nữ");
+            }
+            ddownGender.Text = "Giới tính";
+            if (ddownRole.Items.Count == 0)
+            {
+                ddownRole.Items.Add("Tất cả");
+                ddownRole.Items.Add("Admin");
+                ddownRole.Items.Add("Employee");
+                ddownRole.Items.Add("Manager");
+            }
+            ddownRole.Text = "Vai trò";
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
             EmployeeManagement.Dialogs.frmEmployee frm = new EmployeeManagement.Dialogs.frmEmployee();
+            frm.frmEmployee_Load(this.DepartmentName);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 var newEmployee = frm.Tag as Employee;
@@ -131,76 +149,128 @@ namespace EmployeeManagement.Pages
         private void ddownGender_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             ddownGender.Text = e.Value?.ToString() ?? "";
-            if (ddownGender.Text == "Tất cả" || string.IsNullOrEmpty(ddownGender.Text))
+            string genderFilter = ddownGender.Text.Trim();
+
+            if (string.IsNullOrEmpty(genderFilter) || genderFilter == "Tất cả" || genderFilter == "Giới tính")
             {
                 LoadData();
                 return;
             }
-            var filteredProjects = employeeRepository.GetForGrid()
-                .Where(p => p.Gender.ToString().Contains(ddownGender.Text))
-                .ToList();
-            tbNV.DataSource = filteredProjects;
+
+            try
+            {
+                IEnumerable<Employee> source;
+                try
+                {
+                    source = (employeeId > 0)
+                        ? employeeRepository.GetForGrid2(employeeId)
+                        : employeeRepository.GetAll();
+                }
+                catch
+                {
+                    source = employeeRepository.GetAll();
+                }
+
+                var filtered = source
+                    .Where(p => !string.IsNullOrEmpty(p.Gender) &&
+                                p.Gender.IndexOf(genderFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                tbNV.DataSource = filtered;
+
+                if (filtered.Count == 0)
+                    Message.warn(this.FindForm(), "Không tìm thấy nhân viên phù hợp với giới tính đã chọn.");
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi lọc giới tính: " + ex.Message);
+            }
         }
 
         private void ddownRole_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             ddownRole.Text = e.Value?.ToString() ?? "";
-            if (ddownRole.Text == "Tất cả" || string.IsNullOrEmpty(ddownRole.Text))
+            string roleFilter = ddownRole.Text.Trim();
+
+            if (string.IsNullOrEmpty(roleFilter) || roleFilter == "Tất cả" || roleFilter == "Quyền")
             {
                 LoadData();
                 return;
             }
-            var filteredProjects = employeeRepository.GetForGrid()
-                .Where(p => p.Role.ToString().Contains(ddownRole.Text))
-                .ToList();
-            tbNV.DataSource = filteredProjects;
+
+            try
+            {
+                IEnumerable<Employee> source;
+                try
+                {
+                    source = (employeeId > 0)
+                        ? employeeRepository.GetForGrid2(employeeId)
+                        : employeeRepository.GetAll();
+                }
+                catch
+                {
+                    source = employeeRepository.GetAll();
+                }
+
+                var filtered = source
+                    .Where(p => !string.IsNullOrEmpty(p.Role) &&
+                                p.Role.IndexOf(roleFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                tbNV.DataSource = filtered;
+
+                if (filtered.Count == 0)
+                    Message.warn(this.FindForm(), "Không tìm thấy nhân viên phù hợp với quyền đã chọn.");
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi lọc quyền: " + ex.Message);
+            }
         }
+
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
             {
                 string q = txtTim.Text?.Trim() ?? "";
-
-                var employees = employeeRepository.GetAll().AsEnumerable();
-
-                if (!string.IsNullOrWhiteSpace(q))
+                if (string.IsNullOrEmpty(q))
                 {
-                    employees = employees.Where(p =>
-                        !string.IsNullOrEmpty(p.FullName) &&
-                        p.FullName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
+                    LoadData();
+                    return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(ddownGender.Text) && ddownGender.Text != "Giới tính")
+                IEnumerable<Employee> source;
+                try
                 {
-                    string empFilter = ddownGender.Text.Trim();
-                    employees = employees.Where(p => p.Gender.ToString().Contains(empFilter));
+                    source = (employeeId > 0) ? employeeRepository.GetForGrid2(employeeId) : employeeRepository.GetAll();
+                    if (source == null)
+                    {
+                        source = employeeRepository.GetAll();
+                    }
+                }
+                catch
+                {
+                    source = employeeRepository.GetAll();
                 }
 
-                if (!string.IsNullOrWhiteSpace(ddownRole.Text) && ddownRole.Text != "Quyền")
-                {
-                    string statusFilter = ddownRole.Text.Trim();
-                    employees = employees.Where(p => !string.IsNullOrEmpty(p.Role) &&
-                                                   p.Role.IndexOf(statusFilter, StringComparison.OrdinalIgnoreCase) >= 0);
-                }
-
-                var result = employees.ToList();
+                var result = source
+                    .Where(p => !string.IsNullOrEmpty(p.FullName) &&
+                                p.FullName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
 
                 tbNV.DataSource = result;
 
                 if (result.Count == 0)
-                {
                     Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
-                }
                 else
-                {
                     Message.success(this.FindForm(), $"Tìm thấy {result.Count} nhân viên.");
-                }
             }
             catch (Exception ex)
             {
                 Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
             }
         }
+
     }
 }

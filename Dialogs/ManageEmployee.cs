@@ -22,9 +22,9 @@ namespace EmployeeManagement.Dialogs
 
         }
 
-        public void ManageEmployee_Load(int id)
+        public void ManageEmployee_Load(int id, string DepartmentName)
         {
-            page_ManageEmployees1.Page_ManageEmployee_Load(id);
+            page_ManageEmployees1.Page_ManageEmployee_Load(id, DepartmentName);
         }
     }
 }
