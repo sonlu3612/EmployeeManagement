@@ -179,6 +179,18 @@ namespace EmployeeManagement.Pages
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
             }
+            else if(e.ClickedItem.Text == "Danh sách nhân viên")
+            {
+                var selectedIndex = tableTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+                {
+                    var task = datalist[selectedIndex];
+                    frmAssignEmployee frmAssignEmployee = new frmAssignEmployee(task.TaskID);
+                    frmAssignEmployee.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -195,9 +207,9 @@ namespace EmployeeManagement.Pages
                 return;
             }
 
-            if (tableTask.DataSource is IList<MyTask> datalist && selectedIndex < datalist.Count)
+            if (tableTask.DataSource is IList<MyTask> list && selectedIndex < list.Count)
             {
-                var task = datalist[selectedIndex];
+                var task = list[selectedIndex];
                 //string massage = "Bạn có muốn xóa?";
                 //frmInforXoa frmInforXoa = new frmInforXoa(massage);
                 //if(frmInforXoa.ShowDialog() == DialogResult.OK)

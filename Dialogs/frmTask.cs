@@ -53,7 +53,7 @@ namespace EmployeeManagement.Dialogs
                 txtTaskName.Text = _task.TaskName;
                 ddownProjectID.Text = _task.ProjectID.ToString();
                 txtDescription.Text = _task.Description;
-                ddownOwnerID.Text = _task.CreatedBy.HasValue ? _task.CreatedBy.Value.ToString() : "";
+                ddownOwnerID.Text = _task.CreatedBy.ToString();
                 ddownStatus.Text = _task.Status;
                 dateStart.Text = _task.CreatedDate.ToString();
                 ddownPriority.Text = _task.Priority;
@@ -138,11 +138,11 @@ namespace EmployeeManagement.Dialogs
                             TaskName = txtTaskName.Text,
                             ProjectID = Convert.ToInt32(ddownProjectID.SelectedValue.ToString()),
                             Description = txtDescription.Text,
-                            AssignedTo = employeeID,
+                            CreatedBy = employeeID,
                             Status = ddownStatus.Text,
                             CreatedDate = DateTime.Now,
                             Priority = ddownPriority.Text,
-                            CreatedBy = 2
+                          
                         };
 
                     }
@@ -156,11 +156,11 @@ namespace EmployeeManagement.Dialogs
                             TaskName = txtTaskName.Text,
                             ProjectID = _projectID,
                             Description = txtDescription.Text,
-                            AssignedTo = employeeID,
+                            CreatedBy = employeeID,
                             Status = "Cần làm",
                             CreatedDate = DateTime.Now,
                             Priority = ddownPriority.Text,
-                            CreatedBy = 2
+                            
                         };
 
                     }
@@ -189,7 +189,7 @@ namespace EmployeeManagement.Dialogs
                         TaskName = txtTaskName.Text,
                         ProjectID = Convert.ToInt32(ddownProjectID.Text),
                         Description = txtDescription.Text,
-                        AssignedTo = employeeID,
+                        CreatedBy = employeeID,
                         Status = ddownStatus.Text,
                         //CreatedDate = DateTime.Now
                         CreatedDate = _task.CreatedDate,

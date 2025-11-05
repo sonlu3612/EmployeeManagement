@@ -45,6 +45,8 @@ namespace EmployeeManagement.DAL.Repositories
             return employees;
         }
 
+        
+
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
         /// </summary>

@@ -168,19 +168,19 @@
             this.xóaToolStripMenuItem,
             this.quảnLýToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(123, 48);
+            this.menuStrip.Size = new System.Drawing.Size(185, 70);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.xóaToolStripMenuItem.Text = "Xem";
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.xóaToolStripMenuItem.Text = "Danh sách nhân viên";
             // 
             // quảnLýToolStripMenuItem
             // 
             this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
-            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.quảnLýToolStripMenuItem.Text = "Cập nhật";
             // 
             // Page_Task
