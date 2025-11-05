@@ -168,7 +168,7 @@
             this.xóaToolStripMenuItem,
             this.quảnLýToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 70);
+            this.menuStrip.Size = new System.Drawing.Size(185, 48);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
