@@ -42,6 +42,7 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <!-- References -->
   <ItemGroup>
     <Reference Include="AntdUI, Version=2.1.13.0, Culture=neutral, PublicKeyToken=0e24e5118ea3d6af, processorArchitecture=MSIL">
       <HintPath>packages\AntdUI.2.1.13\lib\net48\AntdUI.dll</HintPath>
@@ -62,11 +63,16 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
+  <!-- Compile files (merged) -->
   <ItemGroup>
     <Compile Include="Auth\frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Auth\frmLogin.Designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="DAL\HashPassword.cs" />
+    <Compile Include="DAL\Helpers\SessionManager.cs" />
     <Compile Include="DAL\Helpers\DatabaseHelper.cs" />
     <Compile Include="DAL\Helpers\FileHelper.cs" />
     <Compile Include="DAL\Interfaces\IRepository.cs" />
@@ -113,6 +119,12 @@
     <Compile Include="Dialogs\frmEmployee.Designer.cs">
       <DependentUpon>frmEmployee.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmProject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmProject.Designer.cs">
+      <DependentUpon>frmProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmTask.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -145,17 +157,17 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskFile.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Project.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Project.Designer.cs">
+      <DependentUpon>Page_Project.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Pages\Page_Task.Designer.cs">
       <DependentUpon>Page_Task.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Page_Projects.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Pages\Page_Projects.Designer.cs">
-      <DependentUpon>Page_Projects.cs</DependentUpon>
     </Compile>
     <Compile Include="Pages\Page_ManageTask.cs">
       <SubType>UserControl</SubType>
@@ -165,6 +177,19 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <!-- Embedded resources -->
+  <ItemGroup>
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
@@ -183,6 +208,9 @@
     <EmbeddedResource Include="Dialogs\frmEmployee.resx">
       <DependentUpon>frmEmployee.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmProject.resx">
+      <DependentUpon>frmProject.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmTask.resx">
       <DependentUpon>frmTask.cs</DependentUpon>
     </EmbeddedResource>
@@ -195,11 +223,11 @@
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Project.resx">
+      <DependentUpon>Page_Project.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Task.resx">
       <DependentUpon>Page_Task.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Pages\Page_Projects.resx">
-      <DependentUpon>Page_Projects.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_ManageTask.resx">
       <DependentUpon>Page_ManageTask.cs</DependentUpon>
@@ -217,6 +245,9 @@
     <None Include=".github\copilot-instructions.md" />
     <None Include="App.config" />
     <None Include="App.config.template" />
+  </ItemGroup>
+  <!-- Content / None files -->
+  <ItemGroup>
     <None Include="DAL\Services\FileService_UsageGuide.md" />
     <None Include="packages.config" />
     <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
@@ -227,16 +258,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Icons\note.png" />
-    <Content Include="Assets\Icons\database-management-white.png" />
-    <None Include="Assets\Icons\info-white.png" />
     <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -266,7 +287,19 @@
     <Content Include="packages\AntdUI.2.1.13\lib\net9.0-windows7.0\AntdUI.dll" />
     <Content Include="packages\AntdUI.2.1.13\lib\net9.0-windows7.0\AntdUI.xml" />
     <Content Include="packages\AntdUI.2.1.13\logo.png" />
+    <Content Include="Assets\Icons\sign-in-alt.png" />
+    <Content Include="Assets\Icons\user_blacl.png" />
+    <Content Include="Assets\Icons\user_boder_black.png" />
+    <Content Include="Assets\Icons\user_boder_white.png" />
+    <Content Include="Assets\Icons\user_white.png" />
+    <Content Include="Assets\Icons\key_border_black.png" />
+    <Content Include="Assets\Icons\menu-burger-white.png" />
+    <Content Include="Assets\Icons\search-white.png" />
+    <Content Include="Assets\Icons\search-blue.png" />
+    <Content Include="Assets\Icons\rotate-right-blue.png" />
+    <Content Include="Assets\Icons\rotate-right-white.png" />
+    <Content Include="Assets\Icons\user_blacl.png" />
+    <Content Include="Assets\Images\back.jpeg" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

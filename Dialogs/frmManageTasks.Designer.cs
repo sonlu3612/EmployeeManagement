@@ -43,7 +43,7 @@
             this.pageTasks.Name = "pageTasks";
             this.pageTasks.ShowButton = true;
             this.pageTasks.ShowIcon = true;
-            this.pageTasks.Size = new System.Drawing.Size(800, 39);
+            this.pageTasks.Size = new System.Drawing.Size(808, 39);
             this.pageTasks.TabIndex = 0;
             this.pageTasks.Text = "Manage Tasks";
             this.pageTasks.UseForeColorDrawIcons = true;
@@ -54,7 +54,7 @@
             this.page_Task1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Task1.Location = new System.Drawing.Point(0, 39);
             this.page_Task1.Name = "page_Task1";
-            this.page_Task1.Size = new System.Drawing.Size(800, 411);
+            this.page_Task1.Size = new System.Drawing.Size(808, 457);
             this.page_Task1.TabIndex = 1;
             this.page_Task1.Load += new System.EventHandler(this.page_Task1_Load);
             // 
@@ -62,7 +62,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(808, 496);
             this.ControlBox = false;
             this.Controls.Add(this.page_Task1);
             this.Controls.Add(this.pageTasks);

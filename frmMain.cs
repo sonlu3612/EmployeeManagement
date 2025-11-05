@@ -17,14 +17,13 @@ namespace EmployeeManagement
         {
             InitializeComponent();
             _currentUser = currentUser;
-
-
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
 
             tabChangePassword.Visible = false;
+            page_Project1.Page_Project_Load();
         }
 
         private void phTrangChu_Click(object sender, EventArgs e)
