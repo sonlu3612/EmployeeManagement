@@ -8,17 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace EmployeeManagement.Pages
+namespace EmployeeManagement
 {
-    public partial class Page_Account : UserControl
+    public partial class Form1 : Form
     {
-        public Page_Account()
+        public Form1()
         {
             InitializeComponent();
-            
-
         }
-
-       
     }
 }

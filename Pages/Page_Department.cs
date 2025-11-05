@@ -16,5 +16,10 @@ namespace EmployeeManagement.Pages
         {
             InitializeComponent();
         }
+
+        private void panel3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
