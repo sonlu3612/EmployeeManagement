@@ -160,6 +160,7 @@
             this.tableTask.TabIndex = 1;
             this.tableTask.Text = "table1";
             this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
+            this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
             // 
             // menuStrip
             // 

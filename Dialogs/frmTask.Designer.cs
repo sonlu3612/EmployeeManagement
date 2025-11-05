@@ -149,6 +149,10 @@
             // ddownStatus
             // 
             this.ddownStatus.BorderWidth = 2F;
+            this.ddownStatus.Items.AddRange(new object[] {
+            "Cần làm",
+            "Đang thực hiện",
+            "Hoàn thành"});
             this.ddownStatus.Location = new System.Drawing.Point(223, 335);
             this.ddownStatus.Name = "ddownStatus";
             this.ddownStatus.ShowArrow = true;
@@ -218,7 +222,10 @@
             // 
             this.ddownPriority.BorderWidth = 2F;
             this.ddownPriority.Items.AddRange(new object[] {
-            "Medium"});
+            "Thấp",
+            "Trung bình",
+            "Cao",
+            "Ưu tiên cao"});
             this.ddownPriority.Location = new System.Drawing.Point(223, 436);
             this.ddownPriority.Name = "ddownPriority";
             this.ddownPriority.ShowArrow = true;

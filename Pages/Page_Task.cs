@@ -1,6 +1,7 @@
 ﻿using AntdUI;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Dialogs;
+using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
-
+using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
 
 
@@ -61,7 +62,6 @@ namespace EmployeeManagement.Pages
 
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
-            menuStrip.Show(tableTask, e.Location);
 
         }
 
@@ -118,23 +118,45 @@ namespace EmployeeManagement.Pages
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             tableTask.DataSource = null;
-            //string selected = ddownStatus.SelectedValue.ToString();
-            //try
-            //{
-            //    if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
-            //    {
-            //        loadData();
-            //    }
-            //    else
-            //    {
-            //        List<MyTask> tasks = new List<MyTask>();
-            //        tasks = taskRepository.GetByStatus(selected);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
-            //}
+            string selected = ddownStatus.SelectedValue.ToString();
+            try
+            {
+                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                {
+                    loadData();
+                }
+                else if(selected == "Quá hạn")
+                {
+                    List<MyTask> tasks = new List<MyTask>();
+                    tasks = taskRepository.GetOverdueTasks();
+                    //foreach(var task in tasks)
+                    //{
+                    //    task.Status = "Quá hạn";
+                    //    taskRepository.Update(task);
+
+                    //}
+                    tableTask.DataSource = tasks.ToList();
+                }
+                else
+                {
+                    List<MyTask> tasks = new List<MyTask>();
+                    List<MyTask> tasksByStatus = new List<MyTask>();
+                    tasks = taskRepository.GetAll();
+
+                    foreach (var task in tasks)
+                    {
+                        if (task.Status == selected)
+                        {
+                            tasksByStatus.Add(task);
+                        }
+                    }
+                    tableTask.DataSource = tasksByStatus.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
+            }
         }
 
         private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -146,10 +168,8 @@ namespace EmployeeManagement.Pages
                 {
                     var task = datalist[selectedIndex];
 
-
-
                     frmTask frmTask = new frmTask(task);
-                    frmTask.Show();
+                    frmTask.ShowDialog();
 
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
@@ -159,17 +179,66 @@ namespace EmployeeManagement.Pages
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var selectedIndex = tableTask.SelectedIndex - 1;
+            if (selectedIndex < 0)
+            {
+                Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
+                return;
+            }
             if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
             {
                 var task = datalist[selectedIndex];
-                string massage = "Bạn có muốn xóa?";
-                frmInforXoa frmInforXoa = new frmInforXoa(massage);
-                if(frmInforXoa.ShowDialog() == DialogResult.OK)
-                {
-                    TaskRepository taskRepository = new TaskRepository();
-                    taskRepository.Delete(task.TaskID);
-                    loadData();
+                //string massage = "Bạn có muốn xóa?";
+                //frmInforXoa frmInforXoa = new frmInforXoa(massage);
+                //if(frmInforXoa.ShowDialog() == DialogResult.OK)
+                //{
+                //    TaskRepository taskRepository = new TaskRepository();
+                //    taskRepository.Delete(task.TaskID);
+                //    loadData();
 
+                //}
+                var modalConfig = Modal.config(
+                    this.FindForm(),
+                    "Xác nhận xoá",
+                    $"Bạn có chắc muốn xoá nhiệm vụ \"{task.TaskName}\" không?",
+                    TType.Warn
+                );
+                modalConfig.OkText = "Xoá";
+                modalConfig.CancelText = "Huỷ";
+                modalConfig.OkType = TTypeMini.Primary;
+                modalConfig.OnOk = (cfg) =>
+                {
+                    try
+                    {
+                        taskRepository.Delete(task.ProjectID);
+                        loadData();
+
+                        Message.success(this.FindForm(), "Xóa nhiệm vụ thành công!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Message.error(this.FindForm(), "Lỗi khi xoá nhiệm vụ: " + ex.Message);
+                    }
+                    return true; // Đóng modal
+                };
+                Modal.open(modalConfig);
+
+                loadData() ;
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
+            }
+       
+        }
+
+        private void menuStrip_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                int sel = tableTask.SelectedIndex;
+                if (sel >= 0)
+                {
+                    menuStrip.Show(Cursor.Position);
                 }
             }
         }

@@ -72,6 +72,7 @@
             this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDelete
             // 
@@ -101,18 +102,26 @@
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
             this.ddownEmployee.Text = "Nhân viên";
+            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
             // 
             this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddownStatus.ForeColor = System.Drawing.Color.White;
+            this.ddownStatus.Items.AddRange(new object[] {
+            "Tất cả",
+            "Cần làm",
+            "Đang thực hiện",
+            "Hoàn thành",
+            "Quá hạn"});
             this.ddownStatus.Location = new System.Drawing.Point(330, 3);
             this.ddownStatus.Name = "ddownStatus";
             this.ddownStatus.ShowArrow = true;
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -127,6 +136,7 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 

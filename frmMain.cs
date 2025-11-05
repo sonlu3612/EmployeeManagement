@@ -44,10 +44,11 @@ namespace EmployeeManagement
             }
             if (select == "Projects")
             {
+                tabs1.SelectedTab = tabProject;
 
                 //tabs1.SelectedTab = tabProject;
-                frmManageTasks frmManageTasks = new frmManageTasks();
-                frmManageTasks.Show();
+                //frmManageTasks frmManageTasks = new frmManageTasks();
+                //frmManageTasks.Show();
             }
             // if (select == "Employee")
             // {

@@ -6,14 +6,16 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
+
 
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Project : UserControl
     {
-        private readonly IRepository<Project> _projectRepository = new ProjectRepository();
+        private readonly ProjectRepository _projectRepository = new ProjectRepository();
 
         public Page_Project()
         {
@@ -39,11 +41,26 @@ namespace EmployeeManagement.Pages
             tbProject.DataSource = _projectRepository.GetAll().ToList();
             if (cbNhanVien.Items.Count == 0)
             {
-                cbNhanVien.Items.AddRange(_projectRepository.GetAll().Select(p => p.CreatedBy.ToString()).Distinct().ToArray());
+                loadEmployeesName();
             }
             if (cbTrangThai.Items.Count == 0)
             {
                 cbTrangThai.Items.AddRange(_projectRepository.GetAll().Select(p => p.Status).Distinct().ToArray());
+            }
+        }
+
+        private EmployeeRepository employeeRepository = new EmployeeRepository();
+        private void loadEmployeesName()
+        {
+            var employees = employeeRepository.GetAll();
+
+            cbNhanVien.Items.Clear();
+            cbNhanVien.Items.Insert(0, "Tất cả");
+
+            foreach (var emp in employees)
+            {
+                string displayText = $"{emp.EmployeeID} - {emp.FullName}";
+                cbNhanVien.Items.Add(displayText);
             }
         }
 
@@ -224,11 +241,35 @@ namespace EmployeeManagement.Pages
 
         private void cbNhanVien_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
-            cbNhanVien.Text = e.Value?.ToString() ?? "";
-            var filteredProjects = _projectRepository.GetAll()
-                .Where(p => p.CreatedBy.ToString().Contains(cbNhanVien.Text))
-                .ToList();
-            tbProject.DataSource = filteredProjects;
+            //cbNhanVien.Text = e.Value?.ToString() ?? "";
+            //var filteredProjects = _projectRepository.GetAll()
+            //    .Where(p => p.CreatedBy.ToString().Contains(cbNhanVien.Text))
+            //    .ToList();
+            //tbProject.DataSource = filteredProjects;
+            string selected = cbNhanVien.SelectedValue.ToString();
+
+            try
+            {
+
+                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                {
+                    LoadData();
+                }
+                else
+                {
+                    List<Project> projects = new List<Project>();
+
+
+                    int employeeId = int.Parse(selected.Split('-')[0].Trim());
+                    projects = _projectRepository.GetByEmployee(employeeId);
+                    tbProject.DataSource = projects.ToList();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dự án: " + ex.Message);
+            }
         }
 
         private void btnSync_Click(object sender, EventArgs e)

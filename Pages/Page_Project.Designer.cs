@@ -179,20 +179,20 @@
             this.tasksToolStripMenuItem,
             this.documentsToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(136, 48);
+            this.ctm1.Size = new System.Drawing.Size(127, 48);
             // 
             // tasksToolStripMenuItem
             // 
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
-            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.tasksToolStripMenuItem.Text = "Tasks";
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.tasksToolStripMenuItem.Text = "Nhiệm vụ";
             this.tasksToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
             // documentsToolStripMenuItem
             // 
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
-            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.documentsToolStripMenuItem.Text = "Documents";
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.documentsToolStripMenuItem.Text = "Tài liệu";
             // 
             // Page_Project
             // 

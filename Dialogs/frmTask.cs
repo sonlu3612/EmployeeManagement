@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.DAL.Repositories;
+﻿using AntdUI;
+using EmployeeManagement.DAL.Repositories;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
 
 namespace EmployeeManagement.Dialogs
@@ -18,7 +20,13 @@ namespace EmployeeManagement.Dialogs
     public partial class frmTask : Form
     {
         private MyTask _task;
+        private int _projectID;
 
+        public frmTask(int projectId)
+        {
+            InitializeComponent();
+            _projectID = projectId;
+        }
         
         public frmTask(MyTask task)
         {
@@ -28,23 +36,34 @@ namespace EmployeeManagement.Dialogs
 
         private void frmTask_Load(object sender, EventArgs e)
         {
-            if (_task == null)
+            if (_task == null && _projectID == null)
             {
                 _task = new MyTask();
+                ddownProjectID.Enabled = true;
             }
-            txtTaskName.Text = _task.TaskName;
-            ddownProjectID.Text = _task.ProjectID.ToString();
-            txtDescription.Text = _task.Description;
-            ddownOwnerID.Text = _task.AssignedTo.HasValue ? _task.AssignedTo.Value.ToString() : "";
-            ddownStatus.Text = _task.Status;
-            dateStart.Value = _task.CreatedDate;
-            ddownPriority.Text = _task.Priority;
-            dateEnd.Value = _task.Deadline;
+            else if(_projectID != null)
+            {
+                _task = new MyTask();
+                _task.ProjectID = _projectID;
+                ddownProjectID.Text = _projectID.ToString();
+                ddownProjectID.Enabled = false;
+            }
+            else if( _task != null)
+            {
+                txtTaskName.Text = _task.TaskName;
+                ddownProjectID.Text = _task.ProjectID.ToString();
+                txtDescription.Text = _task.Description;
+                ddownOwnerID.Text = _task.CreatedBy.HasValue ? _task.CreatedBy.Value.ToString() : "";
+                ddownStatus.Text = _task.Status;
+                dateStart.Text = _task.CreatedDate.ToString();
+                ddownPriority.Text = _task.Priority;
+                dateEnd.Text = _task.Deadline.ToString();
+                ddownProjectID.Enabled = false;
+
+            }
 
             loadProjectsID();
             loadEmployeesID();
-
-            ddownProjectID.Enabled = false;
 
         }
 
@@ -66,7 +85,7 @@ namespace EmployeeManagement.Dialogs
             ddownOwnerID.Items.Clear();
             foreach (var id in IDs)
             {
-                ddownOwnerID.Items.Add(id.EmployeeID);
+                ddownOwnerID.Items.Add(id.EmployeeID+"-"+id.FullName);
             }
         }
 
@@ -83,9 +102,20 @@ namespace EmployeeManagement.Dialogs
 
         private void btnHuy_Click(object sender, EventArgs e)
         {
-            frmInforHuy frmInforHuy = new frmInforHuy("Bạn có chắc muốn hủy các thay đổi?", this);
-            this.Close();
-
+            var modalConfig = AntdUI.Modal.config(
+                this.FindForm(),
+                "Xác nhận hủy",
+                "Bạn có muốn hủy?",
+                TType.Warn
+            );
+            modalConfig.OkText = "Hủy";
+            modalConfig.CancelText = "Thoát";
+            modalConfig.OkType = TTypeMini.Primary;
+            modalConfig.OnOk = (cfg) =>
+            {
+                return true;
+            };
+            AntdUI.Modal.open(modalConfig);
         }
 
         private void btnLuu_Click(object sender, EventArgs e)
@@ -94,33 +124,72 @@ namespace EmployeeManagement.Dialogs
             {
                 if(_task.TaskID == 0)
                 {
-                    var indertTask = new MyTask
+                    var insertTask = new MyTask();
+                    ddownStatus.Text = "Cần làm";
+                    dateStart.Text = DateTime.Now.ToString("yyyy-MM-dd");
+                    if(_projectID == null)
                     {
-                        TaskID = _task.TaskID,
-                        TaskName = txtTaskName.Text,
-                        ProjectID = Convert.ToInt32(ddownProjectID.SelectedValue.ToString()),
-                        Description = txtDescription.Text,
-                        AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.SelectedValue.ToString()),
-                        Status = "Todo",
-                        CreatedDate = DateTime.Now,
-                        Priority = ddownPriority.Text,
-                        CreatedBy = 2
-                    };
-                    TaskRepository taskRepository = new TaskRepository();
-                    taskRepository.Insert(indertTask);
-                    frmInforHuy frmInforHuy = new frmInforHuy("Thêm nhiệm vụ thành công!", this);
-                    frmInforHuy.Show();
-                    return;
+                        int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
+
+
+                        insertTask = new MyTask
+                        {
+                            TaskID = _task.TaskID,
+                            TaskName = txtTaskName.Text,
+                            ProjectID = Convert.ToInt32(ddownProjectID.SelectedValue.ToString()),
+                            Description = txtDescription.Text,
+                            AssignedTo = employeeID,
+                            Status = ddownStatus.Text,
+                            CreatedDate = DateTime.Now,
+                            Priority = ddownPriority.Text,
+                            CreatedBy = 2
+                        };
+
+                    }
+                    else
+                    {
+                        int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
+
+                        insertTask = new MyTask
+                        {
+                            TaskID = _task.TaskID,
+                            TaskName = txtTaskName.Text,
+                            ProjectID = _projectID,
+                            Description = txtDescription.Text,
+                            AssignedTo = employeeID,
+                            Status = "Cần làm",
+                            CreatedDate = DateTime.Now,
+                            Priority = ddownPriority.Text,
+                            CreatedBy = 2
+                        };
+
+                    }
+
+                    try
+                    {
+                        TaskRepository taskRepository = new TaskRepository();
+                        taskRepository.Insert(insertTask);
+                        Message.success(this.FindForm(), "Thêm nhiệm vụ thành công!");
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+
+                    }
+                    catch (Exception ex) 
+                    {
+                        Message.error(this.FindForm(), "Lỗi không thể thêm nhiệm vụ!");
+                    }
                 }
                 else 
                 {
+                    int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
+
                     var updateTask = new MyTask
                     {
                         TaskID = _task.TaskID,
                         TaskName = txtTaskName.Text,
                         ProjectID = Convert.ToInt32(ddownProjectID.Text),
                         Description = txtDescription.Text,
-                        AssignedTo = string.IsNullOrEmpty(ddownOwnerID.Text) ? (int?)null : Convert.ToInt32(ddownOwnerID.Text),
+                        AssignedTo = employeeID,
                         Status = ddownStatus.Text,
                         //CreatedDate = DateTime.Now
                         CreatedDate = _task.CreatedDate,
@@ -130,8 +199,9 @@ namespace EmployeeManagement.Dialogs
 
                     TaskRepository taskRepository = new TaskRepository();
                     taskRepository.Update(updateTask);
-                    frmInforHuy frmInforHuy = new frmInforHuy("Cập nhật nhiệm vụ thành công!", this);
-                    frmInforHuy.Show();
+                    Message.success(this.FindForm(), "Cập nhật nhiệm vụ thành công!");
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
                 }
             }
             catch (Exception ex)
