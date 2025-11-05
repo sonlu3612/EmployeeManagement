@@ -253,8 +253,6 @@
     <Content Include="Assets\Icons\user_boder_white.png" />
     <Content Include="Assets\Icons\user_white.png" />
     <Content Include="Assets\Images\back.jpeg" />
-    <Content Include="Database\schema.sql" />
-    <Content Include="Database\stored_procedures.sql" />
     <Content Include="packages\AntdUI.2.1.13\lib\net40\AntdUI.dll" />
     <Content Include="packages\AntdUI.2.1.13\lib\net40\AntdUI.xml" />
     <Content Include="packages\AntdUI.2.1.13\lib\net46\AntdUI.dll" />
