@@ -5,6 +5,7 @@ using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
@@ -13,16 +14,23 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_Project : UserControl
     {
-        private readonly IRepository<Project> _projectRepository = new ProjectRepository();
+        private IRepository<Project> _projectRepository = new ProjectRepository();
 
         public Page_Project()
         {
             InitializeComponent();
         }
 
+        private bool IsInDesignMode()
+        {
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || (this.Site != null && this.Site.DesignMode);
+        }
+
         public void Page_Project_Load()
         {
-            // Cấu hình các cột trong bảng
+            if (IsInDesignMode()) return;
+
             tbProject.Columns.Add(new Column("ProjectID", "ID"));
             tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
             tbProject.Columns.Add(new Column("Description", "Description"));
@@ -96,31 +104,6 @@ namespace EmployeeManagement.Pages
             else
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
-            }
-        }
-
-        private void tbProject_Click(object sender, EventArgs e)
-        {
-            var selectedIndex = tbProject.SelectedIndex;
-            if (tbProject.DataSource is List<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
-            {
-                var project = projects[selectedIndex];
-
-                frmProject frm = new frmProject(project);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    var updatedProject = frm.Tag as Project;
-                    if (updatedProject != null)
-                    {
-                        _projectRepository.Update(updatedProject);
-                        LoadData();
-                        Message.success(this.FindForm(), "Cập nhật dự án thành công!");
-                    }
-                }
-            }
-            else
-            {
-                Message.warn(this.FindForm(), "Vui lòng chọn dự án cần sửa!");
             }
         }
 
@@ -245,6 +228,20 @@ namespace EmployeeManagement.Pages
                 .Where(p => p.Status.Contains(cbTrangThai.Text))
                 .ToList();
             tbProject.DataSource = filteredProjects;
+        }
+
+        private void Page_Project_Load(object sender, EventArgs e)
+        {
+            if (IsInDesignMode()) return;
+            tbProject.Columns.Add(new Column("ProjectID", "ID"));
+            tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
+            tbProject.Columns.Add(new Column("Description", "Description"));
+            tbProject.Columns.Add(new Column("StartDate", "Start Date"));
+            tbProject.Columns.Add(new Column("EndDate", "End Date"));
+            tbProject.Columns.Add(new Column("Status", "Status"));
+            tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
+
+            LoadData();
         }
     }
 }

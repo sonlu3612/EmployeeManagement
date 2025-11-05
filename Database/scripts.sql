@@ -87,6 +87,7 @@ CREATE TABLE dbo.Employees (
     EmployeeID INT PRIMARY KEY,
     FullName NVARCHAR(100) NOT NULL,
     Position NVARCHAR(100),
+    Gender NVARCHAR(20) NOT NULL DEFAULT ('NotSpecified'),
     DepartmentID INT NULL,
     AvatarPath NVARCHAR(500),
     Address NVARCHAR(500),

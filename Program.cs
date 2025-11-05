@@ -1,9 +1,13 @@
-﻿using EmployeeManagement.Auth;
+﻿using EmployeeManagement.DAL.Interfaces;
+using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.Models;
+using EmployeeManagement.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EmployeeManagement.Auth;
 
 namespace EmployeeManagement
 {

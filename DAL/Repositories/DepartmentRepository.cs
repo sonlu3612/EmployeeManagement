@@ -208,6 +208,52 @@ namespace EmployeeManagement.DAL.Repositories
             }
         }
 
+        public List<Department> GetAllWithEmployeeCount()
+        {
+            var departments = new List<Department>();
+
+            try
+            {
+                string sql = @"
+            SELECT 
+                d.DepartmentID,
+                d.DepartmentName,
+                d.Description,
+                d.ManagerID,
+                e.FullName AS ManagerName,
+                COUNT(emp.EmployeeID) AS EmployeeCount
+            FROM Departments d
+            LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
+            LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1
+            GROUP BY 
+                d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID, e.FullName
+            ORDER BY d.DepartmentID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    departments.Add(new Department
+                    {
+                        DepartmentID = row["DepartmentID"] != DBNull.Value ? Convert.ToInt32(row["DepartmentID"]) : 0,
+                        DepartmentName = row["DepartmentName"]?.ToString(),
+                        Description = row["Description"]?.ToString(),
+                        ManagerID = row["ManagerID"] != DBNull.Value ? (int?)Convert.ToInt32(row["ManagerID"]) : null,
+                        ManagerName = row["ManagerName"]?.ToString(),
+                        EmployeeCount = row["EmployeeCount"] != DBNull.Value ? Convert.ToInt32(row["EmployeeCount"]) : 0
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DepartmentRepository.GetAllWithEmployeeCount] Lỗi: {ex.Message}");
+                throw;
+            }
+
+            return departments;
+        }
+
+
         public bool AssignManager(int departmentId, int employeeId)
         {
             try

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -85,8 +85,11 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
-    <Compile Include="Auth\frmLogin.Designer.cs">
-      <DependentUpon>frmLogin.cs</DependentUpon>
+    <Compile Include="Dialogs\frmDepartment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmDepartment.Designer.cs">
+      <DependentUpon>frmDepartment.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\frmInforXoa.cs">
       <SubType>Form</SubType>
@@ -131,6 +134,12 @@
     <Compile Include="Dialogs\frmTask.Designer.cs">
       <DependentUpon>frmTask.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\ManageEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ManageEmployee.Designer.cs">
+      <DependentUpon>ManageEmployee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Employees\frmEmployee.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,6 +166,24 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskFile.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Department.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Department.Designer.cs">
+      <DependentUpon>Page_Department.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_Employee.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Employee.Designer.cs">
+      <DependentUpon>Page_Employee.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_ManageEmployees.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_ManageEmployees.Designer.cs">
+      <DependentUpon>Page_ManageEmployees.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Project.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -193,6 +220,9 @@
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmDepartment.resx">
+      <DependentUpon>frmDepartment.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmInforXoa.resx">
       <DependentUpon>frmInforXoa.cs</DependentUpon>
     </EmbeddedResource>
@@ -207,12 +237,16 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmEmployee.resx">
       <DependentUpon>frmEmployee.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmProject.resx">
       <DependentUpon>frmProject.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmTask.resx">
       <DependentUpon>frmTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ManageEmployee.resx">
+      <DependentUpon>ManageEmployee.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Employees\frmEmployee.resx">
       <DependentUpon>frmEmployee.cs</DependentUpon>
@@ -222,6 +256,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Department.resx">
+      <DependentUpon>Page_Department.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Employee.resx">
+      <DependentUpon>Page_Employee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_ManageEmployees.resx">
+      <DependentUpon>Page_ManageEmployees.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Project.resx">
       <DependentUpon>Page_Project.cs</DependentUpon>
@@ -248,6 +291,7 @@
   </ItemGroup>
   <!-- Content / None files -->
   <ItemGroup>
+    <None Include="bin\Debug\EmployeeManagement.exe.config" />
     <None Include="DAL\Services\FileService_UsageGuide.md" />
     <None Include="packages.config" />
     <None Include="packages\AntdUI.2.1.13\.signature.p7s" />
@@ -258,6 +302,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="bin\Debug\EmployeeManagement.exe" />
+    <Content Include="bin\Debug\EmployeeManagement.pdb" />
     <Content Include="Database\scripts.sql" />
   </ItemGroup>
   <ItemGroup>
@@ -300,6 +346,10 @@
     <Content Include="Assets\Icons\rotate-right-white.png" />
     <Content Include="Assets\Icons\user_blacl.png" />
     <Content Include="Assets\Images\back.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Avatars\" />
+    <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
-
+using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
 
 
@@ -27,6 +27,7 @@ namespace EmployeeManagement.Pages
         private TaskRepository taskRepository = new TaskRepository();
         private void Page_Task_Load(object sender, EventArgs e)
         {
+            if (IsInDesignMode()) return;
             tableTask.Columns.Add(new Column("ProjectName", "Dự án"));
             tableTask.Columns.Add(new Column("TaskName", "Nhiệm vụ"));
             tableTask.Columns.Add(new Column("EmployeeName", "Tạo bởi"));
@@ -38,8 +39,12 @@ namespace EmployeeManagement.Pages
 
             loadData();
             loadEmployeesName();
+        }
 
-
+        private bool IsInDesignMode()
+        {
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || (this.Site != null && this.Site.DesignMode);
         }
 
         private void loadData()
@@ -92,10 +97,6 @@ namespace EmployeeManagement.Pages
                 string displayText = $"{emp.EmployeeID} - {emp.FullName}";
                 ddownEmployee.Items.Add(displayText);
             }
-            
-
-
-
         }
 
         private void ddownEmployee_SelectedValueChanged(object sender, EventArgs e)
@@ -177,23 +178,60 @@ namespace EmployeeManagement.Pages
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var selectedIndex = tableTask.SelectedIndex - 1;
-            if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+
+            if (selectedIndex < 0)
+            {
+                Message.warn(this.FindForm(), "Vui lòng chọn công việc cần xóa!");
+                return;
+            }
+
+            if (tableTask.DataSource is IList<MyTask> datalist && selectedIndex < datalist.Count)
             {
                 var task = datalist[selectedIndex];
-                string massage = "Bạn có muốn xóa?";
-                frmInforXoa frmInforXoa = new frmInforXoa(massage);
-                if(frmInforXoa.ShowDialog() == DialogResult.OK)
-                {
-                    TaskRepository taskRepository = new TaskRepository();
-                    taskRepository.Delete(task.TaskID);
-                    loadData();
 
+                if (task == null)
+                {
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
+                    return;
                 }
 
+                var modalConfig = Modal.config(
+                    this.FindForm(),
+                    "Xác nhận xoá",
+                    $"Bạn có chắc muốn xoá công việc \"{task.TaskName}\" không?",
+                    TType.Warn
+                );
 
+                modalConfig.OkText = "Xoá";
+                modalConfig.CancelText = "Huỷ";
+                modalConfig.OkType = TTypeMini.Success;
 
+                modalConfig.OnOk = (cfg) =>
+                {
+                    try
+                    {
+                        TaskRepository taskRepository = new TaskRepository();
+                        taskRepository.Delete(task.TaskID);
+                        loadData();
+
+                        Message.success(this.FindForm(), "Xóa công việc thành công!");
+                    }
+                    catch (Exception ex)
+                    {
+                        Message.error(this.FindForm(), "Lỗi khi xoá công việc: " + ex.Message);
+                    }
+
+                    return true; // Đóng modal sau khi xử lý xong
+                };
+
+                Modal.open(modalConfig);
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
             }
         }
+
     }
 }
    

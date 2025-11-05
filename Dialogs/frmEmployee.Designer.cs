@@ -34,15 +34,15 @@
             this.label4 = new AntdUI.Label();
             this.label6 = new AntdUI.Label();
             this.label7 = new AntdUI.Label();
-            this.txtTaskName = new AntdUI.Input();
+            this.txtName = new AntdUI.Input();
             this.txtPosition = new AntdUI.Input();
             this.ddownDepartment = new AntdUI.Dropdown();
             this.ddownRole = new AntdUI.Dropdown();
             this.dateStart = new AntdUI.DatePicker();
-            this.image = new AntdUI.Image3D();
+            this.img = new AntdUI.Image3D();
             this.btnAnh = new AntdUI.Button();
             this.btnXem = new AntdUI.Button();
-            this.button1 = new AntdUI.Button();
+            this.btnLuu = new AntdUI.Button();
             this.btnHuy = new AntdUI.Button();
             this.pageHeader1 = new AntdUI.PageHeader();
             this.label2 = new AntdUI.Label();
@@ -50,7 +50,7 @@
             this.label8 = new AntdUI.Label();
             this.txtDienThoai = new AntdUI.Input();
             this.label9 = new AntdUI.Label();
-            this.txtGioiTinh = new AntdUI.Input();
+            this.ddownGT = new AntdUI.Dropdown();
             this.SuspendLayout();
             // 
             // label1
@@ -107,15 +107,15 @@
             this.label7.TabIndex = 10;
             this.label7.Text = "Chức vụ";
             // 
-            // txtTaskName
+            // txtName
             // 
-            this.txtTaskName.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.txtTaskName.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.txtTaskName.BorderWidth = 2F;
-            this.txtTaskName.Location = new System.Drawing.Point(223, 236);
-            this.txtTaskName.Name = "txtTaskName";
-            this.txtTaskName.Size = new System.Drawing.Size(217, 34);
-            this.txtTaskName.TabIndex = 12;
+            this.txtName.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.txtName.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.txtName.BorderWidth = 2F;
+            this.txtName.Location = new System.Drawing.Point(223, 236);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(217, 34);
+            this.txtName.TabIndex = 12;
             // 
             // txtPosition
             // 
@@ -136,6 +136,7 @@
             this.ddownDepartment.Size = new System.Drawing.Size(217, 32);
             this.ddownDepartment.TabIndex = 15;
             this.ddownDepartment.Text = "                                    ";
+            this.ddownDepartment.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownDepartment_SelectedValueChanged);
             // 
             // ddownRole
             // 
@@ -146,6 +147,7 @@
             this.ddownRole.Size = new System.Drawing.Size(217, 32);
             this.ddownRole.TabIndex = 16;
             this.ddownRole.Text = "                                    ";
+            this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // dateStart
             // 
@@ -156,15 +158,15 @@
             this.dateStart.Size = new System.Drawing.Size(217, 33);
             this.dateStart.TabIndex = 17;
             // 
-            // image
+            // img
             // 
-            this.image.ImageFit = AntdUI.TFit.Contain;
-            this.image.Location = new System.Drawing.Point(223, 66);
-            this.image.Name = "image";
-            this.image.Radius = 2;
-            this.image.Size = new System.Drawing.Size(144, 142);
-            this.image.TabIndex = 18;
-            this.image.Text = "image3D1";
+            this.img.ImageFit = AntdUI.TFit.Contain;
+            this.img.Location = new System.Drawing.Point(223, 66);
+            this.img.Name = "img";
+            this.img.Radius = 2;
+            this.img.Size = new System.Drawing.Size(144, 142);
+            this.img.TabIndex = 18;
+            this.img.Text = "image3D1";
             // 
             // btnAnh
             // 
@@ -179,6 +181,7 @@
             this.btnAnh.TabIndex = 19;
             this.btnAnh.Text = "Ảnh";
             this.btnAnh.Type = AntdUI.TTypeMini.Primary;
+            this.btnAnh.Click += new System.EventHandler(this.btnAnh_Click);
             // 
             // btnXem
             // 
@@ -195,19 +198,20 @@
             this.btnXem.TabIndex = 20;
             this.btnXem.Text = "Xem";
             // 
-            // button1
+            // btnLuu
             // 
-            this.button1.BackHover = System.Drawing.Color.White;
-            this.button1.BorderWidth = 2F;
-            this.button1.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.button1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.button1.Location = new System.Drawing.Point(384, 603);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(85, 41);
-            this.button1.TabIndex = 21;
-            this.button1.Text = "Lưu";
-            this.button1.Type = AntdUI.TTypeMini.Primary;
+            this.btnLuu.BackHover = System.Drawing.Color.White;
+            this.btnLuu.BorderWidth = 2F;
+            this.btnLuu.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLuu.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
+            this.btnLuu.Location = new System.Drawing.Point(384, 603);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(85, 41);
+            this.btnLuu.TabIndex = 21;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.Type = AntdUI.TTypeMini.Primary;
+            this.btnLuu.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnHuy
             // 
@@ -224,6 +228,7 @@
             this.btnHuy.Size = new System.Drawing.Size(76, 41);
             this.btnHuy.TabIndex = 22;
             this.btnHuy.Text = "Hủy";
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
             // 
             // pageHeader1
             // 
@@ -237,7 +242,7 @@
             this.pageHeader1.Name = "pageHeader1";
             this.pageHeader1.ShowButton = true;
             this.pageHeader1.ShowIcon = true;
-            this.pageHeader1.Size = new System.Drawing.Size(519, 36);
+            this.pageHeader1.Size = new System.Drawing.Size(553, 36);
             this.pageHeader1.TabIndex = 0;
             this.pageHeader1.Text = "Nhân viên";
             this.pageHeader1.UseForeColorDrawIcons = true;
@@ -290,38 +295,39 @@
             this.label9.TabIndex = 27;
             this.label9.Text = "Giới tính";
             // 
-            // txtGioiTinh
+            // ddownGT
             // 
-            this.txtGioiTinh.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.txtGioiTinh.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.txtGioiTinh.BorderWidth = 2F;
-            this.txtGioiTinh.Location = new System.Drawing.Point(223, 288);
-            this.txtGioiTinh.Name = "txtGioiTinh";
-            this.txtGioiTinh.Size = new System.Drawing.Size(217, 34);
-            this.txtGioiTinh.TabIndex = 28;
+            this.ddownGT.BorderWidth = 2F;
+            this.ddownGT.Location = new System.Drawing.Point(223, 290);
+            this.ddownGT.Name = "ddownGT";
+            this.ddownGT.ShowArrow = true;
+            this.ddownGT.Size = new System.Drawing.Size(217, 32);
+            this.ddownGT.TabIndex = 28;
+            this.ddownGT.Text = "                                    ";
+            this.ddownGT.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownGT_SelectedValueChanged);
             // 
             // frmEmployee
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(536, 486);
-            this.Controls.Add(this.txtGioiTinh);
+            this.ClientSize = new System.Drawing.Size(570, 486);
+            this.Controls.Add(this.ddownGT);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtDienThoai);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnHuy);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnLuu);
             this.Controls.Add(this.btnXem);
             this.Controls.Add(this.btnAnh);
-            this.Controls.Add(this.image);
+            this.Controls.Add(this.img);
             this.Controls.Add(this.dateStart);
             this.Controls.Add(this.ddownRole);
             this.Controls.Add(this.ddownDepartment);
             this.Controls.Add(this.txtPosition);
-            this.Controls.Add(this.txtTaskName);
+            this.Controls.Add(this.txtName);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label4);
@@ -329,9 +335,11 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pageHeader1);
+            this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmEmployee";
             this.Text = "frmTasks";
+            this.Load += new System.EventHandler(this.frmEmployee_Load);
             this.ResumeLayout(false);
 
         }
@@ -345,21 +353,21 @@
         private AntdUI.Label label4;
         private AntdUI.Label label6;
         private AntdUI.Label label7;
-        private AntdUI.Input txtTaskName;
+        private AntdUI.Input txtName;
         private AntdUI.Input txtPosition;
         private AntdUI.Dropdown ddownDepartment;
         private AntdUI.Dropdown ddownRole;
         private AntdUI.DatePicker dateStart;
-        private AntdUI.Image3D image;
+        private AntdUI.Image3D img;
         private AntdUI.Button btnAnh;
         private AntdUI.Button btnXem;
-        private AntdUI.Button button1;
+        private AntdUI.Button btnLuu;
         private AntdUI.Button btnHuy;
         private AntdUI.Label label2;
         private AntdUI.Input txtEmail;
         private AntdUI.Label label8;
         private AntdUI.Input txtDienThoai;
         private AntdUI.Label label9;
-        private AntdUI.Input txtGioiTinh;
+        private AntdUI.Dropdown ddownGT;
     }
 }
