@@ -31,7 +31,6 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("ProjectName", "Project Name"));
             tbTask.Columns.Add(new Column("TaskName", "Task Name"));
             tbTask.Columns.Add(new Column("Description", "Description"));
-            tbTask.Columns.Add(new Column("AssignedTo", "Assigned To"));
             tbTask.Columns.Add(new Column("CreateBy", "Owner"));
             tbTask.Columns.Add(new Column("Deadline", "Deadline"));
             tbTask.Columns.Add(new Column("Status", "Status"));

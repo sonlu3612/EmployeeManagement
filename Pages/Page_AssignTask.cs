@@ -48,6 +48,8 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("Status", "Trạng thái"));
             tbTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
             tbTask.Columns.Add(new Column("Progress", "Tiến triển"));
+
+            LoadData();
         }
 
         private void LoadData()

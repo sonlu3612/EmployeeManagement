@@ -39,6 +39,8 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Status"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
 
+            
+
             LoadData();
         }
 

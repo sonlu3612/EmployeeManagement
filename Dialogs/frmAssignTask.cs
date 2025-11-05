@@ -16,5 +16,10 @@ namespace EmployeeManagement.Dialogs
         {
             InitializeComponent();
         }
+
+        public void frmAssignTask_Load(int id)
+        {
+            page_AssignTask1.Page_AssignTask_Load(id);
+        }
     }
 }

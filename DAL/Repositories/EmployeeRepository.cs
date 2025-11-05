@@ -29,8 +29,7 @@ namespace EmployeeManagement.DAL.Repositories
                       e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                       d.DepartmentName
               FROM Employees e
-              LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-              WHERE e.IsActive = 1";
+              LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
                 {
@@ -158,7 +157,7 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
-        /// Xóa mềm nhân viên (đặt IsActive = 0)
+        /// Xóa nhân viên khỏi database (xóa cứng)
         /// </summary>
         /// <param name="id">ID nhân viên cần xóa</param>
         /// <returns>True nếu thành công, false nếu thất bại</returns>
@@ -170,7 +169,7 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@EmployeeID", id)
                 };
-                string sql = "UPDATE Employees SET IsActive = 0 WHERE EmployeeID = @EmployeeID";
+                string sql = "DELETE FROM Employees WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -311,20 +310,19 @@ namespace EmployeeManagement.DAL.Repositories
                              AND p.Status = 'Completed'
                        ), 0) AS CompletedProjects,
                        ISNULL((
-                           SELECT COUNT(*) 
-                           FROM Tasks t2 
-                           INNER JOIN TaskAssignments ta2 ON ta2.TaskID = t2.TaskID 
+                           SELECT COUNT(*)
+                           FROM Tasks t2
+                           INNER JOIN TaskAssignments ta2 ON ta2.TaskID = t2.TaskID
                            WHERE ta2.EmployeeID = e.EmployeeID
                        ), 0) AS TotalTasks,
                        ISNULL((
-                           SELECT COUNT(*) 
-                           FROM Tasks t3 
-                           INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID 
+                           SELECT COUNT(*)
+                           FROM Tasks t3
+                           INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID
                            WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = 'Done'
                        ), 0) AS CompletedTasks
                 FROM Employees e
-                LEFT JOIN Users u ON u.UserID = e.EmployeeID
-                WHERE e.IsActive = 1;
+                LEFT JOIN Users u ON u.UserID = e.EmployeeID;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
@@ -390,7 +388,7 @@ namespace EmployeeManagement.DAL.Repositories
             u.Role
         FROM Employees e
         INNER JOIN Users u ON e.EmployeeID = u.UserID
-        WHERE e.IsActive = 1 AND u.IsActive = 1 AND e.DepartmentID = @DepartmentID
+        WHERE e.DepartmentID = @DepartmentID
         ORDER BY e.FullName";
                 DataTable table = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in table.Rows)
