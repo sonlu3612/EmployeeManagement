@@ -12,7 +12,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <connectionStrings>
-      <add name="EmployeeManagementDB" 
+      <add name="ProjectManagementDB" 
       connectionString="Data Source=[DB_SERVER_NAME];Integrated Security=True;Connect Timeout=3;Encrypt=False;Database=ProjectManagementDB" 
       providerName="System.Data.SqlClient" />
     </connectionStrings>
