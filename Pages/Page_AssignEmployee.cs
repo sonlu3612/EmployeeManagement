@@ -24,15 +24,6 @@ namespace EmployeeManagement.Pages
 
         }
 
-        public Page_AssignEmployee(int taskID)
-        {
-            InitializeComponent();
-            _taskID = taskID;
-            
-        }
-
-        
-
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private void LoadData()
         {
@@ -40,8 +31,9 @@ namespace EmployeeManagement.Pages
             tbEmployee.DataSource = employees.ToList();
         }
 
-        private void Page_AssignEmployee_Load(object sender, EventArgs e)
+        public void Page_AssignEmployee_Load(int taskID)
         {
+            _taskID = taskID;
             tbEmployee.Columns.Add(new Column("EmployeeID", "ID"));
             tbEmployee.Columns.Add(new Column("FullName", "Họ và tên"));
             tbEmployee.Columns.Add(new Column("Position", "Vị trí"));
@@ -49,7 +41,6 @@ namespace EmployeeManagement.Pages
             tbEmployee.Columns.Add(new Column("DepartmentName", "Phòng ban"));
 
             LoadData();
-
         }
     }
 }

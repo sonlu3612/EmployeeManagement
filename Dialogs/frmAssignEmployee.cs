@@ -18,8 +18,9 @@ namespace EmployeeManagement.Dialogs
         public frmAssignEmployee(int taskID)
         {
             InitializeComponent();
-            this._taskID = taskID;
-            
+            page_AssignEmployee1.Page_AssignEmployee_Load(taskID);
+
+
         }
 
        

@@ -140,7 +140,6 @@
             this.Controls.Add(this.panel1);
             this.Name = "Page_AssignEmployee";
             this.Size = new System.Drawing.Size(841, 556);
-            this.Load += new System.EventHandler(this.Page_AssignEmployee_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

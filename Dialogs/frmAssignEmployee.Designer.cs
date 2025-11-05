@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.pageTasks = new AntdUI.PageHeader();
-            this.page_AssignEmployee2 = new EmployeeManagement.Pages.Page_AssignEmployee();
+            this.page_AssignEmployee1 = new EmployeeManagement.Pages.Page_AssignEmployee();
             this.SuspendLayout();
             // 
             // pageTasks
@@ -49,13 +49,13 @@
             this.pageTasks.UseForeColorDrawIcons = true;
             this.pageTasks.UseSystemStyleColor = true;
             // 
-            // page_AssignEmployee2
+            // page_AssignEmployee1
             // 
-            this.page_AssignEmployee2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_AssignEmployee2.Location = new System.Drawing.Point(0, 39);
-            this.page_AssignEmployee2.Name = "page_AssignEmployee2";
-            this.page_AssignEmployee2.Size = new System.Drawing.Size(969, 507);
-            this.page_AssignEmployee2.TabIndex = 3;
+            this.page_AssignEmployee1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_AssignEmployee1.Location = new System.Drawing.Point(0, 39);
+            this.page_AssignEmployee1.Name = "page_AssignEmployee1";
+            this.page_AssignEmployee1.Size = new System.Drawing.Size(969, 507);
+            this.page_AssignEmployee1.TabIndex = 3;
             // 
             // frmAssignEmployee
             // 
@@ -63,7 +63,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(969, 546);
-            this.Controls.Add(this.page_AssignEmployee2);
+            this.Controls.Add(this.page_AssignEmployee1);
             this.Controls.Add(this.pageTasks);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmAssignEmployee";
@@ -76,6 +76,5 @@
 
         private AntdUI.PageHeader pageTasks;
         private Pages.Page_AssignEmployee page_AssignEmployee1;
-        private Pages.Page_AssignEmployee page_AssignEmployee2;
     }
 }

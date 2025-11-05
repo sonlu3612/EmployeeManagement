@@ -269,13 +269,13 @@ namespace EmployeeManagement.Pages
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tableTask.SelectedIndex - 1;
-            if (tableTask.DataSource is IList<Task> tasks && selectedIndex >= 0 && selectedIndex < tasks.Count)
+            if (tableTask.DataSource is IList<EmployeeManagement.Models.Task> tasks && selectedIndex >= 0 && selectedIndex < tasks.Count)
             {
                 var record = tasks[selectedIndex];
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
                 int id = record.ProjectID;
                 ManageEmployee frm = new ManageEmployee();
-                frm.frmManageTasks_Load(id);
+                //frm.frmManageTasks_Load(id);
                 frm.ShowDialog();
             }
             else
