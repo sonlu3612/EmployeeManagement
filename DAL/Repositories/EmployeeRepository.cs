@@ -27,14 +27,14 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
-                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
-                    d.DepartmentName
-                    FROM Employees e
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
+                     e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                     d.DepartmentName
+              FROM Employees e
+              LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+              WHERE e.IsActive = 1"; 
 
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
 
-                // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
                 {
                     employees.Add(MapDataRowToEmployee(row));
@@ -48,6 +48,7 @@ namespace EmployeeManagement.DAL.Repositories
 
             return employees;
         }
+
 
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
@@ -328,7 +329,7 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 string sql = @"
-                SELECT e.EmployeeID, e.FullName, e.Gender, e.AvatarPath,
+                SELECT e.EmployeeID, e.FullName, e.Gender,
                        u.Email, u.Role,
                        ISNULL((
                            SELECT COUNT(DISTINCT p.ProjectID)
@@ -365,7 +366,6 @@ namespace EmployeeManagement.DAL.Repositories
                         Gender = row["Gender"]?.ToString(),
                         Email = row["Email"]?.ToString(),
                         Role = row["Role"]?.ToString(),
-                        AvatarPath = row["AvatarPath"]?.ToString(),
                     };
 
                     int totalPrj = Convert.ToInt32(row["TotalProjects"]);
@@ -400,5 +400,57 @@ namespace EmployeeManagement.DAL.Repositories
 
             return list;
         }
+
+        public List<Employee> GetForGrid2(int id)
+        {
+            List<Employee> employees = new List<Employee>();
+
+            try
+            {
+                string sql = $@"
+        SELECT 
+            e.EmployeeID,
+            e.FullName,
+            e.Position,
+            e.Gender,
+            e.Address,
+            e.HireDate,
+            e.AvatarPath,
+            u.Email,
+            u.Phone,
+            u.Role
+        FROM Employees e
+        INNER JOIN Users u ON e.EmployeeID = u.UserID
+        WHERE e.IsActive = 1 AND u.IsActive = 1 AND e.DepartmentID = {id}
+        ORDER BY e.FullName";
+
+                DataTable table = DatabaseHelper.ExecuteQuery(sql);
+
+                foreach (DataRow row in table.Rows)
+                {
+                    employees.Add(new Employee
+                    {
+                        EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
+                        FullName = row["FullName"]?.ToString(),
+                        Position = row["Position"]?.ToString(),
+                        Gender = row["Gender"]?.ToString(),
+                        Address = row["Address"]?.ToString(),
+                        HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
+                        AvatarPath = row["AvatarPath"]?.ToString(),
+                        Email = row["Email"]?.ToString(),
+                        Phone = row["Phone"]?.ToString(),
+                        Role = row["Role"]?.ToString()
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[EmployeeRepository.GetForGrid2] Lỗi: {ex.Message}");
+            }
+
+            return employees;
+        }
+
+
     }
 }

@@ -78,7 +78,11 @@ namespace EmployeeManagement
                 phTrangChu.Text = "Employees";
             }
            
-
+            if (select == "Phòng ban")
+            {
+                tabs1.SelectedTab = tpPhongBan;
+                phTrangChu.Text = "Phòng Ban";
+            }
 
 
         }

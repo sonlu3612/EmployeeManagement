@@ -84,6 +84,12 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
+    <Compile Include="Dialogs\frmDepartment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmDepartment.Designer.cs">
+      <DependentUpon>frmDepartment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmInforXoa.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +177,12 @@
     <Compile Include="Pages\Page_Employee.Designer.cs">
       <DependentUpon>Page_Employee.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Page_ManageEmployees.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_ManageEmployees.Designer.cs">
+      <DependentUpon>Page_ManageEmployees.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Project.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -206,6 +218,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmDepartment.resx">
+      <DependentUpon>frmDepartment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmInforXoa.resx">
       <DependentUpon>frmInforXoa.cs</DependentUpon>
@@ -246,6 +261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Employee.resx">
       <DependentUpon>Page_Employee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_ManageEmployees.resx">
+      <DependentUpon>Page_ManageEmployees.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Project.resx">
       <DependentUpon>Page_Project.cs</DependentUpon>

@@ -14,7 +14,7 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_Project : UserControl
     {
-        private readonly IRepository<Employee> _projectRepository = new ProjectRepository();
+        private IRepository<Project> _projectRepository = new ProjectRepository();
 
         public Page_Project()
         {
@@ -65,7 +65,7 @@ namespace EmployeeManagement.Pages
                 return;
             }
 
-            if (tbProject.DataSource is IList<Employee> projects && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<Project> projects && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
 
@@ -107,37 +107,12 @@ namespace EmployeeManagement.Pages
             }
         }
 
-        private void tbProject_Click(object sender, EventArgs e)
-        {
-            var selectedIndex = tbProject.SelectedIndex;
-            if (tbProject.DataSource is List<Employee> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
-            {
-                var project = projects[selectedIndex];
-
-                frmProject frm = new frmProject(project);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    var updatedProject = frm.Tag as Employee;
-                    if (updatedProject != null)
-                    {
-                        _projectRepository.Update(updatedProject);
-                        LoadData();
-                        Message.success(this.FindForm(), "Cập nhật dự án thành công!");
-                    }
-                }
-            }
-            else
-            {
-                Message.warn(this.FindForm(), "Vui lòng chọn dự án cần sửa!");
-            }
-        }
-
         private void btnThem_Click(object sender, EventArgs e)
         {
             frmProject frm = new frmProject(); 
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                var newProject = frm.Tag as Employee;
+                var newProject = frm.Tag as Project;
                 if (newProject != null)
                 {
                     _projectRepository.Insert(newProject);
@@ -167,7 +142,7 @@ namespace EmployeeManagement.Pages
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<Employee> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }

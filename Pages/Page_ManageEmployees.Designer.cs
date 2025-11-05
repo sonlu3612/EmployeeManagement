@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Pages
 {
-    partial class Page_Employee
+    partial class Page_ManageEmployees
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,8 +30,8 @@
         {
             this.tbNV = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
-            this.btnDelete = new AntdUI.Button();
             this.btnAdd = new AntdUI.Button();
+            this.btnDelete = new AntdUI.Button();
             this.ddownGender = new AntdUI.Dropdown();
             this.ddownRole = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
@@ -46,16 +46,15 @@
             this.tbNV.Gap = 12;
             this.tbNV.Location = new System.Drawing.Point(0, 41);
             this.tbNV.Name = "tbNV";
-            this.tbNV.Size = new System.Drawing.Size(918, 507);
+            this.tbNV.Size = new System.Drawing.Size(836, 482);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
-            this.tbNV.CellClick += new AntdUI.Table.ClickEventHandler(this.table1_CellClick);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.btnAdd);
+            this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.ddownGender);
             this.panel1.Controls.Add(this.ddownRole);
             this.panel1.Controls.Add(this.btnSync);
@@ -64,27 +63,9 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(918, 41);
+            this.panel1.Size = new System.Drawing.Size(836, 41);
             this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackHover = System.Drawing.Color.White;
-            this.btnDelete.BorderWidth = 2F;
-            this.btnDelete.DefaultBack = System.Drawing.Color.Red;
-            this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
-            this.btnDelete.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.ForeActive = System.Drawing.Color.Red;
-            this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(770, 0);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(74, 41);
-            this.btnDelete.TabIndex = 5;
-            this.btnDelete.Text = "Xóa";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnAdd
             // 
@@ -96,12 +77,29 @@
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(844, 0);
+            this.btnAdd.Location = new System.Drawing.Point(688, 0);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackHover = System.Drawing.Color.White;
+            this.btnDelete.BorderWidth = 2F;
+            this.btnDelete.DefaultBack = System.Drawing.Color.Red;
+            this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
+            this.btnDelete.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDelete.ForeActive = System.Drawing.Color.Red;
+            this.btnDelete.ForeColor = System.Drawing.Color.White;
+            this.btnDelete.Location = new System.Drawing.Point(762, 0);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(74, 41);
+            this.btnDelete.TabIndex = 5;
+            this.btnDelete.Text = "Xóa";
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // ddownGender
             // 
@@ -126,7 +124,7 @@
             this.ddownRole.ShowArrow = true;
             this.ddownRole.Size = new System.Drawing.Size(135, 35);
             this.ddownRole.TabIndex = 3;
-            this.ddownRole.Text = "Quyền";
+            this.ddownRole.Text = "Vai trò";
             this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // btnSync
@@ -163,20 +161,19 @@
             // 
             this.txtTim.Location = new System.Drawing.Point(3, 3);
             this.txtTim.Name = "txtTim";
-            this.txtTim.PlaceholderText = "Tìm kiếm theo tên ...";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
             this.txtTim.Radius = 10;
             this.txtTim.Size = new System.Drawing.Size(216, 35);
             this.txtTim.TabIndex = 0;
             // 
-            // Page_Employee
+            // Page_ManageEmployees
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tbNV);
             this.Controls.Add(this.panel1);
-            this.Name = "Page_Employee";
-            this.Size = new System.Drawing.Size(918, 548);
-            this.Load += new System.EventHandler(this.Page_Employee_Load);
+            this.Name = "Page_ManageEmployees";
+            this.Size = new System.Drawing.Size(836, 523);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

@@ -16,5 +16,15 @@ namespace EmployeeManagement.Dialogs
         {
             InitializeComponent();
         }
+
+        private void ManageEmployee_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void ManageEmployee_Load(int id)
+        {
+            page_ManageEmployees1.Page_ManageEmployee_Load(id);
+        }
     }
 }

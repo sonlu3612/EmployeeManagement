@@ -1,7 +1,5 @@
 ﻿using AntdUI;
-using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.DAL.Repositories;
-using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -18,10 +16,11 @@ using Message = AntdUI.Message;
 
 namespace EmployeeManagement.Pages
 {
-    public partial class Page_Employee : UserControl
+    public partial class Page_ManageEmployees : UserControl
     {
         private EmployeeRepository employeeRepository = new EmployeeRepository();
-        public Page_Employee()
+        private int employeeId;
+        public Page_ManageEmployees()
         {
             InitializeComponent();
         }
@@ -36,45 +35,25 @@ namespace EmployeeManagement.Pages
 
         }
 
-        private bool IsInDesignMode()
+        public void Page_ManageEmployee_Load(int id)
         {
-            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
-                   || (this.Site != null && this.Site.DesignMode);
-        }
+            this.employeeId = id;
 
-        private void Page_Employee_Load(object sender, EventArgs e)
-        {
-            if (IsInDesignMode()) return;
+            tbNV.Columns.Add(new Column("EmployeeID", "ID"));
+            tbNV.Columns.Add(new Column("FullName", "Hợ tên"));
+            tbNV.Columns.Add(new Column("Position", "Chức vụ"));
+            tbNV.Columns.Add(new Column("Gender", "Giới tính"));
+            tbNV.Columns.Add(new Column("Address", "Địa chỉ"));
+            tbNV.Columns.Add(new Column("Email", "Email"));
+            tbNV.Columns.Add(new Column("Phone", "SĐT"));
+            tbNV.Columns.Add(new Column("HireDate", "Ngày vào làm"));
 
-            tbNV.Columns.Add(new AntdUI.Column("EmployeeID", "ID"));
-            tbNV.Columns.Add(new AntdUI.Column("FullName", "Họ và tên"));
-            tbNV.Columns.Add(new AntdUI.Column("Gender", "Giới tính"));
-            tbNV.Columns.Add(new AntdUI.Column("Email", "Email"));
-            tbNV.Columns.Add(new AntdUI.Column("Role", "Vai trò"));
-            tbNV.Columns.Add(new AntdUI.Column("ProjectSummary", "Dự án"));
-            tbNV.Columns.Add(new AntdUI.Column("TaskSummary", "Nhiệm vụ"));
-
-            LoadData();        
+            LoadData();
         }
 
         private void LoadData()
         {
-            tbNV.DataSource = employeeRepository.GetForGrid();
-            if (ddownGender.Items.Count == 0)
-            {
-                ddownGender.Items.Add("Tất cả");
-                ddownGender.Items.Add("Nam");
-                ddownGender.Items.Add("Nữ");
-            }
-            ddownGender.Text = "Giới tính";
-            if (ddownRole.Items.Count == 0)
-            {
-                ddownRole.Items.Add("Tất cả");
-                ddownRole.Items.Add("Admin");
-                ddownRole.Items.Add("Employee");
-                ddownRole.Items.Add("Manager");
-            }
-            ddownRole.Text = "Vai trò";
+            tbNV.DataSource = employeeRepository.GetForGrid2(employeeId); ;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -198,7 +177,7 @@ namespace EmployeeManagement.Pages
                     employees = employees.Where(p => p.Gender.ToString().Contains(empFilter));
                 }
 
-                if (!string.IsNullOrWhiteSpace(ddownRole.Text) && ddownRole.Text != "Vai trò")
+                if (!string.IsNullOrWhiteSpace(ddownRole.Text) && ddownRole.Text != "Quyền")
                 {
                     string statusFilter = ddownRole.Text.Trim();
                     employees = employees.Where(p => !string.IsNullOrEmpty(p.Role) &&
