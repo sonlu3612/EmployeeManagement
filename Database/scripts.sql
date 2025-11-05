@@ -1,5 +1,5 @@
 ﻿-- =============================================
--- Script: Setup ProjectManagementDB
+-- Script: Setup EmployeeManagementDB
 -- Mô tả: Tạo database, tables, indexes và sample data
 -- Lưu ý: Script sẽ XÓA database cũ nếu tồn tại
 -- =============================================
@@ -10,31 +10,31 @@ USE master;
 GO
 
 -- Kiểm tra và xóa database nếu đã tồn tại
-IF DB_ID(N'ProjectManagementDB') IS NOT NULL
+IF DB_ID(N'EmployeeManagementDB') IS NOT NULL
 BEGIN
-    PRINT 'Closing all connections to ProjectManagementDB...';
+    PRINT 'Closing all connections to EmployeeManagementDB...';
  
     -- Ngắt tất cả connections hiện tại
-    ALTER DATABASE [ProjectManagementDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    ALTER DATABASE [EmployeeManagementDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     
     -- Xóa database
-    DROP DATABASE [ProjectManagementDB];
-    PRINT 'Database "ProjectManagementDB" has been dropped.';
+    DROP DATABASE [EmployeeManagementDB];
+    PRINT 'Database "EmployeeManagementDB" has been dropped.';
 END
 ELSE
 BEGIN
-    PRINT 'Database "ProjectManagementDB" does not exist.';
+    PRINT 'Database "EmployeeManagementDB" does not exist.';
 END
 GO
 
 -- Tạo database mới
-CREATE DATABASE [ProjectManagementDB];
-PRINT 'Database "ProjectManagementDB" created successfully!';
+CREATE DATABASE [EmployeeManagementDB];
+PRINT 'Database "EmployeeManagementDB" created successfully!';
 GO
 
 -- Chuyển sang database mới tạo
-USE [ProjectManagementDB];
-PRINT 'Switched to database: ProjectManagementDB';
+USE [EmployeeManagementDB];
+PRINT 'Switched to database: EmployeeManagementDB';
 GO
 
 -- =============================================
