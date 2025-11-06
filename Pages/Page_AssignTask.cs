@@ -23,23 +23,9 @@ namespace EmployeeManagement.Pages
         private TaskRepository repository = new TaskRepository();
         private int EmployeeID;
 
-        private void Page_AssignTask_Load(object sender, EventArgs e)
-        {
-            tbTask.Columns.Add(new Column("TaskID", "ID"));
-            tbTask.Columns.Add(new Column("ProjectName", "Tên dự án"));
-            tbTask.Columns.Add(new Column("TaskName", "Tên nhiệm vụ"));
-            tbTask.Columns.Add(new Column("Description", "Mô tả"));
-            tbTask.Columns.Add(new Column("CreateBy", "Người tạo"));
-            tbTask.Columns.Add(new Column("Deadline", "Đến hạn"));
-            tbTask.Columns.Add(new Column("Status", "Trạng thái"));
-            tbTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
-            tbTask.Columns.Add(new Column("Progress", "Tiến triển"));
-        }
-
         public void Page_AssignTask_Load(int id)
         {
             this.EmployeeID = id;
-            tbTask.Columns.Add(new Column("TaskID", "ID"));
             tbTask.Columns.Add(new Column("ProjectName", "Tên dự án"));
             tbTask.Columns.Add(new Column("TaskName", "Tên nhiệm vụ"));
             tbTask.Columns.Add(new Column("Description", "Mô tả"));

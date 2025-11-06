@@ -218,5 +218,44 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!");
             }
         }
+
+        private void chỉnhSửaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbPB.SelectedIndex - 1;
+            if (tbPB.DataSource is IList<Department> departments && selectedIndex >= 0 && selectedIndex < departments.Count)
+            {
+                var record = departments[selectedIndex];
+                if (record == null)
+                {
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!");
+                    return;
+                }
+
+                // Mở form ở chế độ chỉnh sửa bằng cách truyền department hiện tại
+                frmDepartment frm = new frmDepartment(record);
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    var editedDepartment = frm.Tag as Department;
+                    if (editedDepartment != null)
+                    {
+                        try
+                        {
+                            repository.Update(editedDepartment);
+                            LoadData();
+                            Message.success(this.FindForm(), "Sửa thông tin phòng ban thành công!");
+                        }
+                        catch (Exception ex)
+                        {
+                            Message.error(this.FindForm(), "Lỗi khi cập nhật phòng ban: " + ex.Message);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Vui lòng chọn phòng ban cần chỉnh sửa!");
+            }
+        }
+
     }
 }
