@@ -734,3 +734,21 @@ GO
 
 PRINT '==> Bảng Projects đã được cập nhật thành công!';
 GO
+
+ALTER TRIGGER TR_Projects_Insert
+ON dbo.Projects
+AFTER INSERT
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)
+    BEGIN
+        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+
+-- 1️⃣ Xóa khóa ngoại liên quan đến cột
+ALTER TABLE Projects DROP CONSTRAINT FK_Projects_Manager;
+
+-- 2️⃣ Xóa luôn cột ProjectManagerID
+ALTER TABLE Projects DROP COLUMN ProjectManagerID;
