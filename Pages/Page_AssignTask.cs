@@ -29,7 +29,6 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("ProjectName", "Tên dự án"));
             tbTask.Columns.Add(new Column("TaskName", "Tên nhiệm vụ"));
             tbTask.Columns.Add(new Column("Description", "Mô tả"));
-            tbTask.Columns.Add(new Column("CreateBy", "Người tạo"));
             tbTask.Columns.Add(new Column("Deadline", "Đến hạn"));
             tbTask.Columns.Add(new Column("Status", "Trạng thái"));
             tbTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));

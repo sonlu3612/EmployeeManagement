@@ -33,7 +33,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return departments;
         }
-
         public Department GetById(int id)
         {
             try
@@ -61,7 +60,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         public bool Insert(Department entity)
         {
             try
@@ -84,7 +82,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool Update(Department entity)
         {
             try
@@ -111,7 +108,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool Delete(int id)
         {
             try
@@ -130,7 +126,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public List<Department> SearchByName(string keyword)
         {
             List<Department> departments = new List<Department>();
@@ -159,7 +154,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return departments;
         }
-
         public int GetEmployeeCount(int departmentId)
         {
             try
@@ -185,7 +179,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         public List<Department> GetAllWithEmployeeCount()
         {
             var departments = new List<Department>();
@@ -226,7 +219,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return departments;
         }
-
         public bool AssignManager(int departmentId, int employeeId)
         {
             try
@@ -249,7 +241,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool RemoveManager(int departmentId)
         {
             try
@@ -271,7 +262,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         private Department MapDataRowToDepartment(DataRow row)
         {
             return new Department

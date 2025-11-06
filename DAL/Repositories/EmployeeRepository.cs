@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -29,7 +28,8 @@ namespace EmployeeManagement.DAL.Repositories
                       e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                       d.DepartmentName
                       FROM Employees e
-                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
+                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                      WHERE e.IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
                 {
@@ -43,9 +43,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
-        
-
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
         /// </summary>
@@ -65,7 +62,7 @@ namespace EmployeeManagement.DAL.Repositories
                       d.DepartmentName
                       FROM Employees e
                       LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                      WHERE e.EmployeeID = @EmployeeID";
+                      WHERE e.EmployeeID = @EmployeeID AND e.IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Trả về null nếu không tìm thấy nhân viên
                 if (dt.Rows.Count == 0)
@@ -81,7 +78,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         /// <summary>
         /// Thêm mới một nhân viên
         /// </summary>
@@ -115,7 +111,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Cập nhật thông tin nhân viên
         /// </summary>
@@ -157,7 +152,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Xóa nhân viên khỏi database (xóa cứng)
         /// </summary>
@@ -171,7 +165,7 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@EmployeeID", id)
                 };
-                string sql = "DELETE FROM Employees WHERE EmployeeID = @EmployeeID";
+                string sql = "UPDATE Employees SET IsActive = 0 WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -181,7 +175,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Lấy danh sách nhân viên theo phòng ban
         /// </summary>
@@ -202,7 +195,7 @@ namespace EmployeeManagement.DAL.Repositories
                       d.DepartmentName
                       FROM Employees e
                       LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                      WHERE e.DepartmentID = @DepartmentID";
+                      WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -217,7 +210,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         /// <summary>
         /// Tìm kiếm nhân viên theo tên (khớp một phần)
         /// </summary>
@@ -238,7 +230,7 @@ namespace EmployeeManagement.DAL.Repositories
                       d.DepartmentName
                       FROM Employees e
                       LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                      WHERE e.FullName LIKE @Keyword";
+                      WHERE e.FullName LIKE @Keyword AND e.IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -253,7 +245,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Employee
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
@@ -287,7 +278,6 @@ namespace EmployeeManagement.DAL.Repositories
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false
             };
         }
-
         public List<Employee> GetForGrid()
         {
             List<Employee> list = new List<Employee>();
@@ -327,6 +317,7 @@ namespace EmployeeManagement.DAL.Repositories
                 FROM Employees e
                 LEFT JOIN Users u ON u.UserID = e.EmployeeID
                 LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
+                WHERE e.IsActive = 1
                 GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
@@ -369,7 +360,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
-
         public List<Employee> GetForGrid2(int id)
         {
             List<Employee> employees = new List<Employee>();
@@ -394,7 +384,7 @@ namespace EmployeeManagement.DAL.Repositories
                 FROM Employees e
                 INNER JOIN Users u ON e.EmployeeID = u.UserID
                 LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
-                WHERE e.DepartmentID = @DepartmentID
+                WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
                 GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
                 ORDER BY e.FullName";
                 DataTable table = DatabaseHelper.ExecuteQuery(sql, parameters);
@@ -422,7 +412,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         public List<Employee> GetByTask(int taskId)
         {
             List<Employee> list = new List<Employee>();
@@ -432,7 +421,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
             new SqlParameter("@TaskID", taskId)
                 };
-
                 string sql = @"
             SELECT
                 e.EmployeeID,
@@ -446,13 +434,13 @@ namespace EmployeeManagement.DAL.Repositories
                 e.IsActive,
                 u.Email,
                 u.Phone,
-                u.Role
+                d.DepartmentName
             FROM Employees e
             INNER JOIN TaskAssignments ta ON ta.EmployeeID = e.EmployeeID
             LEFT JOIN Users u ON u.UserID = e.EmployeeID
+            LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
             WHERE ta.TaskID = @TaskID AND e.IsActive = 1
             ORDER BY e.FullName";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
@@ -463,15 +451,14 @@ namespace EmployeeManagement.DAL.Repositories
                         Position = row["Position"]?.ToString(),
                         Gender = row["Gender"]?.ToString(),
                         DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
+                        DepartmentName = row["DepartmentName"] != DBNull.Value ? row["DepartmentName"].ToString() : null,
                         AvatarPath = row["AvatarPath"]?.ToString(),
                         Address = row["Address"]?.ToString(),
                         HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
                         IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
                         Email = row["Email"]?.ToString(),
                         Phone = row["Phone"]?.ToString(),
-                        Role = row["Role"]?.ToString()
                     };
-
                     // Đọc ảnh từ đường dẫn (nếu có)
                     try
                     {
@@ -484,7 +471,6 @@ namespace EmployeeManagement.DAL.Repositories
                     {
                         emp.AvatarData = null;
                     }
-
                     list.Add(emp);
                 }
             }
@@ -493,7 +479,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[EmployeeRepository.GetByTask] Lỗi: {ex.Message}");
                 throw;
             }
-
             return list;
         }
     }

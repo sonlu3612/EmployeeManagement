@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -21,11 +20,10 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Project> GetAll()
         {
             List<Project> projects = new List<Project>();
-
             try
             {
                 string sql = @"
-            SELECT 
+            SELECT
                 p.ProjectID,
                 p.ProjectName,
                 p.Description,
@@ -38,9 +36,7 @@ namespace EmployeeManagement.DAL.Repositories
             FROM Projects p
             LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
             ORDER BY p.ProjectID DESC";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -51,11 +47,8 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[ProjectRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
-
             return projects;
         }
-
-
         /// <summary>
         /// Lấy thông tin một dự án theo ID
         /// </summary>
@@ -69,20 +62,16 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@ProjectID", id)
                 };
-
                 string sql =
                     @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
                     FROM Projects
                     WHERE ProjectID = @ProjectID";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 // Trả về null nếu không tìm thấy dự án
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
-
                 // Chuyển đổi dòng đầu tiên thành đối tượng Project
                 return MapDataRowToProject(dt.Rows[0]);
             }
@@ -92,8 +81,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
-
         /// <summary>
         /// Lấy danh sách project được giao cho một nhân viên cụ thể
         /// </summary>
@@ -102,25 +89,21 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Project> GetByEmployee(int employeeId)
         {
             List<Project> projects = new List<Project>();
-
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@EmployeeID", employeeId)
                 };
-
                 string sql =
-                    @"SELECT  p.ProjectID,p.ProjectName,p.Description,p.StartDate,p.EndDate, p.Status,
+                    @"SELECT p.ProjectID,p.ProjectName,p.Description,p.StartDate,p.EndDate, p.Status,
                     p.CreatedBy,
                     e.FullName AS CreatedByName,
                     p.CreatedDate
                     FROM Projects p
                     LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
                     WHERE p.CreatedBy = @EmployeeID";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -131,10 +114,8 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[ProjectRespository.GetByEmployee] Lỗi: {ex.Message}");
                 throw;
             }
-
             return projects;
         }
-
         /// <summary>
         /// Thêm mới một dự án
         /// Kiểm tra StartDate <= EndDate trước khi thêm
@@ -151,7 +132,6 @@ namespace EmployeeManagement.DAL.Repositories
                     Console.WriteLine("[ProjectRepository.Insert] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
-
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@ProjectName", entity.ProjectName ?? (object)DBNull.Value),
@@ -161,11 +141,9 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
                     new SqlParameter("@CreatedBy", entity.CreatedBy)
                  };
-
                 string sql =
                     @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy)
                     VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy)";
-
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -175,7 +153,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Cập nhật thông tin dự án
         /// Kiểm tra StartDate <= EndDate trước khi cập nhật
@@ -192,7 +169,6 @@ namespace EmployeeManagement.DAL.Repositories
                     Console.WriteLine("[ProjectRepository.Update] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
-
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@ProjectID", entity.ProjectID),
@@ -202,7 +178,6 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value)
                  };
-
                 string sql =
                     @"UPDATE Projects
                     SET ProjectName = @ProjectName,
@@ -210,9 +185,7 @@ namespace EmployeeManagement.DAL.Repositories
                     StartDate = @StartDate,
                     EndDate = @EndDate,
                     Status = @Status
-                    Budget = @Budget
                     WHERE ProjectID = @ProjectID";
-
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -222,7 +195,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Xóa một dự án
         /// </summary>
@@ -236,7 +208,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@ProjectID", id)
                 };
-
                 string sql = "DELETE FROM Projects WHERE ProjectID = @ProjectID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -247,25 +218,20 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public List<Project> GetByStatus(string status)
         {
             List<Project> projects = new List<Project>();
-
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                            {
                     new SqlParameter("@Status", status ?? (object)DBNull.Value)
                 };
-
                 string sql =
                     @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
                     FROM Projects
                     WHERE Status = @Status";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     projects.Add(MapDataRowToProject(row));
@@ -276,10 +242,8 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[ProjectRepository.GetByStatus] Lỗi: {ex.Message}");
                 throw;
             }
-
             return projects;
         }
-
         /// <summary>
         /// Lấy thống kê dự án bao gồm tiến độ hoàn thành task
         /// </summary>
@@ -293,7 +257,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@ProjectID", projectId)
                 };
-
                 string sql =
                     @"SELECT
                     p.ProjectID,
@@ -309,14 +272,11 @@ namespace EmployeeManagement.DAL.Repositories
                     LEFT JOIN Tasks t ON p.ProjectID = t.ProjectID
                     WHERE p.ProjectID = @ProjectID
                     GROUP BY p.ProjectID, p.ProjectName";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
-
                 DataRow row = dt.Rows[0];
                 return new ProjectStats
                 {
@@ -333,7 +293,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Project
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
@@ -346,22 +305,17 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 // Mapping ProjectID (trường bắt buộc)
                 ProjectID = row["ProjectID"] != DBNull.Value ? Convert.ToInt32(row["ProjectID"]) : 0,
-
                 // Mapping ProjectName (nullable string)
                 ProjectName = row["ProjectName"] != DBNull.Value ? row["ProjectName"].ToString() : null,
-
                 // Mapping Description (nullable string)
                 Description = row["Description"] != DBNull.Value ? row["Description"].ToString() : null,
-
                 // Mapping StartDate (DateTime bắt buộc)
                 StartDate = row["StartDate"] != DBNull.Value ? Convert.ToDateTime(row["StartDate"]) : DateTime.MinValue,
-
                 // Mapping EndDate (nullable DateTime)
                 EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
-
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
-
                 CreatedBy = row["CreatedBy"] != DBNull.Value ? Convert.ToInt32(row["CreatedBy"]) : 0,
+                CreatedByName = row.Table.Columns.Contains("CreatedByName") && row["CreatedByName"] != DBNull.Value ? row["CreatedByName"].ToString() : null
             };
         }
     }

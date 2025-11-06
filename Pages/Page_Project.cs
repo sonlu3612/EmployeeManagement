@@ -10,42 +10,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
-
-
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Project : UserControl
     {
         private readonly ProjectRepository _projectRepository = new ProjectRepository();
-
         public Page_Project()
         {
             InitializeComponent();
         }
-
         private bool IsInDesignMode()
         {
             return LicenseManager.UsageMode == LicenseUsageMode.Designtime
                    || (this.Site != null && this.Site.DesignMode);
         }
-
-        public void Page_Project_Load()
-        {
-            if (IsInDesignMode()) return;
-
-            tbProject.Columns.Add(new Column("ProjectID", "ID"));
-            tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
-            tbProject.Columns.Add(new Column("Description", "Description"));
-            tbProject.Columns.Add(new Column("StartDate", "Start Date"));
-            tbProject.Columns.Add(new Column("EndDate", "End Date"));
-            tbProject.Columns.Add(new Column("Status", "Status"));
-            tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
-
-            
-
-            LoadData();
-        }
-
         private void LoadData()
         {
             tbProject.DataSource = _projectRepository.GetAll().ToList();
@@ -58,42 +36,34 @@ namespace EmployeeManagement.Pages
                 cbTrangThai.Items.AddRange(_projectRepository.GetAll().Select(p => p.Status).Distinct().ToArray());
             }
         }
-
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private void loadEmployeesName()
-        {
-            var employees = employeeRepository.GetAll();
-
-            cbNhanVien.Items.Clear();
-            cbNhanVien.Items.Insert(0, "Tất cả");
-
-            foreach (var emp in employees)
-            {
-                string displayText = $"{emp.EmployeeID} - {emp.FullName}";
-                cbNhanVien.Items.Add(displayText);
-            }
-        }
-
+        {
+            var employees = employeeRepository.GetAll();
+            cbNhanVien.Items.Clear();
+            cbNhanVien.Items.Insert(0, "Tất cả");
+            foreach (var emp in employees)
+            {
+                string displayText = $"{emp.EmployeeID} - {emp.FullName}";
+                cbNhanVien.Items.Add(displayText);
+            }
+        }
         private void btnXoa_Click(object sender, EventArgs e)
         {
             var selectedIndex = tbProject.SelectedIndex - 1;
-
             if (selectedIndex < 0)
             {
                 Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
                 return;
             }
-
             if (tbProject.DataSource is IList<Project> projects && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
-
                 if (record == null)
                 {
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
                     return;
                 }
-
                 var modalConfig = Modal.config(
                     this.FindForm(),
                     "Xác nhận xoá",
@@ -109,7 +79,6 @@ namespace EmployeeManagement.Pages
                     {
                         _projectRepository.Delete(record.ProjectID);
                         LoadData();
-
                         Message.success(this.FindForm(), "Xóa dự án thành công!");
                     }
                     catch (Exception ex)
@@ -125,10 +94,9 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
-
         private void btnThem_Click(object sender, EventArgs e)
         {
-            frmProject frm = new frmProject(); 
+            frmProject frm = new frmProject();
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 var newProject = frm.Tag as Project;
@@ -140,12 +108,9 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
-
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
-
         }
-
         private void tbProject_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -157,7 +122,6 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
-
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
@@ -175,39 +139,35 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
             {
                 string q = txtTim.Text?.Trim() ?? "";
-
                 var projects = _projectRepository.GetAll().AsEnumerable();
-
                 if (!string.IsNullOrWhiteSpace(q))
                 {
                     projects = projects.Where(p =>
                         !string.IsNullOrEmpty(p.ProjectName) &&
                         p.ProjectName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
-
-                if (!string.IsNullOrWhiteSpace(cbNhanVien.Text) && cbNhanVien.Text != "Nhân viên")
+                int? employeeIdFilter = null;
+                if (cbNhanVien.SelectedValue != null && cbNhanVien.SelectedValue is int empId && empId != 0)
                 {
-                    string empFilter = cbNhanVien.Text.Trim();
-                    projects = projects.Where(p => p.CreatedBy.ToString().Contains(empFilter));
+                    employeeIdFilter = empId;
                 }
-
+                if (employeeIdFilter.HasValue)
+                {
+                    projects = projects.Where(p => p.CreatedBy == employeeIdFilter.Value);
+                }
                 if (!string.IsNullOrWhiteSpace(cbTrangThai.Text) && cbTrangThai.Text != "Trạng thái")
                 {
                     string statusFilter = cbTrangThai.Text.Trim();
                     projects = projects.Where(p => !string.IsNullOrEmpty(p.Status) &&
                                                    p.Status.IndexOf(statusFilter, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
-
                 var result = projects.ToList();
-
                 tbProject.DataSource = result;
-
                 if (result.Count == 0)
                 {
                     Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
@@ -222,38 +182,41 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
             }
         }
-
-
         private void cbNhanVien_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
-            //cbNhanVien.Text = e.Value?.ToString() ?? "";
-            //var filteredProjects = _projectRepository.GetAll()
-            //    .Where(p => p.CreatedBy.ToString().Contains(cbNhanVien.Text))
-            //    .ToList();
-            //tbProject.DataSource = filteredProjects;
-            string selected = cbNhanVien.SelectedValue.ToString();
-
             try
             {
+                var selectedValue = e.Value?.ToString();
+                if (string.IsNullOrWhiteSpace(selectedValue))
+                    return;
 
-                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                cbNhanVien.Text = selectedValue;
+
+                if (selectedValue.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
                 {
                     LoadData();
+                    return;
+                }
+
+                var token = selectedValue.Split(new[] { ' ', '-', ':' }, StringSplitOptions.RemoveEmptyEntries)[0];
+
+                if (int.TryParse(token, out int employeeId))
+                {
+                    var projects = _projectRepository.GetAll()
+                        .Where(p => p.CreatedBy == employeeId)
+                        .ToList();
+
+                    tbProject.DataSource = projects;
+                    Message.success(this.FindForm(), $"Tìm thấy {projects.Count} dự án.");
                 }
                 else
                 {
-                    List<Project> projects = new List<Project>();
-
-
-                    int employeeId = int.Parse(selected.Split('-')[0].Trim());
-                    projects = _projectRepository.GetByEmployee(employeeId);
-                    tbProject.DataSource = projects.ToList();
-
+                    Message.warn(this.FindForm(), $"Không tìm thấy.");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dự án: " + ex.Message);
+                Message.error(this.FindForm(), "Lỗi khi lọc theo nhân viên: " + ex.Message);
             }
         }
 
@@ -263,7 +226,6 @@ namespace EmployeeManagement.Pages
             cbNhanVien.Text = "Nhân viên";
             cbTrangThai.Text = "Trạng thái";
         }
-
         private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             cbTrangThai.Text = e.Value?.ToString() ?? "";
@@ -272,18 +234,15 @@ namespace EmployeeManagement.Pages
                 .ToList();
             tbProject.DataSource = filteredProjects;
         }
-
         private void Page_Project_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
-            tbProject.Columns.Add(new Column("ProjectID", "ID"));
-            tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
-            tbProject.Columns.Add(new Column("Description", "Description"));
-            tbProject.Columns.Add(new Column("StartDate", "Start Date"));
-            tbProject.Columns.Add(new Column("EndDate", "End Date"));
-            tbProject.Columns.Add(new Column("Status", "Status"));
-            tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
-
+            tbProject.Columns.Add(new Column("ProjectName", "Tên dự án"));
+            tbProject.Columns.Add(new Column("Description", "Chi tiết"));
+            tbProject.Columns.Add(new Column("StartDate", "Ngày bắt đầu"));
+            tbProject.Columns.Add(new Column("EndDate", "Ngày hết hạn"));
+            tbProject.Columns.Add(new Column("Status", "Trạng thái"));
+            tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             LoadData();
         }
     }

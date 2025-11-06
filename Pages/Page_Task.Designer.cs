@@ -87,7 +87,7 @@
             this.ddownEmployee.ShowArrow = true;
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
-            this.ddownEmployee.Text = "Nhân viên";
+            this.ddownEmployee.Text = "Người tạo";
             this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
@@ -168,7 +168,7 @@
             this.xóaToolStripMenuItem,
             this.quảnLýToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 70);
+            this.menuStrip.Size = new System.Drawing.Size(185, 48);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem

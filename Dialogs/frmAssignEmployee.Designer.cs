@@ -56,6 +56,7 @@
             this.page_AssignEmployee1.Name = "page_AssignEmployee1";
             this.page_AssignEmployee1.Size = new System.Drawing.Size(969, 507);
             this.page_AssignEmployee1.TabIndex = 3;
+            this.page_AssignEmployee1.Load += new System.EventHandler(this.page_AssignEmployee1_Load);
             // 
             // frmAssignEmployee
             // 

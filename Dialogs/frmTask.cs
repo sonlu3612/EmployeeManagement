@@ -181,7 +181,7 @@ namespace EmployeeManagement.Dialogs
                         this.Close();
 
                     }
-                    catch (Exception ex) 
+                    catch (Exception) 
                     {
                         Message.error(this.FindForm(), "Lỗi không thể thêm nhiệm vụ!");
                     }

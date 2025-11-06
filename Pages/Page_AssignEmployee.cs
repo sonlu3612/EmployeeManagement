@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
 using Message = AntdUI.Message;
-
 namespace EmployeeManagement.Pages
 {
     public partial class Page_AssignEmployee : UserControl
@@ -21,44 +20,34 @@ namespace EmployeeManagement.Pages
         public Page_AssignEmployee()
         {
             InitializeComponent();
-          
 
         }
-
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private void LoadData()
         {
             try
             {
                 var employees = employeeRepository.GetAll();
-
-                //Lấy tất cả nhân viên đã gán
                 var assignedEmployees = employeeRepository.GetByTask(_taskID);
                 var assignedIDs = assignedEmployees.Select(e => e.EmployeeID).ToHashSet();
-
-
                 var dataSource = employees.Select(e => new AssignItem
                 {
                     Key = e.EmployeeID,
                     EmployeeID = e.EmployeeID,
                     FullName = e.FullName,
                     Position = e.Position ?? "Chưa có",
-                    Gender = e.Gender == "1" ? "Nam" : e.Gender == "0" ? "Nữ" : "Khác",
+                    Gender = e.Gender,
                     DepartmentName = e.DepartmentName ?? "Chưa có",
                     IsSelected = assignedIDs.Contains(e.EmployeeID) // Đánh dấu checkbox
                 }).ToList();
-
                 tbEmployee.DataSource = dataSource;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Message.error(this.FindForm(),"Lỗi load: "+ex.Message);
+                Message.error(this.FindForm(), "Lỗi load: " + ex.Message);
             }
-            
+
         }
-
-        
-
         public void Page_AssignEmployee_Load(int taskID)
         {
             _taskID = taskID;
@@ -71,10 +60,8 @@ namespace EmployeeManagement.Pages
             {
                 Title = "Chọn"
             });
-
             LoadData();
         }
-
         // CLASS TẠM ĐỂ LƯU DỮ LIỆU + IsSelected
         private class AssignItem
         {
@@ -86,27 +73,95 @@ namespace EmployeeManagement.Pages
             public string DepartmentName { get; set; }
             public bool IsSelected { get; set; }
         }
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
             {
-                var data = tbEmployee.DataSource as List<AssignItem>;
-                var selectedIDs = data
-                    .Where(x => x.IsSelected == true)
-                    .Select(x => x.EmployeeID)
-                    .ToList();
+                var ds = tbEmployee.DataSource;
+                if (ds == null)
+                {
+                    Message.warn(this.FindForm(), "Không có dữ liệu nhân viên để xử lý.");
+                    return;
+                }
+
+                // Hỗ trợ nhiều kiểu DataSource: IEnumerable<T>, DataTable, IList, v.v.
+                var selectedIDs = new List<int>();
+
+                // 1) Nếu là DataTable
+                if (ds is DataTable dt)
+                {
+                    foreach (DataRow r in dt.Rows)
+                    {
+                        // nếu có cột IsSelected và EmployeeID
+                        if (dt.Columns.Contains("IsSelected") && dt.Columns.Contains("EmployeeID"))
+                        {
+                            bool isSel = r["IsSelected"] != DBNull.Value && Convert.ToBoolean(r["IsSelected"]);
+                            if (isSel)
+                            {
+                                selectedIDs.Add(Convert.ToInt32(r["EmployeeID"]));
+                            }
+                        }
+                    }
+                }
+                else if (ds is System.Collections.IEnumerable enumerable)
+                {
+                    foreach (var item in enumerable)
+                    {
+                        if (item == null) continue;
+
+                        var t = item.GetType();
+
+                        // tìm property IsSelected (bool)
+                        var pIsSelected = t.GetProperty("IsSelected");
+                        // tìm property EmployeeID hoặc Key
+                        var pEmpId = t.GetProperty("EmployeeID") ?? t.GetProperty("Key") ?? t.GetProperty("Id") ?? t.GetProperty("ID");
+
+                        bool isSel = false;
+                        int empId = 0;
+
+                        if (pIsSelected != null)
+                        {
+                            var val = pIsSelected.GetValue(item);
+                            if (val != null)
+                            {
+                                // an toàn convert
+                                bool.TryParse(val.ToString(), out isSel);
+                            }
+                        }
+
+                        if (pEmpId != null)
+                        {
+                            var val = pEmpId.GetValue(item);
+                            if (val != null && int.TryParse(val.ToString(), out int tmpId))
+                            {
+                                empId = tmpId;
+                            }
+                        }
+
+                        if (isSel && empId > 0)
+                        {
+                            selectedIDs.Add(empId);
+                        }
+                    }
+                }
 
                 if (!selectedIDs.Any())
                 {
                     Message.warn(this.FindForm(), "Chưa chọn nhân viên!");
                     return;
                 }
-                var task = _taskRepository.GetById(_taskID);
-                int assignedBy = task.CreatedBy;
-                bool success = _taskRepository.AssignEmployees(_taskID, selectedIDs,assignedBy);
 
-                if (success) 
+                var task = _taskRepository.GetById(_taskID);
+                if (task == null)
+                {
+                    Message.error(this.FindForm(), "Không tìm thấy nhiệm vụ.");
+                    return;
+                }
+
+                int assignedBy = task.CreatedBy; // đã kiểm tra task != null
+                bool success = _taskRepository.AssignEmployees(_taskID, selectedIDs, assignedBy);
+
+                if (success)
                 {
                     Message.success(this.FindForm(), $"Đã thêm {selectedIDs.Count} nhân viên vào nhiệm vụ!");
                     this.FindForm().DialogResult = DialogResult.OK;
@@ -116,13 +171,12 @@ namespace EmployeeManagement.Pages
                 {
                     Message.error(this.FindForm(), "Lỗi khi thêm nhân viên!");
                 }
-
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                Message.error(this.FindForm(),"Lỗi: "+ex.Message);
-
+                Message.error(this.FindForm(), "Lỗi: " + ex.Message);
             }
         }
+
     }
 }

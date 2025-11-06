@@ -5,13 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-
 namespace EmployeeManagement.DAL.Repositories
 {
     public class UserRepository : IRepository<User>
     {
         private readonly HashPassword hp = new HashPassword();
-
         /// <summary>
         /// Validates user login credentials
         /// Password must be pre-hashed before calling this method
@@ -51,7 +49,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         public User GetByEmail(string email)
         {
             try
@@ -79,7 +76,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         public List<User> GetAll()
         {
             List<User> users = new List<User>();
@@ -103,7 +99,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return users;
         }
-
         public User GetById(int id)
         {
             try
@@ -131,7 +126,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         public bool Insert(User entity)
         {
             try
@@ -147,7 +141,6 @@ namespace EmployeeManagement.DAL.Repositories
                     @"INSERT INTO Users (Phone, Email, PasswordHash, IsActive)
                       VALUES (@Phone, @Email, @PasswordHash, @IsActive)";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
-
                 // Insert roles into UserRoles if any
                 if (entity.Roles != null && entity.Roles.Count > 0)
                 {
@@ -162,7 +155,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool Update(User entity)
         {
             try
@@ -181,7 +173,6 @@ namespace EmployeeManagement.DAL.Repositories
                           IsActive = @IsActive
                       WHERE UserID = @UserID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
-
                 // Update roles: Delete existing and insert new
                 DeleteUserRoles(entity.UserID);
                 if (entity.Roles != null && entity.Roles.Count > 0)
@@ -196,7 +187,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool Delete(int id)
         {
             try
@@ -205,7 +195,7 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@UserID", id)
                 };
-                string sql = "UPDATE Users SET IsActive = 0 WHERE UserID = @UserID";
+                string sql = "DELETE FROM Users WHERE UserID = @UserID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 // UserRoles will be cascaded deleted if configured
                 return true;
@@ -216,7 +206,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         public bool ChangePassword(int userId, string newPasswordHash)
         {
             try
@@ -239,7 +228,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         private User MapDataRowToUserWithoutPassword(DataRow row)
         {
             return new User
@@ -253,7 +241,6 @@ namespace EmployeeManagement.DAL.Repositories
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
             };
         }
-
         public int InsertAndReturnId(User user)
         {
             string sql = @"
@@ -269,7 +256,6 @@ namespace EmployeeManagement.DAL.Repositories
             };
             object result = DatabaseHelper.ExecuteScalar(sql, parameters);
             int userId = Convert.ToInt32(result);
-
             // Insert roles if any
             if (user.Roles != null && user.Roles.Count > 0)
             {
@@ -277,7 +263,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return userId;
         }
-
         // Helper method to get roles for a user
         private List<string> GetUserRoles(int userId)
         {
@@ -307,7 +292,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return roles;
         }
-
         // Helper method to insert roles for a user
         private void InsertUserRoles(int userId, List<string> roles)
         {
@@ -324,7 +308,6 @@ namespace EmployeeManagement.DAL.Repositories
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
             }
         }
-
         // Helper method to delete roles for a user
         private void DeleteUserRoles(int userId)
         {
@@ -335,7 +318,6 @@ namespace EmployeeManagement.DAL.Repositories
             string sql = "DELETE FROM UserRoles WHERE UserID = @UserID";
             DatabaseHelper.ExecuteNonQuery(sql, parameters);
         }
-
         // Helper to get last inserted UserID (if not using OUTPUT)
         private int GetLastInsertedUserId()
         {

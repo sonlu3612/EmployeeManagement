@@ -11,5 +11,6 @@ namespace EmployeeManagement.Models
         public DateTime? EndDate { get; set; }
         public string Status { get; set; }
         public int CreatedBy { get; set; }
+        public string CreatedByName { get; internal set; }
     }
 }
