@@ -44,13 +44,11 @@
             this.btnAnh = new AntdUI.Button();
             this.img = new AntdUI.Image3D();
             this.dateStart = new AntdUI.DatePicker();
-            this.ddownRole = new AntdUI.Dropdown();
             this.ddownDepartment = new AntdUI.Dropdown();
             this.txtPosition = new AntdUI.Input();
             this.txtName = new AntdUI.Input();
             this.label7 = new AntdUI.Label();
             this.label6 = new AntdUI.Label();
-            this.label4 = new AntdUI.Label();
             this.label3 = new AntdUI.Label();
             this.label5 = new AntdUI.Label();
             this.label1 = new AntdUI.Label();
@@ -92,13 +90,11 @@
             this.panel1.Controls.Add(this.btnAnh);
             this.panel1.Controls.Add(this.img);
             this.panel1.Controls.Add(this.dateStart);
-            this.panel1.Controls.Add(this.ddownRole);
             this.panel1.Controls.Add(this.ddownDepartment);
             this.panel1.Controls.Add(this.txtPosition);
             this.panel1.Controls.Add(this.txtName);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label1);
@@ -195,7 +191,7 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(225)))));
             this.btnHuy.ForeHover = System.Drawing.Color.White;
-            this.btnHuy.Location = new System.Drawing.Point(301, 633);
+            this.btnHuy.Location = new System.Drawing.Point(301, 582);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(76, 41);
             this.btnHuy.TabIndex = 44;
@@ -209,7 +205,7 @@
             this.btnLuu.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLuu.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.btnLuu.Location = new System.Drawing.Point(396, 633);
+            this.btnLuu.Location = new System.Drawing.Point(396, 582);
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(85, 41);
             this.btnLuu.TabIndex = 43;
@@ -261,21 +257,10 @@
             // 
             this.dateStart.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.dateStart.BorderWidth = 2F;
-            this.dateStart.Location = new System.Drawing.Point(253, 578);
+            this.dateStart.Location = new System.Drawing.Point(253, 527);
             this.dateStart.Name = "dateStart";
             this.dateStart.Size = new System.Drawing.Size(217, 33);
             this.dateStart.TabIndex = 39;
-            // 
-            // ddownRole
-            // 
-            this.ddownRole.BorderWidth = 2F;
-            this.ddownRole.Location = new System.Drawing.Point(253, 533);
-            this.ddownRole.Name = "ddownRole";
-            this.ddownRole.ShowArrow = true;
-            this.ddownRole.Size = new System.Drawing.Size(217, 32);
-            this.ddownRole.TabIndex = 38;
-            this.ddownRole.Text = "                                    ";
-            this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // ddownDepartment
             // 
@@ -325,19 +310,10 @@
             this.label6.TabIndex = 33;
             this.label6.Text = "Phòng ban";
             // 
-            // label4
-            // 
-            this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(70, 538);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 27);
-            this.label4.TabIndex = 32;
-            this.label4.Text = "Vai trò";
-            // 
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(70, 584);
+            this.label3.Location = new System.Drawing.Point(70, 533);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 27);
             this.label3.TabIndex = 31;
@@ -393,13 +369,11 @@
         private AntdUI.Button btnAnh;
         private AntdUI.Image3D img;
         private AntdUI.DatePicker dateStart;
-        private AntdUI.Dropdown ddownRole;
         private AntdUI.Dropdown ddownDepartment;
         private AntdUI.Input txtPosition;
         private AntdUI.Input txtName;
         private AntdUI.Label label7;
         private AntdUI.Label label6;
-        private AntdUI.Label label4;
         private AntdUI.Label label3;
         private AntdUI.Label label5;
         private AntdUI.Label label1;

@@ -83,26 +83,8 @@ namespace EmployeeManagement.Auth
                 });
                 SessionManager.SetCurrentUser(user);
 
-                if (user.Role == "Admin")
-                {
                     frmMain mainForm = new frmMain(user);
                     mainForm.Show();
-                    //MessageBox.Show("Đăng nhập thành công với quyền Quản trị viên!");
-                }
-                else if(user.Role == "Manager")
-                {
-                    frmManager managerForm = new frmManager(user);
-                    managerForm.Show();
-                    //MessageBox.Show("Đăng nhập thành công với quyền Quản lý!");
-                }
-                else
-                {
-                    frmEmployee employeeForm = new frmEmployee(user);
-                    //MessageBox.Show("Đăng nhập thành công với quyền Nhân viên!");
-                }
-
-
-                
                 this.Hide();
 
             }

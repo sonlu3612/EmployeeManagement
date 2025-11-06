@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EmployeeManagement.Models
 {
@@ -16,7 +17,6 @@ namespace EmployeeManagement.Models
         public bool IsActive { get; set; }
 
         public string Email { get; set; }
-        public string Role { get; set; }
         public string Phone { get; set; }
         public string ProjectSummary { get; set; } // dạng "2/5"
         public string TaskSummary { get; set; }    // dạng "4/10"

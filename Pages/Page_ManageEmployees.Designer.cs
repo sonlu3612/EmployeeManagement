@@ -33,7 +33,6 @@
             this.btnAdd = new AntdUI.Button();
             this.btnDelete = new AntdUI.Button();
             this.ddownGender = new AntdUI.Dropdown();
-            this.ddownRole = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.txtTim = new AntdUI.Input();
@@ -56,7 +55,6 @@
             this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.btnDelete);
             this.panel1.Controls.Add(this.ddownGender);
-            this.panel1.Controls.Add(this.ddownRole);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
             this.panel1.Controls.Add(this.txtTim);
@@ -106,26 +104,13 @@
             this.ddownGender.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddownGender.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddownGender.ForeColor = System.Drawing.Color.White;
-            this.ddownGender.Location = new System.Drawing.Point(471, 3);
+            this.ddownGender.Location = new System.Drawing.Point(330, 6);
             this.ddownGender.Name = "ddownGender";
             this.ddownGender.ShowArrow = true;
             this.ddownGender.Size = new System.Drawing.Size(135, 35);
             this.ddownGender.TabIndex = 4;
             this.ddownGender.Text = "Giới tính";
             this.ddownGender.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownGender_SelectedValueChanged);
-            // 
-            // ddownRole
-            // 
-            this.ddownRole.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownRole.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownRole.ForeColor = System.Drawing.Color.White;
-            this.ddownRole.Location = new System.Drawing.Point(330, 3);
-            this.ddownRole.Name = "ddownRole";
-            this.ddownRole.ShowArrow = true;
-            this.ddownRole.Size = new System.Drawing.Size(135, 35);
-            this.ddownRole.TabIndex = 3;
-            this.ddownRole.Text = "Vai trò";
-            this.ddownRole.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownRole_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -186,7 +171,6 @@
         private AntdUI.Button btnAdd;
         private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownGender;
-        private AntdUI.Dropdown ddownRole;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
         private AntdUI.Input txtTim;

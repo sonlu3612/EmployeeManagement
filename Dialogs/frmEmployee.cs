@@ -26,17 +26,10 @@ namespace EmployeeManagement.Dialogs
 
         public void frmEmployee_Load(string DepartmentName)
         {
-            ddownRole.Items.Add("Admin");
-            ddownRole.Items.Add("Employee");
             ddownGT.Items.Add("Nam");
             ddownGT.Items.Add("Nữ");
             ddownDepartment.Text = DepartmentName;
             ddownDepartment.Enabled = false;
-        }
-
-        private void ddownRole_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
-        {
-            ddownRole.Text = ddownRole.SelectedValue.ToString();
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -55,12 +48,6 @@ namespace EmployeeManagement.Dialogs
             if (txtEmail == null || string.IsNullOrWhiteSpace(txtEmail.Text))
             {
                 AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập email!");
-                return;
-            }
-
-            if (ddownRole == null || string.IsNullOrWhiteSpace(ddownRole.Text))
-            {
-                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn vai trò!");
                 return;
             }
 
@@ -101,11 +88,15 @@ namespace EmployeeManagement.Dialogs
             {
                 Email = txtEmail.Text.Trim(),
                 Phone = txtDienThoai?.Text.Trim(),
-                Role = ddownRole.Text.Trim(),
                 PasswordHash = "123456",
                 CreatedDate = DateTime.Now,
                 IsActive = true
             };
+
+            if (!newUser.Roles.Contains("Nhân viên"))
+            {
+                newUser.Roles.Add("Nhân viên");
+            }
 
             var userID = _userRepository.InsertAndReturnId(newUser);
 

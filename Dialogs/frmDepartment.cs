@@ -26,9 +26,8 @@ namespace EmployeeManagement.Dialogs
         // Constructor cho chỉnh sửa: truyền department cần sửa
         public frmDepartment(Department departmentToEdit) : this()
         {
-            if (departmentToEdit == null) throw new ArgumentNullException(nameof(departmentToEdit));
             _isEdit = true;
-            _editingDepartment = departmentToEdit;
+            _editingDepartment = departmentToEdit ?? throw new ArgumentNullException(nameof(departmentToEdit));
         }
 
         private void frmDepartment_Load(object sender, EventArgs e)

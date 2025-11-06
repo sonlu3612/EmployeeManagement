@@ -13,17 +13,14 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Department> GetAll()
         {
             List<Department> departments = new List<Department>();
-
             try
             {
                 string sql =
                     @"SELECT d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID,
-                    e.FullName AS ManagerName
-                    FROM Departments d
-                    LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID";
-
+                      e.FullName AS ManagerName
+                      FROM Departments d
+                      LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     departments.Add(MapDataRowToDepartment(row));
@@ -34,7 +31,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[DepartmentRepository.GetAll] Lỗi: {ex.Message}");
                 throw;
             }
-
             return departments;
         }
 
@@ -46,21 +42,17 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@DepartmentID", id)
                 };
-
                 string sql =
                     @"SELECT d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID,
-                    e.FullName AS ManagerName
-                    FROM Departments d
-                    LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
-                    WHERE d.DepartmentID = @DepartmentID";
-
+                      e.FullName AS ManagerName
+                      FROM Departments d
+                      LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
+                      WHERE d.DepartmentID = @DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
-
                 return MapDataRowToDepartment(dt.Rows[0]);
             }
             catch (Exception ex)
@@ -79,12 +71,10 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@DepartmentName", entity.DepartmentName ?? (object)DBNull.Value),
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
-                            };
-
+                };
                 string sql =
                     @"INSERT INTO Departments (DepartmentName, Description, ManagerID)
-                    VALUES (@DepartmentName, @Description, @ManagerID)";
-
+                      VALUES (@DepartmentName, @Description, @ManagerID)";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -106,14 +96,12 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
                 };
-
                 string sql =
                     @"UPDATE Departments
-                    SET DepartmentName = @DepartmentName,
-                    Description = @Description,
-                    ManagerID = @ManagerID
-                    WHERE DepartmentID = @DepartmentID";
-
+                      SET DepartmentName = @DepartmentName,
+                          Description = @Description,
+                          ManagerID = @ManagerID
+                      WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -132,7 +120,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@DepartmentID", id)
                 };
-
                 string sql = "DELETE FROM Departments WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -147,23 +134,19 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Department> SearchByName(string keyword)
         {
             List<Department> departments = new List<Department>();
-
             try
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
                     new SqlParameter("@Keyword", $"%{keyword}%")
                 };
-
                 string sql =
                     @"SELECT d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID,
-                    e.FullName AS ManagerName
-                    FROM Departments d
-                    LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
-                    WHERE d.DepartmentName LIKE @Keyword";
-
+                      e.FullName AS ManagerName
+                      FROM Departments d
+                      LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
+                      WHERE d.DepartmentName LIKE @Keyword";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     departments.Add(MapDataRowToDepartment(row));
@@ -174,7 +157,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[DepartmentRepository.SearchByName] Lỗi: {ex.Message}");
                 throw;
             }
-
             return departments;
         }
 
@@ -186,19 +168,15 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@DepartmentID", departmentId)
                 };
-
                 string sql =
                     @"SELECT COUNT(*) AS EmployeeCount
-                    FROM Employees
-                    WHERE DepartmentID = @DepartmentID AND IsActive = 1";
-
+                      FROM Employees
+                      WHERE DepartmentID = @DepartmentID AND IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-
                 if (dt.Rows.Count > 0 && dt.Rows[0]["EmployeeCount"] != DBNull.Value)
                 {
                     return Convert.ToInt32(dt.Rows[0]["EmployeeCount"]);
                 }
-
                 return 0;
             }
             catch (Exception ex)
@@ -211,26 +189,23 @@ namespace EmployeeManagement.DAL.Repositories
         public List<Department> GetAllWithEmployeeCount()
         {
             var departments = new List<Department>();
-
             try
             {
                 string sql = @"
-            SELECT 
-                d.DepartmentID,
-                d.DepartmentName,
-                d.Description,
-                d.ManagerID,
-                e.FullName AS ManagerName,
-                COUNT(emp.EmployeeID) AS EmployeeCount
-            FROM Departments d
-            LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
-            LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1
-            GROUP BY 
-                d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID, e.FullName
-            ORDER BY d.DepartmentID";
-
+                SELECT
+                    d.DepartmentID,
+                    d.DepartmentName,
+                    d.Description,
+                    d.ManagerID,
+                    e.FullName AS ManagerName,
+                    COUNT(emp.EmployeeID) AS EmployeeCount
+                FROM Departments d
+                LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
+                LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1
+                GROUP BY
+                    d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID, e.FullName
+                ORDER BY d.DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
-
                 foreach (DataRow row in dt.Rows)
                 {
                     departments.Add(new Department
@@ -249,10 +224,8 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[DepartmentRepository.GetAllWithEmployeeCount] Lỗi: {ex.Message}");
                 throw;
             }
-
             return departments;
         }
-
 
         public bool AssignManager(int departmentId, int employeeId)
         {
@@ -263,12 +236,10 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@DepartmentID", departmentId),
                     new SqlParameter("@EmployeeID", employeeId)
                 };
-
                 string sql =
                     @"UPDATE Departments
-                    SET ManagerID = @EmployeeID
-                    WHERE DepartmentID = @DepartmentID";
-
+                      SET ManagerID = @EmployeeID
+                      WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -287,12 +258,10 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     new SqlParameter("@DepartmentID", departmentId)
                 };
-
                 string sql =
                     @"UPDATE Departments
-                    SET ManagerID = NULL
-                    WHERE DepartmentID = @DepartmentID";
-
+                      SET ManagerID = NULL
+                      WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }

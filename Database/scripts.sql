@@ -347,6 +347,102 @@ BEGIN
     PRINT 'Column [AssignedTo] dropped from [Tasks].';
 END
 GO
+
+-- Giả sử bạn đã chạy script tạo bảng gốc thành công. Nếu chưa, chạy Phần 1 từ trước.
+
+-- 1. Thêm bảng UserRoles (nếu chưa tồn tại)
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserRoles' AND schema_id = SCHEMA_ID('dbo'))
+BEGIN
+    CREATE TABLE dbo.UserRoles (
+        UserRoleID INT IDENTITY(1,1) PRIMARY KEY,
+        UserID INT NOT NULL,
+        Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin', N'Quản lý phòng ban', N'Nhân viên', N'Quản lý dự án')),
+        AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
+        
+        CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserID)
+            REFERENCES dbo.Users(UserID) ON DELETE CASCADE,
+        CONSTRAINT UQ_UserRoles_UserRole UNIQUE (UserID, Role)  -- Ngăn duplicate roles
+    );
+    PRINT 'Table [UserRoles] created.';
+END
+GO
+
+-- 2. Migrate dữ liệu cũ từ Users.Role sang UserRoles (chỉ insert nếu role hợp lệ)
+-- Xóa data cũ nếu có conflict, hoặc điều chỉnh role thủ công nếu cần
+DELETE FROM dbo.UserRoles;  -- Xóa nếu có data cũ gây conflict
+INSERT INTO dbo.UserRoles (UserID, Role)
+SELECT UserID, Role
+FROM dbo.Users
+WHERE Role IN ('Admin', N'Quản lý phòng ban', N'Nhân viên', N'Quản lý dự án');  -- Chỉ insert role hợp lệ
+PRINT 'Data migrated from Users.Role to UserRoles (only valid roles).';
+GO
+
+-- 3. Xóa CHECK constraint trên Users.Role (sử dụng tên từ lỗi của bạn)
+IF EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK__Users__Role__37A5467C')
+BEGIN
+    ALTER TABLE dbo.Users
+        DROP CONSTRAINT CK__Users__Role__37A5467C;
+    PRINT 'CHECK constraint on [Users.Role] dropped.';
+END
+GO
+
+-- 4. Xóa trường Role khỏi Users (bây giờ có thể drop vì constraint đã xóa)
+ALTER TABLE dbo.Users
+    DROP COLUMN Role;
+PRINT 'Column [Role] dropped from [Users].';
+GO
+
+-- 5. Thêm ProjectManagerID vào Projects (nếu chưa có)
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = 'ProjectManagerID' AND object_id = OBJECT_ID('dbo.Projects'))
+BEGIN
+    ALTER TABLE dbo.Projects
+        ADD ProjectManagerID INT NULL;
+    GO
+
+    ALTER TABLE dbo.Projects
+        ADD CONSTRAINT FK_Projects_Manager FOREIGN KEY (ProjectManagerID)
+            REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL;
+    PRINT 'Column [ProjectManagerID] and FK added to [Projects].';
+END
+GO
+
+-- 6. Thêm trigger để enforce gán manager khi tạo (nếu chưa có)
+IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_Departments_Insert')
+BEGIN
+    CREATE TRIGGER TR_Departments_Insert
+    ON dbo.Departments
+    AFTER INSERT
+    AS
+    BEGIN
+        IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)
+        BEGIN
+            RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);
+            ROLLBACK TRANSACTION;
+        END
+    END;
+    PRINT 'Trigger [TR_Departments_Insert] created.';
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_Projects_Insert')
+BEGIN
+    CREATE TRIGGER TR_Projects_Insert
+    ON dbo.Projects
+    AFTER INSERT
+    AS
+    BEGIN
+        IF EXISTS (SELECT 1 FROM inserted WHERE ProjectManagerID IS NULL)
+        BEGIN
+            RAISERROR ('ProjectManagerID must be assigned when creating a project.', 16, 1);
+            ROLLBACK TRANSACTION;
+        END
+    END;
+    PRINT 'Trigger [TR_Projects_Insert] created.';
+END
+GO
+
+PRINT '==> Database schema updated successfully for multiple roles and project manager!';
+GO
 -- =============================================
 -- INDEXES CREATION
 -- =============================================

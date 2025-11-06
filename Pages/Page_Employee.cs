@@ -52,7 +52,7 @@ namespace EmployeeManagement.Pages
             tbNV.Columns.Add(new AntdUI.Column("FullName", "Họ và tên"));
             tbNV.Columns.Add(new AntdUI.Column("Gender", "Giới tính"));
             tbNV.Columns.Add(new AntdUI.Column("Email", "Email"));
-            tbNV.Columns.Add(new AntdUI.Column("Role", "Vai trò"));
+            tbNV.Columns.Add(new AntdUI.Column("Phone", "SĐT"));
             tbNV.Columns.Add(new AntdUI.Column("ProjectSummary", "Dự án"));
             tbNV.Columns.Add(new AntdUI.Column("TaskSummary", "Nhiệm vụ"));
 
@@ -104,14 +104,6 @@ namespace EmployeeManagement.Pages
                 ddownGender.Items.Add("Nữ");
             }
             ddownGender.Text = "Giới tính";
-            if (ddownRole.Items.Count == 0)
-            {
-                ddownRole.Items.Add("Tất cả");
-                ddownRole.Items.Add("Admin");
-                ddownRole.Items.Add("Employee");
-                ddownRole.Items.Add("Manager");
-            }
-            ddownRole.Text = "Vai trò";
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -190,19 +182,6 @@ namespace EmployeeManagement.Pages
                 .ToList();
             tbNV.DataSource = filteredProjects;
         }
-        private void ddownRole_SelectedValueChanged(object sender, ObjectNEventArgs e)
-        {
-            ddownRole.Text = e.Value?.ToString() ?? "";
-            if (ddownRole.Text == "Tất cả" || string.IsNullOrEmpty(ddownRole.Text))
-            {
-                LoadData();
-                return;
-            }
-            var filteredProjects = employeeRepository.GetForGrid()
-                .Where(p => p.Role.ToString().Contains(ddownRole.Text))
-                .ToList();
-            tbNV.DataSource = filteredProjects;
-        }
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
@@ -219,12 +198,6 @@ namespace EmployeeManagement.Pages
                 {
                     string empFilter = ddownGender.Text.Trim();
                     employees = employees.Where(p => p.Gender.ToString().Contains(empFilter));
-                }
-                if (!string.IsNullOrWhiteSpace(ddownRole.Text) && ddownRole.Text != "Vai trò")
-                {
-                    string statusFilter = ddownRole.Text.Trim();
-                    employees = employees.Where(p => !string.IsNullOrEmpty(p.Role) &&
-                                                   p.Role.IndexOf(statusFilter, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
                 var result = employees.ToList();
                 tbNV.DataSource = result;

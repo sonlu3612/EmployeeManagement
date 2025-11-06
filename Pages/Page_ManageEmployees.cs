@@ -63,14 +63,6 @@ namespace EmployeeManagement.Pages
                 ddownGender.Items.Add("Nữ");
             }
             ddownGender.Text = "Giới tính";
-            if (ddownRole.Items.Count == 0)
-            {
-                ddownRole.Items.Add("Tất cả");
-                ddownRole.Items.Add("Admin");
-                ddownRole.Items.Add("Employee");
-                ddownRole.Items.Add("Manager");
-            }
-            ddownRole.Text = "Vai trò";
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -186,48 +178,6 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lọc giới tính: " + ex.Message);
             }
         }
-
-        private void ddownRole_SelectedValueChanged(object sender, ObjectNEventArgs e)
-        {
-            ddownRole.Text = e.Value?.ToString() ?? "";
-            string roleFilter = ddownRole.Text.Trim();
-
-            if (string.IsNullOrEmpty(roleFilter) || roleFilter == "Tất cả" || roleFilter == "Quyền")
-            {
-                LoadData();
-                return;
-            }
-
-            try
-            {
-                IEnumerable<Employee> source;
-                try
-                {
-                    source = (employeeId > 0)
-                        ? employeeRepository.GetForGrid2(employeeId)
-                        : employeeRepository.GetAll();
-                }
-                catch
-                {
-                    source = employeeRepository.GetAll();
-                }
-
-                var filtered = source
-                    .Where(p => !string.IsNullOrEmpty(p.Role) &&
-                                p.Role.IndexOf(roleFilter, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-
-                tbNV.DataSource = filtered;
-
-                if (filtered.Count == 0)
-                    Message.warn(this.FindForm(), "Không tìm thấy nhân viên phù hợp với quyền đã chọn.");
-            }
-            catch (Exception ex)
-            {
-                Message.error(this.FindForm(), "Lỗi khi lọc quyền: " + ex.Message);
-            }
-        }
-
 
         private void btnSearch_Click(object sender, EventArgs e)
         {

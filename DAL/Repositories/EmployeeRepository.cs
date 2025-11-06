@@ -28,8 +28,8 @@ namespace EmployeeManagement.DAL.Repositories
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                       e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                       d.DepartmentName
-              FROM Employees e
-              LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
+                      FROM Employees e
+                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
                 {
@@ -59,11 +59,11 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
-                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
-                    d.DepartmentName
-                    FROM Employees e
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    WHERE e.EmployeeID = @EmployeeID";
+                      e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                      d.DepartmentName
+                      FROM Employees e
+                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                      WHERE e.EmployeeID = @EmployeeID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Trả về null nếu không tìm thấy nhân viên
                 if (dt.Rows.Count == 0)
@@ -103,7 +103,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"INSERT INTO Employees (EmployeeID, FullName, Position, Gender, DepartmentID, AvatarPath, Address, HireDate, IsActive)
-                    VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
+                      VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -137,15 +137,15 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"UPDATE Employees
-                    SET FullName = @FullName,
-                    Position = @Position,
-                    Gender = @Gender,
-                    DepartmentID = @DepartmentID,
-                    AvatarPath = @AvatarPath,
-                    Address = @Address,
-                    HireDate = @HireDate,
-                    IsActive = @IsActive
-                    WHERE EmployeeID = @EmployeeID";
+                      SET FullName = @FullName,
+                          Position = @Position,
+                          Gender = @Gender,
+                          DepartmentID = @DepartmentID,
+                          AvatarPath = @AvatarPath,
+                          Address = @Address,
+                          HireDate = @HireDate,
+                          IsActive = @IsActive
+                      WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -196,11 +196,11 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
-                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
-                    d.DepartmentName
-                    FROM Employees e
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    WHERE e.DepartmentID = @DepartmentID";
+                      e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                      d.DepartmentName
+                      FROM Employees e
+                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                      WHERE e.DepartmentID = @DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -232,11 +232,11 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
-                    e.AvatarPath, e.Address, e.HireDate, e.IsActive,
-                    d.DepartmentName
-                    FROM Employees e
-                    LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
-                    WHERE e.FullName LIKE @Keyword";
+                      e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                      d.DepartmentName
+                      FROM Employees e
+                      LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+                      WHERE e.FullName LIKE @Keyword";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 // Chuyển đổi các dòng DataTable thành đối tượng Employee
                 foreach (DataRow row in dt.Rows)
@@ -273,8 +273,8 @@ namespace EmployeeManagement.DAL.Repositories
                 DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
                 // Mapping DepartmentName (cho hiển thị, nullable string)
                 DepartmentName = row.Table.Columns.Contains("DepartmentName") && row["DepartmentName"] != DBNull.Value
-              ? row["DepartmentName"].ToString()
-                : null,
+                    ? row["DepartmentName"].ToString()
+                    : null,
                 // Mapping AvatarPath (nullable string)
                 AvatarPath = row["AvatarPath"] != DBNull.Value ? row["AvatarPath"].ToString() : null,
                 // Mapping Address (nullable string)
@@ -293,7 +293,8 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql = @"
                 SELECT e.EmployeeID, e.FullName, e.Gender, e.AvatarPath,
-                       u.Email, u.Role,
+                       u.Email, u.Phone,
+                       STRING_AGG(ur.Role, ', ') AS Roles,
                        ISNULL((
                            SELECT COUNT(DISTINCT p.ProjectID)
                            FROM Projects p
@@ -322,7 +323,9 @@ namespace EmployeeManagement.DAL.Repositories
                            WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = 'Done'
                        ), 0) AS CompletedTasks
                 FROM Employees e
-                LEFT JOIN Users u ON u.UserID = e.EmployeeID;
+                LEFT JOIN Users u ON u.UserID = e.EmployeeID
+                LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
+                GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
@@ -333,7 +336,7 @@ namespace EmployeeManagement.DAL.Repositories
                         FullName = row["FullName"]?.ToString(),
                         Gender = row["Gender"]?.ToString(),
                         Email = row["Email"]?.ToString(),
-                        Role = row["Role"]?.ToString(),
+                        Phone = row["Phone"]?.ToString(),
                         AvatarPath = row["AvatarPath"]?.ToString()
                     };
                     int totalPrj = Convert.ToInt32(row["TotalProjects"]);
@@ -375,25 +378,27 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@DepartmentID", id)
                 };
                 string sql = @"
-        SELECT
-            e.EmployeeID,
-            e.FullName,
-            e.Position,
-            e.Gender,
-            e.Address,
-            e.HireDate,
-            e.AvatarPath,
-            u.Email,
-            u.Phone,
-            u.Role
-        FROM Employees e
-        INNER JOIN Users u ON e.EmployeeID = u.UserID
-        WHERE e.DepartmentID = @DepartmentID
-        ORDER BY e.FullName";
+                SELECT
+                    e.EmployeeID,
+                    e.FullName,
+                    e.Position,
+                    e.Gender,
+                    e.Address,
+                    e.HireDate,
+                    e.AvatarPath,
+                    u.Email,
+                    u.Phone,
+                    STRING_AGG(ur.Role, ', ') AS Roles
+                FROM Employees e
+                INNER JOIN Users u ON e.EmployeeID = u.UserID
+                LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
+                WHERE e.DepartmentID = @DepartmentID
+                GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
+                ORDER BY e.FullName";
                 DataTable table = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in table.Rows)
                 {
-                    employees.Add(new Employee
+                    Employee emp = new Employee
                     {
                         EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
                         FullName = row["FullName"]?.ToString(),
@@ -403,9 +408,10 @@ namespace EmployeeManagement.DAL.Repositories
                         HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
                         AvatarPath = row["AvatarPath"]?.ToString(),
                         Email = row["Email"]?.ToString(),
-                        Phone = row["Phone"]?.ToString(),
-                        Role = row["Role"]?.ToString()
-                    });
+                        Phone = row["Phone"]?.ToString()
+                    };
+                    string rolesString = row["Roles"]?.ToString();
+                    employees.Add(emp);
                 }
             }
             catch (Exception ex)

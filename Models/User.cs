@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EmployeeManagement.Models
 {
@@ -8,7 +9,7 @@ namespace EmployeeManagement.Models
         public string Phone { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public string Role { get; set; } // Admin, Manager, Employee
+        public List<string> Roles { get; set; } = new List<string>();
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
     }

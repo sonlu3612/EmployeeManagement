@@ -12,21 +12,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EmployeeManagement.DAL.Helpers;
 using Message = AntdUI.Message;
 
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Department : UserControl
     {
-
         private DepartmentRepository repository = new DepartmentRepository();
         private EmployeeRepository employeeRepository = new EmployeeRepository();
+
         public Page_Department()
         {
             InitializeComponent();
         }
-
-
 
         private void ddownEmployee_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
@@ -46,18 +45,81 @@ namespace EmployeeManagement.Pages
         private void Page_Department_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
-            tbPB.Columns.Add(new Column("DepartmentID", "ID"));
+
             tbPB.Columns.Add(new Column("DepartmentName", "Tên phòng ban"));
             tbPB.Columns.Add(new Column("Description", "Mô tả"));
             tbPB.Columns.Add(new Column("ManagerName", "Trưởng phòng"));
             tbPB.Columns.Add(new Column("EmployeeCount", "Số nhân viên"));
 
             LoadData();
+
+            if (IsEmployee())
+            {
+                btnAdd.Enabled = false;
+                btnDelete.Enabled = false;
+                chỉnhSửaToolStripMenuItem.Enabled = false;
+            }
+
+            if (IsEmployee())
+            {
+                btnAdd.Enabled = false;
+                btnDelete.Enabled = false;
+                chỉnhSửaToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private bool IsAdmin()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
+        }
+
+        private bool IsDepartmentManager()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Quản lý phòng ban") ?? false;
+        }
+
+        private bool IsEmployee()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
         }
 
         private void LoadData()
         {
-            var departments = repository.GetAllWithEmployeeCount();
+            List<Department> departments;
+
+            if (IsAdmin())
+            {
+                departments = repository.GetAllWithEmployeeCount();
+            }
+            else if (IsDepartmentManager())
+            {
+                // Load only departments managed by current user
+                departments = repository.GetAllWithEmployeeCount()
+                    .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
+                    .ToList();
+            }
+            else if (IsEmployee())
+            {
+                // Load only the department of the current employee
+                var currentEmployee = employeeRepository.GetById(SessionManager.CurrentUser.UserID);
+                Console.WriteLine("123");
+                if (currentEmployee?.DepartmentID != null)
+                {
+                    departments = repository.GetAllWithEmployeeCount()
+                        .Where(d => d.DepartmentID == currentEmployee.DepartmentID)
+                        .ToList();
+                }
+                else
+                {
+                    departments = new List<Department>();
+                }
+            }
+            else
+            {
+                // Default to empty for other roles (e.g., Quản lý dự án)
+                departments = new List<Department>();
+            }
+
             tbPB.DataSource = departments;
 
             if (ddownTP.Items.Count == 0)
@@ -73,6 +135,8 @@ namespace EmployeeManagement.Pages
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            if (!IsAdmin()) return; // Extra check, though button is disabled
+
             frmDepartment frm = new frmDepartment();
             if (frm.ShowDialog() == DialogResult.OK)
             {
@@ -88,6 +152,8 @@ namespace EmployeeManagement.Pages
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
+            if (!IsAdmin()) return; // Extra check
+
             var selectedIndex = tbPB.SelectedIndex - 1;
             if (selectedIndex < 0)
             {
@@ -98,7 +164,6 @@ namespace EmployeeManagement.Pages
             if (tbPB.DataSource is IList<Department> departments && selectedIndex < departments.Count)
             {
                 var record = departments[selectedIndex];
-
                 if (record == null)
                 {
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!");
@@ -120,7 +185,6 @@ namespace EmployeeManagement.Pages
                     {
                         repository.Delete(record.DepartmentID);
                         LoadData();
-
                         Message.success(this.FindForm(), "Xóa phòng ban thành công!");
                     }
                     catch (Exception ex)
@@ -147,27 +211,20 @@ namespace EmployeeManagement.Pages
             try
             {
                 string q = txtTim.Text?.Trim() ?? "";
-
                 var departments = repository.GetAll().AsEnumerable();
-
                 if (!string.IsNullOrWhiteSpace(q))
                 {
                     departments = departments.Where(p =>
                         !string.IsNullOrEmpty(p.DepartmentName) &&
                         p.DepartmentName.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
-
                 if (!string.IsNullOrWhiteSpace(ddownTP.Text) && ddownTP.Text != "Trưởng phòng")
                 {
                     string empFilter = ddownTP.Text.Trim();
                     departments = departments.Where(p => p.ManagerName.ToString().Contains(empFilter));
                 }
-
-
                 var result = departments.ToList();
-
                 tbPB.DataSource = result;
-
                 if (result.Count == 0)
                 {
                     Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
@@ -185,7 +242,6 @@ namespace EmployeeManagement.Pages
 
         private void tbPB_CellClick(object sender, TableClickEventArgs e)
         {
-
         }
 
         private void tbPB_MouseDown(object sender, MouseEventArgs e)
@@ -221,6 +277,8 @@ namespace EmployeeManagement.Pages
 
         private void chỉnhSửaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!IsAdmin()) return; // Extra check
+
             int selectedIndex = tbPB.SelectedIndex - 1;
             if (tbPB.DataSource is IList<Department> departments && selectedIndex >= 0 && selectedIndex < departments.Count)
             {
@@ -230,7 +288,6 @@ namespace EmployeeManagement.Pages
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!");
                     return;
                 }
-
                 // Mở form ở chế độ chỉnh sửa bằng cách truyền department hiện tại
                 frmDepartment frm = new frmDepartment(record);
                 if (frm.ShowDialog() == DialogResult.OK)
@@ -256,6 +313,5 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Vui lòng chọn phòng ban cần chỉnh sửa!");
             }
         }
-
     }
 }
