@@ -3,20 +3,16 @@
 -- Mô tả: Tạo database, tables, indexes và sample data
 -- Lưu ý: Script sẽ XÓA database cũ nếu tồn tại
 -- =============================================
-
 -- 1. Tạo schema
-
 USE master;
 GO
-
 -- Kiểm tra và xóa database nếu đã tồn tại
 IF DB_ID(N'ProjectManagementDB') IS NOT NULL
 BEGIN
     PRINT 'Closing all connections to ProjectManagementDB...';
- 
     -- Ngắt tất cả connections hiện tại
     ALTER DATABASE [ProjectManagementDB] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    
+   
     -- Xóa database
     DROP DATABASE [ProjectManagementDB];
     PRINT 'Database "ProjectManagementDB" has been dropped.';
@@ -26,25 +22,21 @@ BEGIN
     PRINT 'Database "ProjectManagementDB" does not exist.';
 END
 GO
-
 -- Tạo database mới
 CREATE DATABASE [ProjectManagementDB];
 PRINT 'Database "ProjectManagementDB" created successfully!';
 GO
-
 -- Chuyển sang database mới tạo
 USE [ProjectManagementDB];
 PRINT 'Switched to database: ProjectManagementDB';
 GO
-
 -- =============================================
 -- TABLES CREATION
 -- =============================================
-
 /*
  Table: Users
  Mô tả: Lưu thông tin accounts đăng nhập hệ thống
- Relationships: 
+ Relationships:
  - 1 User CÓ ĐÚNG 1 Employee (Shared Primary Key: EmployeeID = UserID)
 */
 CREATE TABLE dbo.Users (
@@ -52,13 +44,27 @@ CREATE TABLE dbo.Users (
     Phone VARCHAR(20),
   Email NVARCHAR(100),
     PasswordHash NVARCHAR(256) NOT NULL,
-    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin','Manager','Employee')),
     IsActive BIT NOT NULL DEFAULT (1),
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE())
 );
 PRINT 'Table [Users] created.';
 GO
-
+/*
+ Table: UserRoles
+ Mô tả: Quản lý vai trò của người dùng (cho phép multiple roles)
+*/
+CREATE TABLE dbo.UserRoles (
+    UserRoleID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin', N'Quản lý phòng ban', N'Nhân viên', N'Quản lý dự án')),
+    AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
+   
+    CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserID)
+        REFERENCES dbo.Users(UserID) ON DELETE CASCADE,
+    CONSTRAINT UQ_UserRoles_UserRole UNIQUE (UserID, Role) -- Ngăn duplicate roles
+);
+PRINT 'Table [UserRoles] created.';
+GO
 /*
  Table: Departments
  Mô tả: Quản lý phòng ban
@@ -74,7 +80,6 @@ CREATE TABLE dbo.Departments (
 );
 PRINT 'Table [Departments] created.';
 GO
-
 /*
  Table: Employees
  Mô tả: Quản lý nhân viên
@@ -92,25 +97,20 @@ CREATE TABLE dbo.Employees (
     Address NVARCHAR(500),
     HireDate DATE NOT NULL DEFAULT (GETDATE()),
     IsActive BIT NOT NULL DEFAULT (1),
-  
-    CONSTRAINT FK_Employees_Users FOREIGN KEY (EmployeeID) 
+    GENDER NVARCHAR(20) NOT NULL DEFAULT ('NotSpecified'),
+ 
+    CONSTRAINT FK_Employees_Users FOREIGN KEY (EmployeeID)
   REFERENCES dbo.Users(UserID) ON DELETE CASCADE,
-    CONSTRAINT FK_Employees_Departments FOREIGN KEY (DepartmentID) 
+    CONSTRAINT FK_Employees_Departments FOREIGN KEY (DepartmentID)
         REFERENCES dbo.Departments(DepartmentID) ON DELETE SET NULL
 );
 PRINT 'Table [Employees] created with AvatarPath.';
 GO
-
-ALTER TABLE dbo.Employees
-    ADD GENDER NVARCHAR(20) NOT NULL DEFAULT ('NotSpecified')
-
-
 ALTER TABLE dbo.Departments
-    ADD CONSTRAINT FK_Departments_Manager FOREIGN KEY (ManagerID) 
+    ADD CONSTRAINT FK_Departments_Manager FOREIGN KEY (ManagerID)
    REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL;
 PRINT 'FK [FK_Departments_Manager] added.';
 GO
-
 /*
  Table: Projects
  Mô tả: Quản lý dự án
@@ -127,14 +127,16 @@ CREATE TABLE dbo.Projects (
     Status NVARCHAR(20) NOT NULL CHECK (Status IN (N'Lập kế hoạch',N'Đang thực hiện',N'Hoàn thành',N'Đã hủy')),
     CreatedBy INT NOT NULL,
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
-    
+    ManagerBy INT NULL,
+   
     CONSTRAINT CHK_Project_Dates CHECK (EndDate IS NULL OR EndDate >= StartDate),
-    CONSTRAINT FK_Projects_Employees FOREIGN KEY (CreatedBy) 
- REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
+    CONSTRAINT FK_Projects_Employees FOREIGN KEY (CreatedBy)
+ REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION,
+    CONSTRAINT FK_Projects_ManagerBy FOREIGN KEY (ManagerBy)
+        REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 PRINT 'Table [Projects] created.';
 GO
-
 /*
  Table: Tasks
  Mô tả: Quản lý công việc trong dự án
@@ -147,24 +149,49 @@ CREATE TABLE dbo.Tasks (
     ProjectID INT NOT NULL,
     TaskTitle NVARCHAR(200) NOT NULL,
     Description NVARCHAR(MAX),
-    AssignedTo INT NULL,
     CreatedBy INT NOT NULL,
     Deadline DATE NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN (N'Cần làm',N'Đang thực hiện',N'Chờ duyệt',N'Hoàn thành')),
     Priority NVARCHAR(20) NOT NULL CHECK (Priority IN (N'Thấp',N'Trung bình',N'Cao',N'Ưu tiên cao')),
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
     UpdatedDate DATETIME NULL,
-    
-    CONSTRAINT FK_Tasks_Projects FOREIGN KEY (ProjectID) 
+   
+    CONSTRAINT FK_Tasks_Projects FOREIGN KEY (ProjectID)
     REFERENCES dbo.Projects(ProjectID) ON DELETE CASCADE,
-    CONSTRAINT FK_Tasks_Employees_Assigned FOREIGN KEY (AssignedTo) 
-    REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL,
-    CONSTRAINT FK_Tasks_Employees_Created FOREIGN KEY (CreatedBy) 
+    CONSTRAINT FK_Tasks_Employees_Created FOREIGN KEY (CreatedBy)
     REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
 PRINT 'Table [Tasks] created.';
 GO
-
+/*
+ Table: TaskAssignments
+ Mô tả: Quản lý việc giao task cho nhiều nhân viên
+ Relationships:
+   - Nhiều TaskAssignments thuộc 1 Task (FK: TaskID) - CASCADE DELETE
+   - Nhiều TaskAssignments thuộc 1 Employee (FK: EmployeeID) - CASCADE DELETE
+*/
+CREATE TABLE dbo.TaskAssignments (
+    TaskAssignmentID INT IDENTITY(1,1) PRIMARY KEY,
+    TaskID INT NOT NULL,
+    EmployeeID INT NOT NULL,
+    AssignedBy INT NULL, -- Optional: Ai giao task (FK đến Employees)
+    AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
+    CompletionStatus NVARCHAR(20) NOT NULL DEFAULT (N'Pending')
+        CHECK (CompletionStatus IN (N'Pending', N'In Progress', N'Completed')),
+    CompletedDate DATETIME NULL,
+   
+    CONSTRAINT FK_TaskAssignments_Tasks FOREIGN KEY (TaskID)
+        REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
+    CONSTRAINT FK_TaskAssignments_Employees FOREIGN KEY (EmployeeID)
+        REFERENCES dbo.Employees(EmployeeID) ON DELETE CASCADE,
+    CONSTRAINT FK_TaskAssignments_AssignedBy FOREIGN KEY (AssignedBy)
+        REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION, -- Đổi thành NO ACTION để tránh multiple cascade paths
+   
+    -- Tránh duplicate: Một employee không được assign task 2 lần
+    CONSTRAINT UQ_TaskAssignments_TaskEmployee UNIQUE (TaskID, EmployeeID)
+);
+PRINT 'Table [TaskAssignments] created.';
+GO
 /*
  Table: Subtasks
 */
@@ -179,33 +206,31 @@ CREATE TABLE dbo.Subtasks (
     Deadline DATE NULL,
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
     UpdatedDate DATETIME NULL,
-    
-    CONSTRAINT FK_Subtasks_Tasks FOREIGN KEY (TaskID) 
+   
+    CONSTRAINT FK_Subtasks_Tasks FOREIGN KEY (TaskID)
     REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
-    CONSTRAINT FK_Subtasks_Employees FOREIGN KEY (AssignedTo) 
+    CONSTRAINT FK_Subtasks_Employees FOREIGN KEY (AssignedTo)
     REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL
 );
 PRINT 'Table [Subtasks] created.';
 GO
-
 /*
  Table: TaskComments
 */
 CREATE TABLE dbo.TaskComments (
     CommentID INT IDENTITY(1,1) PRIMARY KEY,
-TaskID INT NOT NULL,
+    TaskID INT NOT NULL,
     EmployeeID INT NOT NULL,
     Comment NVARCHAR(MAX) NOT NULL,
     CommentDate DATETIME NOT NULL DEFAULT (GETDATE()),
-    
-    CONSTRAINT FK_TaskComments_Tasks FOREIGN KEY (TaskID) 
+   
+    CONSTRAINT FK_TaskComments_Tasks FOREIGN KEY (TaskID)
         REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
-    CONSTRAINT FK_TaskComments_Employees FOREIGN KEY (EmployeeID) 
+    CONSTRAINT FK_TaskComments_Employees FOREIGN KEY (EmployeeID)
         REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
 PRINT 'Table [TaskComments] created.';
 GO
-
 /*
  Table: EmployeeFiles
  Mô tả: Files của nhân viên (CV, documents, certificates)
@@ -221,15 +246,14 @@ CREATE TABLE dbo.EmployeeFiles (
     FileName NVARCHAR(255) NOT NULL,
 CreatedBy INT NOT NULL,
     CreatedAt DATETIME NOT NULL DEFAULT (GETDATE()),
-    
-    CONSTRAINT FK_EmployeeFiles_Employees FOREIGN KEY (EmployeeID) 
+   
+    CONSTRAINT FK_EmployeeFiles_Employees FOREIGN KEY (EmployeeID)
         REFERENCES dbo.Employees(EmployeeID) ON DELETE CASCADE,
-    CONSTRAINT FK_EmployeeFiles_CreatedBy FOREIGN KEY (CreatedBy) 
+    CONSTRAINT FK_EmployeeFiles_CreatedBy FOREIGN KEY (CreatedBy)
  REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
 PRINT 'Table [EmployeeFiles] created.';
 GO
-
 /*
  Table: ProjectFiles
  Mô tả: Files đính kèm dự án (Requirements, Design, Reports)
@@ -244,15 +268,14 @@ Title NVARCHAR(200) NOT NULL,
     FileName NVARCHAR(255) NOT NULL,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME NOT NULL DEFAULT (GETDATE()),
-    
-    CONSTRAINT FK_ProjectFiles_Projects FOREIGN KEY (ProjectID) 
+   
+    CONSTRAINT FK_ProjectFiles_Projects FOREIGN KEY (ProjectID)
       REFERENCES dbo.Projects(ProjectID) ON DELETE CASCADE,
-    CONSTRAINT FK_ProjectFiles_CreatedBy FOREIGN KEY (CreatedBy) 
+    CONSTRAINT FK_ProjectFiles_CreatedBy FOREIGN KEY (CreatedBy)
         REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
 PRINT 'Table [ProjectFiles] created.';
 GO
-
 /*
  Table: TaskFiles
  Mô tả: Files đính kèm công việc (Screenshots, Test Results)
@@ -267,298 +290,118 @@ CREATE TABLE dbo.TaskFiles (
     FileName NVARCHAR(255) NOT NULL,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME NOT NULL DEFAULT (GETDATE()),
-    
-    CONSTRAINT FK_TaskFiles_Tasks FOREIGN KEY (TaskID) 
+   
+    CONSTRAINT FK_TaskFiles_Tasks FOREIGN KEY (TaskID)
      REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
-    CONSTRAINT FK_TaskFiles_CreatedBy FOREIGN KEY (CreatedBy) 
+    CONSTRAINT FK_TaskFiles_CreatedBy FOREIGN KEY (CreatedBy)
         REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION
 );
 PRINT 'Table [TaskFiles] created.';
 GO
-
-PRINT '==> All 10 tables created successfully!';
+PRINT '==> All 12 tables created successfully!';
 GO
-
--- Bước 1: Tạo bảng trung gian TaskAssignments (nếu chưa tồn tại)
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TaskAssignments]') AND type in (N'U'))
+-- =============================================
+-- TRIGGERS CREATION
+-- =============================================
+CREATE TRIGGER TR_Departments_Insert
+ON dbo.Departments
+AFTER INSERT
+AS
 BEGIN
-    /*
-    Table: TaskAssignments
-    Mô tả: Quản lý việc giao task cho nhiều nhân viên
-    Relationships:
-      - Nhiều TaskAssignments thuộc 1 Task (FK: TaskID) - CASCADE DELETE
-      - Nhiều TaskAssignments thuộc 1 Employee (FK: EmployeeID) - CASCADE DELETE
-    */
-    CREATE TABLE dbo.TaskAssignments (
-        TaskAssignmentID INT IDENTITY(1,1) PRIMARY KEY,
-        TaskID INT NOT NULL,
-        EmployeeID INT NOT NULL,
-        AssignedBy INT NULL,  -- Optional: Ai giao task (FK đến Employees)
-        AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
-        
-        CONSTRAINT FK_TaskAssignments_Tasks FOREIGN KEY (TaskID)
-            REFERENCES dbo.Tasks(TaskID) ON DELETE CASCADE,
-        CONSTRAINT FK_TaskAssignments_Employees FOREIGN KEY (EmployeeID)
-            REFERENCES dbo.Employees(EmployeeID) ON DELETE CASCADE,
-        CONSTRAINT FK_TaskAssignments_AssignedBy FOREIGN KEY (AssignedBy)
-            REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION,  -- Đổi thành NO ACTION để tránh multiple cascade paths
-        
-        -- Tránh duplicate: Một employee không được assign task 2 lần
-        CONSTRAINT UQ_TaskAssignments_TaskEmployee UNIQUE (TaskID, EmployeeID)
-    );
-    PRINT 'Table [TaskAssignments] created.';
-END
-GO
-
--- Bước 2: Migrate dữ liệu từ Tasks.AssignedTo sang TaskAssignments
--- (Chỉ chạy nếu cột AssignedTo còn tồn tại và có data)
-IF EXISTS (SELECT * FROM sys.columns WHERE Name = N'AssignedTo' AND Object_ID = Object_ID(N'dbo.Tasks'))
-BEGIN
-    INSERT INTO dbo.TaskAssignments (TaskID, EmployeeID, AssignedBy, AssignedDate)
-    SELECT t.TaskID, t.AssignedTo, t.CreatedBy, t.CreatedDate
-    FROM dbo.Tasks t
-    WHERE t.AssignedTo IS NOT NULL;
-    PRINT 'Data migrated from [Tasks.AssignedTo] to [TaskAssignments].';
-END
-GO
-
--- Bước 3: Xóa constraint FK_Tasks_Employees_Assigned (nếu tồn tại)
-IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_Tasks_Employees_Assigned]') AND parent_object_id = OBJECT_ID(N'[dbo].[Tasks]'))
-BEGIN
-    ALTER TABLE dbo.Tasks
-        DROP CONSTRAINT FK_Tasks_Employees_Assigned;
-    PRINT 'Constraint [FK_Tasks_Employees_Assigned] dropped.';
-END
-GO
-
--- Bước 4: Xóa index IX_Tasks_AssignedTo (nếu tồn tại)
-IF EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[Tasks]') AND name = N'IX_Tasks_AssignedTo')
-BEGIN
-    DROP INDEX IX_Tasks_AssignedTo ON dbo.Tasks;
-    PRINT 'Index [IX_Tasks_AssignedTo] dropped from [Tasks].';
-END
-GO
-
--- Bước 5: Xóa cột AssignedTo khỏi Tasks (nếu tồn tại)
-IF EXISTS (SELECT * FROM sys.columns WHERE Name = N'AssignedTo' AND Object_ID = Object_ID(N'dbo.Tasks'))
-BEGIN
-    ALTER TABLE dbo.Tasks
-        DROP COLUMN AssignedTo;
-    PRINT 'Column [AssignedTo] dropped from [Tasks].';
-END
-GO
-
--- Giả sử bạn đã chạy script tạo bảng gốc thành công. Nếu chưa, chạy Phần 1 từ trước.
-
--- 1. Thêm bảng UserRoles (nếu chưa tồn tại)
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'UserRoles' AND schema_id = SCHEMA_ID('dbo'))
-BEGIN
-    CREATE TABLE dbo.UserRoles (
-        UserRoleID INT IDENTITY(1,1) PRIMARY KEY,
-        UserID INT NOT NULL,
-        Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin', N'Quản lý phòng ban', N'Nhân viên', N'Quản lý dự án')),
-        AssignedDate DATETIME NOT NULL DEFAULT (GETDATE()),
-        
-        CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserID)
-            REFERENCES dbo.Users(UserID) ON DELETE CASCADE,
-        CONSTRAINT UQ_UserRoles_UserRole UNIQUE (UserID, Role)  -- Ngăn duplicate roles
-    );
-    PRINT 'Table [UserRoles] created.';
-END
-GO
-
--- 2. Migrate dữ liệu cũ từ Users.Role sang UserRoles (chỉ insert nếu role hợp lệ)
--- Xóa data cũ nếu có conflict, hoặc điều chỉnh role thủ công nếu cần
-DELETE FROM dbo.UserRoles;  -- Xóa nếu có data cũ gây conflict
-INSERT INTO dbo.UserRoles (UserID, Role)
-SELECT UserID, Role
-FROM dbo.Users
-WHERE Role IN ('Admin', N'Quản lý phòng ban', N'Nhân viên', N'Quản lý dự án');  -- Chỉ insert role hợp lệ
-PRINT 'Data migrated from Users.Role to UserRoles (only valid roles).';
-GO
-
--- 3. Xóa CHECK constraint trên Users.Role (sử dụng tên từ lỗi của bạn)
-IF EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK__Users__Role__37A5467C')
-BEGIN
-    ALTER TABLE dbo.Users
-        DROP CONSTRAINT CK__Users__Role__37A5467C;
-    PRINT 'CHECK constraint on [Users.Role] dropped.';
-END
-GO
-
--- 4. Xóa trường Role khỏi Users (bây giờ có thể drop vì constraint đã xóa)
-ALTER TABLE dbo.Users
-    DROP COLUMN Role;
-PRINT 'Column [Role] dropped from [Users].';
-GO
-
--- 5. Thêm ProjectManagerID vào Projects (nếu chưa có)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = 'ProjectManagerID' AND object_id = OBJECT_ID('dbo.Projects'))
-BEGIN
-    ALTER TABLE dbo.Projects
-        ADD ProjectManagerID INT NULL;
-    GO
-
-    ALTER TABLE dbo.Projects
-        ADD CONSTRAINT FK_Projects_Manager FOREIGN KEY (ProjectManagerID)
-            REFERENCES dbo.Employees(EmployeeID) ON DELETE SET NULL;
-    PRINT 'Column [ProjectManagerID] and FK added to [Projects].';
-END
-GO
-
--- 6. Thêm trigger để enforce gán manager khi tạo (nếu chưa có)
-IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_Departments_Insert')
-BEGIN
-    CREATE TRIGGER TR_Departments_Insert
-    ON dbo.Departments
-    AFTER INSERT
-    AS
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)
     BEGIN
-        IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)
-        BEGIN
-            RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);
-            ROLLBACK TRANSACTION;
-        END
-    END;
-    PRINT 'Trigger [TR_Departments_Insert] created.';
-END
+        RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+PRINT 'Trigger [TR_Departments_Insert] created.';
 GO
-
-IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_Projects_Insert')
+CREATE TRIGGER TR_Projects_Insert
+ON dbo.Projects
+AFTER INSERT
+AS
 BEGIN
-    CREATE TRIGGER TR_Projects_Insert
-    ON dbo.Projects
-    AFTER INSERT
-    AS
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)
     BEGIN
-        IF EXISTS (SELECT 1 FROM inserted WHERE ProjectManagerID IS NULL)
-        BEGIN
-            RAISERROR ('ProjectManagerID must be assigned when creating a project.', 16, 1);
-            ROLLBACK TRANSACTION;
-        END
-    END;
-    PRINT 'Trigger [TR_Projects_Insert] created.';
-END
+        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+PRINT 'Trigger [TR_Projects_Insert] created.';
 GO
-
-PRINT '==> Database schema updated successfully for multiple roles and project manager!';
-GO
-
--- Bước 1: Thêm trường CompletionStatus vào TaskAssignments (nếu chưa có)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'CompletionStatus' AND Object_ID = Object_ID(N'dbo.TaskAssignments'))
-BEGIN
-    ALTER TABLE dbo.TaskAssignments
-        ADD CompletionStatus NVARCHAR(20) NOT NULL DEFAULT (N'Pending')
-        CHECK (CompletionStatus IN (N'Pending', N'In Progress', N'Completed'));
-    PRINT 'Column [CompletionStatus] added to [TaskAssignments].';
-END
-GO
-
--- Bước 2: Thêm trường CompletedDate (optional, để theo dõi thời gian hoàn thành)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'CompletedDate' AND Object_ID = Object_ID(N'dbo.TaskAssignments'))
-BEGIN
-    ALTER TABLE dbo.TaskAssignments
-        ADD CompletedDate DATETIME NULL;
-    PRINT 'Column [CompletedDate] added to [TaskAssignments].';
-END
-GO
-
--- Bước 3: Tạo trigger để update Tasks.Status khi tất cả assignments completed
-IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_TaskAssignments_UpdateStatus')
-BEGIN
-    CREATE OR ALTER TRIGGER TR_TaskAssignments_UpdateStatus
+CREATE OR ALTER TRIGGER TR_TaskAssignments_UpdateStatus
 ON dbo.TaskAssignments
 AFTER UPDATE, INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
-
     -- Update CompletedDate for newly completed assignments
     UPDATE ta
     SET CompletedDate = GETDATE()
     FROM dbo.TaskAssignments ta
     INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID
     WHERE i.CompletionStatus = N'Completed' AND ta.CompletedDate IS NULL;
-
     -- Process each distinct TaskID
     DECLARE @TaskID INT;
-
     DECLARE task_cursor CURSOR LOCAL FAST_FORWARD FOR
     SELECT DISTINCT TaskID FROM inserted;
-
     OPEN task_cursor;
     FETCH NEXT FROM task_cursor INTO @TaskID;
-
     WHILE @@FETCH_STATUS = 0
     BEGIN
         -- Check if all assignments are completed
         DECLARE @AllCompleted BIT = 1;
-
         IF EXISTS (
-            SELECT 1 
+            SELECT 1
             FROM TaskAssignments
             WHERE TaskID = @TaskID AND CompletionStatus != N'Completed'
         )
             SET @AllCompleted = 0;
-
         -- Update task status
         UPDATE dbo.Tasks
-        SET Status = CASE 
+        SET Status = CASE
             WHEN @AllCompleted = 1 THEN N'Hoàn thành'
             ELSE N'Đang thực hiện'
         END
         WHERE TaskID = @TaskID;
-
         FETCH NEXT FROM task_cursor INTO @TaskID;
     END
-
     CLOSE task_cursor;
     DEALLOCATE task_cursor;
 END;
-        WHERE i.CompletionStatus = N'Completed' AND ta.CompletedDate IS NULL;
-    END;
-    PRINT 'Trigger [TR_TaskAssignments_UpdateStatus] created.';
-END
+PRINT 'Trigger [TR_TaskAssignments_UpdateStatus] created.';
 GO
-
--- Bước 4: (Optional) Trigger để prevent update nếu task đã hoàn thành
-IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_TaskAssignments_PreventUpdateIfCompleted')
+CREATE TRIGGER TR_TaskAssignments_PreventUpdateIfCompleted
+ON dbo.TaskAssignments
+INSTEAD OF UPDATE
+AS
 BEGIN
-    CREATE TRIGGER TR_TaskAssignments_PreventUpdateIfCompleted
-    ON dbo.TaskAssignments
-    INSTEAD OF UPDATE
-    AS
+    IF EXISTS (SELECT 1 FROM deleted WHERE CompletionStatus = N'Completed')
     BEGIN
-        IF EXISTS (SELECT 1 FROM deleted WHERE CompletionStatus = N'Completed')
-        BEGIN
-            RAISERROR ('Cannot update completed assignment.', 16, 1);
-            ROLLBACK TRANSACTION;
-        END
-        ELSE
-        BEGIN
-            -- Proceed with update
-            UPDATE ta
-            SET CompletionStatus = i.CompletionStatus,
-                -- Cập nhật các trường khác nếu cần
-                AssignedDate = i.AssignedDate
-            FROM dbo.TaskAssignments ta
-            INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID;
-        END
-    END;
-    PRINT 'Trigger [TR_TaskAssignments_PreventUpdateIfCompleted] created.';
-END
+        RAISERROR ('Cannot update completed assignment.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+    ELSE
+    BEGIN
+        -- Proceed with update
+        UPDATE ta
+        SET CompletionStatus = i.CompletionStatus,
+            -- Cập nhật các trường khác nếu cần
+            AssignedDate = i.AssignedDate
+        FROM dbo.TaskAssignments ta
+        INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID;
+    END
+END;
+PRINT 'Trigger [TR_TaskAssignments_PreventUpdateIfCompleted] created.';
 GO
 -- =============================================
 -- INDEXES CREATION
 -- =============================================
-
 PRINT 'Creating indexes...';
-
 CREATE NONCLUSTERED INDEX IX_Employees_DepartmentID ON dbo.Employees(DepartmentID);
 CREATE NONCLUSTERED INDEX IX_Departments_ManagerID ON dbo.Departments(ManagerID);
 CREATE NONCLUSTERED INDEX IX_Projects_CreatedBy ON dbo.Projects(CreatedBy);
 CREATE NONCLUSTERED INDEX IX_Tasks_ProjectID ON dbo.Tasks(ProjectID);
-CREATE NONCLUSTERED INDEX IX_Tasks_AssignedTo ON dbo.Tasks(AssignedTo);
 CREATE NONCLUSTERED INDEX IX_Tasks_CreatedBy ON dbo.Tasks(CreatedBy);
 CREATE NONCLUSTERED INDEX IX_Subtasks_TaskID ON dbo.Subtasks(TaskID);
 CREATE NONCLUSTERED INDEX IX_Subtasks_AssignedTo ON dbo.Subtasks(AssignedTo);
@@ -572,38 +415,45 @@ CREATE NONCLUSTERED INDEX IX_TaskFiles_TaskID ON dbo.TaskFiles(TaskID);
 CREATE NONCLUSTERED INDEX IX_TaskFiles_CreatedBy ON dbo.TaskFiles(CreatedBy);
 CREATE NONCLUSTERED INDEX IX_Users_Phone ON dbo.Users(Phone) WHERE Phone IS NOT NULL;
 CREATE NONCLUSTERED INDEX IX_Users_Email ON dbo.Users(Email) WHERE Email IS NOT NULL;
-
-PRINT '==> All 18 indexes created successfully!';
+CREATE NONCLUSTERED INDEX IX_TaskAssignments_TaskID ON dbo.TaskAssignments(TaskID);
+CREATE NONCLUSTERED INDEX IX_TaskAssignments_EmployeeID ON dbo.TaskAssignments(EmployeeID);
+CREATE NONCLUSTERED INDEX IX_UserRoles_UserID ON dbo.UserRoles(UserID);
+PRINT '==> All indexes created successfully!';
 GO
-
 -- =============================================
 -- SAMPLE DATA
 -- =============================================
-
 PRINT 'Inserting sample data...';
 GO
-
-INSERT INTO dbo.Users (Phone, Email, PasswordHash, Role)
+INSERT INTO dbo.Users (Phone, Email, PasswordHash)
 VALUES
-('0900000001', 'admin@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Admin@123!'), 2), 'Admin'),
-('0901234567', 'nguyen.van.an@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'Employee'),
-('0912345678', 'tran.thi.binh@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2), 'Manager'),
-('0923456789', 'le.minh.cuong@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2), 'Manager'),
-('0934567890', 'pham.thu.dung@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'Employee'),
-('0945678901', 'hoang.quoc.huy@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2), 'Employee');
+('0900000001', 'admin@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Admin@123!'), 2)),
+('0901234567', 'nguyen.van.an@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2)),
+('0912345678', 'tran.thi.binh@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2)),
+('0923456789', 'le.minh.cuong@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Manager@123'), 2)),
+('0934567890', 'pham.thu.dung@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2)),
+('0945678901', 'hoang.quoc.huy@company.com', CONVERT(NVARCHAR(256), HASHBYTES('SHA2_256', 'Employee@123'), 2));
 PRINT '==> 6 Users inserted.';
 GO
-
-INSERT INTO dbo.Departments (DepartmentName, Description)
+INSERT INTO dbo.UserRoles (UserID, Role)
 VALUES
-(N'Công nghệ thông tin', N'Phòng phát triển phần mềm và hạ tầng IT'),
-(N'Nhân sự', N'Phòng quản lý nguồn nhân lực'),
-(N'Tài chính', N'Phòng kế toán và tài chính'),
-(N'Marketing', N'Phòng marketing và truyền thông'),
-(N'Vận hành', N'Phòng vận hành và logistics');
+(1, 'Admin'),
+(2, N'Nhân viên'),
+(3, N'Quản lý phòng ban'),
+(4, N'Quản lý phòng ban'),
+(5, N'Nhân viên'),
+(6, N'Nhân viên');
+PRINT '==> 6 UserRoles inserted.';
+GO
+INSERT INTO dbo.Departments (DepartmentName, Description, ManagerID)
+VALUES
+(N'Công nghệ thông tin', N'Phòng phát triển phần mềm và hạ tầng IT', NULL),
+(N'Nhân sự', N'Phòng quản lý nguồn nhân lực', NULL),
+(N'Tài chính', N'Phòng kế toán và tài chính', NULL),
+(N'Marketing', N'Phòng marketing và truyền thông', NULL),
+(N'Vận hành', N'Phòng vận hành và logistics', NULL);
 PRINT '==> 5 Departments inserted.';
 GO
-
 INSERT INTO dbo.Employees (EmployeeID, FullName, Position, DepartmentID, AvatarPath, Address, HireDate)
 VALUES
 (2, N'Nguyễn Văn An', N'Lập trình viên', 1, '/Uploads/Avatars/20240101120000_avatar_nva.jpg', N'123 Láng Hạ, Hà Nội', '2020-03-15'),
@@ -613,34 +463,38 @@ VALUES
 (6, N'Hoàng Quốc Huy', N'Trưởng phòng Marketing', 4, NULL, N'202 Nguyễn Trãi, Hà Nội', '2019-09-25');
 PRINT '==> 5 Employees inserted with AvatarPath.';
 GO
-
 UPDATE dbo.Departments SET ManagerID = 4 WHERE DepartmentID = 1;
 UPDATE dbo.Departments SET ManagerID = 3 WHERE DepartmentID = 2;
 UPDATE dbo.Departments SET ManagerID = 5 WHERE DepartmentID = 3;
 UPDATE dbo.Departments SET ManagerID = 6 WHERE DepartmentID = 4;
 PRINT '==> Managers assigned.';
 GO
-
-INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy)
+INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy)
 VALUES
-(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', N'Đang thực hiện', 3),
-(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, N'Lập kế hoạch', 3),
-(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', N'Hoàn thành', 4),
-(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', N'Lập kế hoạch', 4),
-(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', N'Đang thực hiện', 3);
+(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', N'Đang thực hiện', 3, 3),
+(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, N'Lập kế hoạch', 3, 3),
+(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', N'Hoàn thành', 4, 4),
+(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', N'Lập kế hoạch', 4, 4),
+(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', N'Đang thực hiện', 3, 3);
 PRINT '==> 5 Projects inserted.';
 GO
-
-INSERT INTO dbo.Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Deadline, Status, Priority)
+INSERT INTO dbo.Tasks (ProjectID, TaskTitle, Description, CreatedBy, Deadline, Status, Priority)
 VALUES
-(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 4, 3, '2024-02-15', N'Hoàn thành', N'Cao'),
-(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 2, 3, '2024-04-30', N'Lập kế hoạch', N'Cao'),
-(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', NULL, 3, '2024-03-15', N'Cần làm', N'Trung bình'),
-(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 5, 4, '2024-03-20', N'Hoàn thành', N'Ưu tiên cao'),
-(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 6, 3, '2024-05-31', N'Đang thực hiện', N'Cao');
+(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 3, '2024-02-15', N'Hoàn thành', N'Cao'),
+(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 3, '2024-04-30', N'Lập kế hoạch', N'Cao'),
+(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', 3, '2024-03-15', N'Cần làm', N'Trung bình'),
+(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 4, '2024-03-20', N'Hoàn thành', N'Ưu tiên cao'),
+(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 3, '2024-05-31', N'Đang thực hiện', N'Cao');
 PRINT '==> 5 Tasks inserted.';
 GO
-
+INSERT INTO dbo.TaskAssignments (TaskID, EmployeeID, AssignedBy, AssignedDate, CompletionStatus)
+VALUES
+(1, 4, 3, '2024-01-15', N'Completed'),
+(2, 2, 3, '2024-01-15', N'Pending'),
+(4, 5, 4, '2024-01-15', N'Completed'),
+(5, 6, 3, '2024-01-15', N'In Progress');
+PRINT '==> 4 TaskAssignments inserted.';
+GO
 INSERT INTO dbo.Subtasks (TaskID, SubtaskTitle, Description, Status, Progress, AssignedTo, Deadline)
 VALUES
 (1, N'Thiết kế bảng Users', N'Tạo ERD cho bảng Users', N'Hoàn thành', 100, 4, '2024-02-05'),
@@ -649,7 +503,6 @@ VALUES
 (2, N'Implement User API', N'Tạo CRUD API cho Users', N'Đang thực hiện', 70, 2, '2024-04-15');
 PRINT '==> 4 Subtasks inserted.';
 GO
-
 INSERT INTO dbo.TaskComments (TaskID, EmployeeID, Comment)
 VALUES
 (1, 3, N'Schema đã được review và approve.'),
@@ -657,7 +510,6 @@ VALUES
 (4, 4, N'Tất cả test cases đã PASSED.');
 PRINT '==> 3 Comments inserted.';
 GO
-
 -- EmployeeFiles (CV, certificates - không bao gồm avatar)
 INSERT INTO dbo.EmployeeFiles (EmployeeID, Title, FileName, CreatedBy, CreatedAt)
 VALUES
@@ -665,7 +517,6 @@ VALUES
 (4, N'Chứng chỉ AWS', '20240120150000_aws_cert.pdf', 4, '2024-01-20 15:00:00');
 PRINT '==> 2 EmployeeFiles inserted.';
 GO
-
 -- ProjectFiles (2 records)
 INSERT INTO dbo.ProjectFiles (ProjectID, Title, FileName, CreatedBy, CreatedAt)
 VALUES
@@ -673,7 +524,6 @@ VALUES
 (1, N'Mockup thiết kế giao diện', '20240120140000_design_mockup.png', 4, '2024-01-20 14:00:00');
 PRINT '==> 2 ProjectFiles inserted.';
 GO
-
 -- TaskFiles (2 records)
 INSERT INTO dbo.TaskFiles (TaskID, Title, FileName, CreatedBy, CreatedAt)
 VALUES
@@ -681,74 +531,31 @@ VALUES
 (2, N'Kết quả test API', '20240410160000_api_test_results.xlsx', 2, '2024-04-10 16:00:00');
 PRINT '==> 2 TaskFiles inserted.';
 GO
-
 PRINT '==> Sample data inserted!';
 GO
-
 -- =============================================
 -- SUMMARY
 -- =============================================
-
 PRINT '';
 PRINT '========================================';
-PRINT '  DATABASE SETUP COMPLETED!';
+PRINT ' DATABASE SETUP COMPLETED!';
 PRINT '========================================';
-PRINT 'Tables: 10';
-PRINT '  - Users, Departments, Employees (with AvatarPath)';
-PRINT '  - Projects, Tasks, Subtasks, TaskComments';
-PRINT '  - EmployeeFiles (CV, certificates)';
-PRINT '  - ProjectFiles (Requirements, designs)';
-PRINT '  - TaskFiles (Screenshots, test results)';
+PRINT 'Tables: 12';
+PRINT ' - Users, UserRoles, Departments, Employees (with AvatarPath)';
+PRINT ' - Projects, Tasks, TaskAssignments, Subtasks, TaskComments';
+PRINT ' - EmployeeFiles (CV, certificates)';
+PRINT ' - ProjectFiles (Requirements, designs)';
+PRINT ' - TaskFiles (Screenshots, test results)';
 PRINT '';
 PRINT 'AVATAR HANDLING:';
-PRINT '  - Avatar stored in Employees.AvatarPath';
-PRINT '  - Path format: /Uploads/Avatars/{timestamp}_{fileName}';
-PRINT '  - Other employee docs in EmployeeFiles table';
+PRINT ' - Avatar stored in Employees.AvatarPath';
+PRINT ' - Path format: /Uploads/Avatars/{timestamp}_{fileName}';
+PRINT ' - Other employee docs in EmployeeFiles table';
 PRINT '';
 PRINT 'FOREIGN KEYS:';
-PRINT '  - All file tables have FK to parent table';
-PRINT '  - CASCADE DELETE enabled';
+PRINT ' - All file tables have FK to parent table';
+PRINT ' - CASCADE DELETE enabled';
 PRINT '';
 PRINT 'Login: 0900000001 / Admin@123!';
 PRINT '========================================';
 GO
-
--- Thêm trường ManagerBy vào Projects (nếu chưa có)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = 'ManagerBy' AND object_id = OBJECT_ID('dbo.Projects'))
-BEGIN
-    ALTER TABLE dbo.Projects
-        ADD ManagerBy INT NULL;
-    PRINT 'Column [ManagerBy] added to [Projects].';
-END
-GO
-
--- Thêm constraint FK (nếu chưa có), sử dụng ON DELETE NO ACTION
-IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Projects_ManagerBy' AND parent_object_id = OBJECT_ID('dbo.Projects'))
-BEGIN
-    ALTER TABLE dbo.Projects
-        ADD CONSTRAINT FK_Projects_ManagerBy FOREIGN KEY (ManagerBy)
-            REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION ON UPDATE NO ACTION;
-    PRINT 'Constraint [FK_Projects_ManagerBy] added with ON DELETE NO ACTION.';
-END
-GO
-
-PRINT '==> Bảng Projects đã được cập nhật thành công!';
-GO
-
-ALTER TRIGGER TR_Projects_Insert
-ON dbo.Projects
-AFTER INSERT
-AS
-BEGIN
-    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)
-    BEGIN
-        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);
-        ROLLBACK TRANSACTION;
-    END
-END;
-
--- 1️⃣ Xóa khóa ngoại liên quan đến cột
-ALTER TABLE Projects DROP CONSTRAINT FK_Projects_Manager;
-
--- 2️⃣ Xóa luôn cột ProjectManagerID
-ALTER TABLE Projects DROP COLUMN ProjectManagerID;
