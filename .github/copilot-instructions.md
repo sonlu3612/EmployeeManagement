@@ -37,12 +37,6 @@ Quản Lý Dự Án với các yêu cầu sau:
 2. Nếu thành công, mở `frmMain`
 3. Tại `frmMain`, load các `Pages` và lưu vào trên `AntdUI.Tabs` (Phần này cần lưu ý do hiện tại chưa biết đường đi của code)
 
-**Documentation:**
-
-- Về sử dụng thư viện UI (AntdUI): tham khảo tại:
-  -	https://github.com/AntdUI/AntdUI/tree/v2.1.11/doc/wiki
-  - Thư mục tương đối hiện tại có trong máy tôi: `packages/AntdUI.2.1.13/docs`
-
 Khi generate code, hãy:
 
 1. Follow conventions trên
