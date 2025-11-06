@@ -40,6 +40,7 @@
             this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cậpNhậtTiếnĐộToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -166,9 +167,10 @@
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.xóaToolStripMenuItem,
-            this.quảnLýToolStripMenuItem});
+            this.quảnLýToolStripMenuItem,
+            this.cậpNhậtTiếnĐộToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 48);
+            this.menuStrip.Size = new System.Drawing.Size(185, 92);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
@@ -182,6 +184,12 @@
             this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
             this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.quảnLýToolStripMenuItem.Text = "Cập nhật";
+            // 
+            // cậpNhậtTiếnĐộToolStripMenuItem
+            // 
+            this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
+            this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
             // 
             // Page_Task
             // 
@@ -211,5 +219,6 @@
         private System.Windows.Forms.ContextMenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cậpNhậtTiếnĐộToolStripMenuItem;
     }
 }
