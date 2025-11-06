@@ -14,10 +14,11 @@ namespace EmployeeManagement
     public partial class frmManager : AntdUI.Window
     {
         private readonly User _currentUser;
+        private UserRepository userRepository = new UserRepository();
         public frmManager(User currentUser)
         {
             InitializeComponent();
-            _currentUser = currentUser;
+            _currentUser = userRepository.GetById(currentUser.UserID);
             tabs1.SelectedTab = tabProject;
             menu1.SelectIndex(0, true);
         }
@@ -93,13 +94,12 @@ namespace EmployeeManagement
         }
 
         private readonly HashPassword hp = new HashPassword();
-        private readonly UserRepository userRepository = new UserRepository();
         private void btnChangePass_Click_1(object sender, EventArgs e)
         {
             btnChangePass.Loading = true;
             int userID = _currentUser.UserID;
             string oldPass = hp.Hash(txtMKC.Text);
-
+            Console.WriteLine(_currentUser.PasswordHash + "\n");
             if (oldPass == _currentUser.PasswordHash)
             {
                 string newPass = txtMKM.Text;
@@ -110,6 +110,8 @@ namespace EmployeeManagement
                     txtMKM.Text = "";
                     txtXNMK.Text = "";
                     txtMKM.Focus();
+                    btnChangePass.Loading = false;
+                    return;
                 }
                 if (newPass == confirmPass)
                 {
@@ -119,6 +121,9 @@ namespace EmployeeManagement
                     {
                         labelMatKhau.ForeColor = Color.Green;
                         labelMatKhau.Text = "Đổi mật khẩu thành công!";
+                        txtMKC.Text = "";
+                        txtMKM.Text = "";
+                        txtXNMK.Text = "";
                     }
                     else
                     {
@@ -134,8 +139,10 @@ namespace EmployeeManagement
             else
             {
                 labelMatKhau.Text = "Mật khẩu cũ không đúng!";
+                Console.WriteLine(txtMKC.Text+"\n"+oldPass);
                 txtMKC.Focus();
             }
+            btnChangePass.Loading = false;
         }
 
         private EmployeeRepository employeeRepository = new EmployeeRepository();

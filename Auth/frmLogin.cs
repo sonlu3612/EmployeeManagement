@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 using Message = AntdUI.Message;
+using System.Drawing.Text;
 
 namespace EmployeeManagement.Auth
 {
@@ -79,16 +80,21 @@ namespace EmployeeManagement.Auth
                 //        }));
                 //    });
                 SessionManager.SetCurrentUser(user);
+                
+                user = userRepository.GetById(user.UserID); 
 
                 if (user.Role == "Admin")
                 {
                     frmMain mainForm = new frmMain(user);
                     mainForm.Show();
+                    Console.WriteLine(user.UserID + "-" + user.PasswordHash);
                     //MessageBox.Show("Đăng nhập thành công với quyền Quản trị viên!");
                 }
                 else if(user.Role == "Manager")
                 {
                     frmManager managerForm = new frmManager(user);
+                    Console.WriteLine(user.UserID + "-" + user.PasswordHash);
+
                     managerForm.Show();
                     //MessageBox.Show("Đăng nhập thành công với quyền Quản lý!");
                 }

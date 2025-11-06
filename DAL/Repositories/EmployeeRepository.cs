@@ -137,6 +137,11 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
                     //new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
+
+                    //new SqlParameter("@AvatarData", SqlDbType.VarBinary)
+                    //{
+                    //    Value = entity.AvatarData ?? (object)DBNull.Value
+                    //}
                 };
                 string sql =
                     @"UPDATE Employees

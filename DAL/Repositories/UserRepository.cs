@@ -122,7 +122,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
 
                 string sql =
-                    @"SELECT UserID, Phone, Email, Role, IsActive, CreatedDate
+                    @"SELECT UserID, Phone, Email, Role, IsActive, CreatedDate, PasswordHash 
                     FROM Users
                     WHERE UserID = @UserID";
 
@@ -133,7 +133,7 @@ namespace EmployeeManagement.DAL.Repositories
                     return null;
                 }
 
-                return MapDataRowToUserWithoutPassword(dt.Rows[0]);
+                return MapDataRowToUser(dt.Rows[0]);
             }
             catch (Exception ex)
             {
@@ -252,10 +252,24 @@ namespace EmployeeManagement.DAL.Repositories
                 UserID = row["UserID"] != DBNull.Value ? Convert.ToInt32(row["UserID"]) : 0,
                 Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null,
                 Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null,
-                PasswordHash = null,
+                //PasswordHash =  row["PasswordHash"] != DBNull.Value ? row["PasswordHash"].ToString() : null,
                 Role = row["Role"] != DBNull.Value ? row["Role"].ToString() : null,
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
-                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
+            };
+        }
+
+        private User MapDataRowToUser(DataRow row)
+        {
+            return new User
+            {
+                UserID = row["UserID"] != DBNull.Value ? Convert.ToInt32(row["UserID"]) : 0,
+                Phone = row["Phone"]?.ToString(),
+                Email = row["Email"]?.ToString(),
+                PasswordHash = row["PasswordHash"]?.ToString(),
+                Role = row["Role"]?.ToString(),
+                IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"]),
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
             };
         }
 

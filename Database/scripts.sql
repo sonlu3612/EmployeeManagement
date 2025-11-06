@@ -104,6 +104,12 @@ GO
 ALTER TABLE dbo.Employees
     ADD GENDER NVARCHAR(20) NOT NULL DEFAULT ('NotSpecified')
 
+ALTER TABLE dbo.Employees
+ADD AvatarData VARBINARY(MAX) NULL;
+GO
+
+PRINT 'Column [AvatarData] added to Employees table.';
+
 
 ALTER TABLE dbo.Departments
     ADD CONSTRAINT FK_Departments_Manager FOREIGN KEY (ManagerID) 

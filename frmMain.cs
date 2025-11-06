@@ -99,7 +99,7 @@ namespace EmployeeManagement
             btnChangePass.Loading = true;
             int userID = _currentUser.UserID;
             string oldPass = hp.Hash(txtMKC.Text);
-
+            Console.WriteLine(_currentUser.PasswordHash + "\n");
             if (oldPass == _currentUser.PasswordHash)
             {
                 string newPass = txtMKM.Text;
@@ -110,6 +110,8 @@ namespace EmployeeManagement
                     txtMKM.Text = "";
                     txtXNMK.Text = "";
                     txtMKM.Focus();
+                    btnChangePass.Loading = false;
+                    return;
                 }
                 if (newPass == confirmPass)
                 {
@@ -119,6 +121,9 @@ namespace EmployeeManagement
                     {
                         labelMatKhau.ForeColor = Color.Green;
                         labelMatKhau.Text = "Đổi mật khẩu thành công!";
+                        txtMKC.Text = "";
+                        txtMKM.Text = "";
+                        txtXNMK.Text = "";
                     }
                     else
                     {
@@ -134,9 +139,12 @@ namespace EmployeeManagement
             else
             {
                 labelMatKhau.Text = "Mật khẩu cũ không đúng!";
+                Console.WriteLine(txtMKC.Text + "\n" + oldPass);
                 txtMKC.Focus();
             }
+            btnChangePass.Loading = false;
         }
+
 
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private void page_Account1_Load(object sender, EventArgs e)
@@ -154,6 +162,11 @@ namespace EmployeeManagement
                 page_Account1.LoadProfile(employee);
             }
 
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            tabs1.SelectedTab = tabProject;
         }
     }
 }
