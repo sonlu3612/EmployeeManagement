@@ -327,6 +327,8 @@ namespace EmployeeManagement.DAL.Repositories
             return statusCounts;
         }
 
+
+
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Task
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu

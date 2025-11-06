@@ -46,24 +46,18 @@ namespace EmployeeManagement.Auth
             if (user == null)
             {
                 
-                labelThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                //labelThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
                 btnDangNhap.Loading = false;
                 txtTaiKhoan.Focus();
                 Task.Delay(2000).ContinueWith(t =>
                 {
                     this.Invoke((Action)(() =>
                     {
-                        labelThongBao.Text = "";
+                        //labelThongBao.Text = "";
                         //txtTaiKhoan.Text = "";
                         //txtMatKhau.Text = "";
                     }));
                 });
-                //labelThongBao.Text = "";
-                //txtTaiKhoan.Text = "";
-                //txtMatKhau.Text = "";
-                //labelThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
-                //btnDangNhap.Loading = false;
-                //return;
             }
             else
             {
@@ -83,11 +77,7 @@ namespace EmployeeManagement.Auth
                     mainForm.Show();
                 this.Hide();
 
-            }
-
-
-                
-                
+            }    
         }
 
         private void cboxMatKhau_CheckedChanged(object sender, AntdUI.BoolEventArgs e)

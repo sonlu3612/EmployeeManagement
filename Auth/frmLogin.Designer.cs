@@ -31,7 +31,6 @@
             this.panel1 = new AntdUI.Panel();
             this.btnThoat = new AntdUI.Button();
             this.cboxMatKhau = new AntdUI.Checkbox();
-            this.labelThongBao = new System.Windows.Forms.Label();
             this.image3D3 = new AntdUI.Image3D();
             this.btnDangNhap = new AntdUI.Button();
             this.label1 = new AntdUI.Label();
@@ -47,7 +46,6 @@
             // 
             this.panel1.Controls.Add(this.btnThoat);
             this.panel1.Controls.Add(this.cboxMatKhau);
-            this.panel1.Controls.Add(this.labelThongBao);
             this.panel1.Controls.Add(this.image3D3);
             this.panel1.Controls.Add(this.btnDangNhap);
             this.panel1.Controls.Add(this.label1);
@@ -89,17 +87,6 @@
             this.cboxMatKhau.TabIndex = 10;
             this.cboxMatKhau.Text = "Hiện mật khẩu";
             this.cboxMatKhau.CheckedChanged += new AntdUI.BoolEventHandler(this.cboxMatKhau_CheckedChanged);
-            // 
-            // labelThongBao
-            // 
-            this.labelThongBao.AutoSize = true;
-            this.labelThongBao.BackColor = System.Drawing.Color.Transparent;
-            this.labelThongBao.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelThongBao.ForeColor = System.Drawing.Color.Red;
-            this.labelThongBao.Location = new System.Drawing.Point(278, 231);
-            this.labelThongBao.Name = "labelThongBao";
-            this.labelThongBao.Size = new System.Drawing.Size(0, 17);
-            this.labelThongBao.TabIndex = 9;
             // 
             // image3D3
             // 
@@ -202,7 +189,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmLogin";
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -218,7 +204,6 @@
         private AntdUI.Image3D image3D2;
         private AntdUI.Image3D image3D1;
         private AntdUI.Image3D image3D3;
-        private System.Windows.Forms.Label labelThongBao;
         private AntdUI.Checkbox cboxMatKhau;
         private AntdUI.Button btnThoat;
     }

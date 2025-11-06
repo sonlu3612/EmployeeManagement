@@ -124,7 +124,7 @@ CREATE TABLE dbo.Projects (
     Description NVARCHAR(MAX),
     StartDate DATE NOT NULL,
     EndDate DATE NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Planning','InProgress','Completed','Cancelled')),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN (N'Lập kế hoạch',N'Đang thực hiện',N'Hoàn thành',N'Đã hủy')),
     CreatedBy INT NOT NULL,
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
     
@@ -150,8 +150,8 @@ CREATE TABLE dbo.Tasks (
     AssignedTo INT NULL,
     CreatedBy INT NOT NULL,
     Deadline DATE NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Todo','InProgress','Review','Done')),
-    Priority NVARCHAR(20) NOT NULL CHECK (Priority IN ('Low','Medium','High','Critical')),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN (N'Cần làm',N'Đang thực hiện',N'Chờ duyệt',N'Hoàn thành')),
+    Priority NVARCHAR(20) NOT NULL CHECK (Priority IN (N'Thấp',N'Trung bình',N'Cao',N'Ưu tiên cao')),
     CreatedDate DATETIME NOT NULL DEFAULT (GETDATE()),
     UpdatedDate DATETIME NULL,
     
@@ -173,7 +173,7 @@ CREATE TABLE dbo.Subtasks (
     TaskID INT NOT NULL,
     SubtaskTitle NVARCHAR(200) NOT NULL,
     Description NVARCHAR(MAX),
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Todo','InProgress','Done')) DEFAULT ('Todo'),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN (N'Cần làm',N'Đang thực hiện',N'Hoàn thành')) DEFAULT (N'Cần làm'),
     Progress INT NOT NULL DEFAULT (0) CHECK (Progress BETWEEN 0 AND 100),
     AssignedTo INT NULL,
     Deadline DATE NULL,
@@ -518,30 +518,30 @@ GO
 
 INSERT INTO dbo.Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy)
 VALUES
-(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', 'InProgress', 3),
-(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, 'Planning', 3),
-(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', 'Completed', 4),
-(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', 'Planning', 4),
-(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', 'InProgress', 3);
+(N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', '2024-01-15', '2024-07-31', N'Đang thực hiện', 3),
+(N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', '2024-02-01', NULL, N'Lập kế hoạch', 3),
+(N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', '2023-09-01', '2024-03-31', N'Hoàn thành', 4),
+(N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', '2024-04-01', '2024-12-31', N'Lập kế hoạch', 4),
+(N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', '2024-01-10', '2024-06-30', N'Đang thực hiện', 3);
 PRINT '==> 5 Projects inserted.';
 GO
 
 INSERT INTO dbo.Tasks (ProjectID, TaskTitle, Description, AssignedTo, CreatedBy, Deadline, Status, Priority)
 VALUES
-(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 4, 3, '2024-02-15', 'Done', 'High'),
-(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 2, 3, '2024-04-30', 'InProgress', 'High'),
-(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', NULL, 3, '2024-03-15', 'Todo', 'Medium'),
-(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 5, 4, '2024-03-20', 'Done', 'Critical'),
-(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 6, 3, '2024-05-31', 'InProgress', 'High');
+(1, N'Thiết kế database schema', N'Phân tích và thiết kế cấu trúc CSDL', 4, 3, '2024-02-15', N'Hoàn thành', N'Cao'),
+(1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 2, 3, '2024-04-30', N'Lập kế hoạch', N'Cao'),
+(2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', NULL, 3, '2024-03-15', N'Cần làm', N'Trung bình'),
+(3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 5, 4, '2024-03-20', N'Hoàn thành', N'Ưu tiên cao'),
+(5, N'Cấu hình firewall', N'Setup firewall rules cho hệ thống mới', 6, 3, '2024-05-31', N'Đang thực hiện', N'Cao');
 PRINT '==> 5 Tasks inserted.';
 GO
 
 INSERT INTO dbo.Subtasks (TaskID, SubtaskTitle, Description, Status, Progress, AssignedTo, Deadline)
 VALUES
-(1, N'Thiết kế bảng Users', N'Tạo ERD cho bảng Users', 'Done', 100, 4, '2024-02-05'),
-(1, N'Thiết kế bảng Employees', N'Tạo ERD cho bảng Employees', 'Done', 100, 4, '2024-02-08'),
-(2, N'Setup project structure', N'Tạo project ASP.NET Core', 'Done', 100, 2, '2024-03-20'),
-(2, N'Implement User API', N'Tạo CRUD API cho Users', 'InProgress', 70, 2, '2024-04-15');
+(1, N'Thiết kế bảng Users', N'Tạo ERD cho bảng Users', N'Hoàn thành', 100, 4, '2024-02-05'),
+(1, N'Thiết kế bảng Employees', N'Tạo ERD cho bảng Employees', N'Hoàn thành', 100, 4, '2024-02-08'),
+(2, N'Setup project structure', N'Tạo project ASP.NET Core', N'Hoàn thành', 100, 2, '2024-03-20'),
+(2, N'Implement User API', N'Tạo CRUD API cho Users', N'Đang thực hiện', 70, 2, '2024-04-15');
 PRINT '==> 4 Subtasks inserted.';
 GO
 

@@ -47,7 +47,10 @@ namespace EmployeeManagement
             if (select == "Projects")
             {
                 tabs1.SelectedTab = tabProject;
-                phTrangChu.Text = "Projects";
+
+                //tabs1.SelectedTab = tabProject;
+                //frmManageTasks frmManageTasks = new frmManageTasks();
+                //frmManageTasks.Show();
             }
             if (select == "Company")
             {

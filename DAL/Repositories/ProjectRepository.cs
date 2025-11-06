@@ -93,6 +93,48 @@ namespace EmployeeManagement.DAL.Repositories
             }
         }
 
+
+        /// <summary>
+        /// Lấy danh sách project được giao cho một nhân viên cụ thể
+        /// </summary>
+        /// <param name="employeeId">ID nhân viên</param>
+        /// <returns>Danh sách project được giao cho nhân viên</returns>
+        public List<Project> GetByEmployee(int employeeId)
+        {
+            List<Project> projects = new List<Project>();
+
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@EmployeeID", employeeId)
+                };
+
+                string sql =
+                    @"SELECT  p.ProjectID,p.ProjectName,p.Description,p.StartDate,p.EndDate, p.Status,
+                    p.CreatedBy,
+                    e.FullName AS CreatedByName,
+                    p.CreatedDate
+                    FROM Projects p
+                    LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
+                    WHERE p.CreatedBy = @EmployeeID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    projects.Add(MapDataRowToProject(row));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ProjectRespository.GetByEmployee] Lỗi: {ex.Message}");
+                throw;
+            }
+
+            return projects;
+        }
+
         /// <summary>
         /// Thêm mới một dự án
         /// Kiểm tra StartDate <= EndDate trước khi thêm

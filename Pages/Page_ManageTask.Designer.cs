@@ -28,16 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new AntdUI.Panel();
             this.btnAdd = new AntdUI.Button();
             this.btnDelete = new AntdUI.Button();
             this.ddownEmployee = new AntdUI.Dropdown();
             this.ddownStatus = new AntdUI.Dropdown();
-            this.txtTim = new AntdUI.Input();
-            this.tbTask = new AntdUI.Table();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
+            this.txtTim = new AntdUI.Input();
+            this.tbTask = new AntdUI.Table();
+            this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -72,6 +77,7 @@
             this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnDelete
             // 
@@ -101,38 +107,26 @@
             this.ddownEmployee.Size = new System.Drawing.Size(135, 35);
             this.ddownEmployee.TabIndex = 4;
             this.ddownEmployee.Text = "Nhân viên";
+            this.ddownEmployee.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownEmployee_SelectedValueChanged);
             // 
             // ddownStatus
             // 
             this.ddownStatus.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddownStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ddownStatus.ForeColor = System.Drawing.Color.White;
+            this.ddownStatus.Items.AddRange(new object[] {
+            "Tất cả",
+            "Cần làm",
+            "Đang thực hiện",
+            "Hoàn thành",
+            "Quá hạn"});
             this.ddownStatus.Location = new System.Drawing.Point(330, 3);
             this.ddownStatus.Name = "ddownStatus";
             this.ddownStatus.ShowArrow = true;
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
-            // 
-            // txtTim
-            // 
-            this.txtTim.Location = new System.Drawing.Point(3, 3);
-            this.txtTim.Name = "txtTim";
-            this.txtTim.PlaceholderText = "Tìm kiếm ...";
-            this.txtTim.Radius = 10;
-            this.txtTim.Size = new System.Drawing.Size(216, 35);
-            this.txtTim.TabIndex = 0;
-            // 
-            // tbTask
-            // 
-            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbTask.Gap = 12;
-            this.tbTask.Location = new System.Drawing.Point(0, 41);
-            this.tbTask.Name = "tbTask";
-            this.tbTask.Size = new System.Drawing.Size(798, 416);
-            this.tbTask.TabIndex = 1;
-            this.tbTask.Text = "table1";
-            this.tbTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tbTask_CellClick);
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -163,6 +157,47 @@
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
             // 
+            // txtTim
+            // 
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
+            // 
+            // tbTask
+            // 
+            this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTask.Gap = 12;
+            this.tbTask.Location = new System.Drawing.Point(0, 41);
+            this.tbTask.Name = "tbTask";
+            this.tbTask.Size = new System.Drawing.Size(798, 416);
+            this.tbTask.TabIndex = 1;
+            this.tbTask.Text = "table1";
+            this.tbTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbTask_MouseDown);
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.xóaToolStripMenuItem,
+            this.quảnLýToolStripMenuItem});
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(161, 48);
+            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
+            // 
+            // xóaToolStripMenuItem
+            // 
+            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.xóaToolStripMenuItem.Text = "Thêm nhân viên";
+            // 
+            // quảnLýToolStripMenuItem
+            // 
+            this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
+            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.quảnLýToolStripMenuItem.Text = "Cập nhật";
+            // 
             // Page_ManageTask
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -172,6 +207,7 @@
             this.Name = "Page_ManageTask";
             this.Size = new System.Drawing.Size(798, 457);
             this.panel1.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -187,5 +223,8 @@
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.Button btnAdd;
         private AntdUI.Table tbTask;
+        private System.Windows.Forms.ContextMenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
     }
 }

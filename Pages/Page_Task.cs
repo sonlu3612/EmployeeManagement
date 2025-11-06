@@ -1,6 +1,7 @@
 ﻿using AntdUI;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Dialogs;
+using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -66,16 +67,6 @@ namespace EmployeeManagement.Pages
 
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
-            menuStrip.Show(tableTask, e.Location);
-            //var selectedIndex = tableTask.SelectedIndex - 1;
-            //if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
-            //{
-            //    var task = datalist[selectedIndex];
-            //    frmTask frmTask = new frmTask(task);
-            //    frmTask.Show();
-
-            //    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
-            //}
 
         }
 
@@ -122,8 +113,6 @@ namespace EmployeeManagement.Pages
                     tableTask.DataSource = tasks.ToList();
 
                 }
-
-                
             }
             catch (Exception ex)
             {
@@ -134,23 +123,45 @@ namespace EmployeeManagement.Pages
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             tableTask.DataSource = null;
-            //string selected = ddownStatus.SelectedValue.ToString();
-            //try
-            //{
-            //    if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
-            //    {
-            //        loadData();
-            //    }
-            //    else
-            //    {
-            //        List<MyTask> tasks = new List<MyTask>();
-            //        tasks = taskRepository.GetByStatus(selected);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
-            //}
+            string selected = ddownStatus.SelectedValue.ToString();
+            try
+            {
+                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                {
+                    loadData();
+                }
+                else if(selected == "Quá hạn")
+                {
+                    List<MyTask> tasks = new List<MyTask>();
+                    tasks = taskRepository.GetOverdueTasks();
+                    //foreach(var task in tasks)
+                    //{
+                    //    task.Status = "Quá hạn";
+                    //    taskRepository.Update(task);
+
+                    //}
+                    tableTask.DataSource = tasks.ToList();
+                }
+                else
+                {
+                    List<MyTask> tasks = new List<MyTask>();
+                    List<MyTask> tasksByStatus = new List<MyTask>();
+                    tasks = taskRepository.GetAll();
+
+                    foreach (var task in tasks)
+                    {
+                        if (task.Status == selected)
+                        {
+                            tasksByStatus.Add(task);
+                        }
+                    }
+                    tableTask.DataSource = tasksByStatus.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
+            }
         }
 
         private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -162,10 +173,20 @@ namespace EmployeeManagement.Pages
                 {
                     var task = datalist[selectedIndex];
 
-
-
                     frmTask frmTask = new frmTask(task);
-                    frmTask.Show();
+                    frmTask.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+            else if(e.ClickedItem.Text == "Danh sách nhân viên")
+            {
+                var selectedIndex = tableTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+                {
+                    var task = datalist[selectedIndex];
+                    frmAssignEmployee frmAssignEmployee = new frmAssignEmployee(task.TaskID);
+                    frmAssignEmployee.ShowDialog();
 
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
@@ -175,60 +196,95 @@ namespace EmployeeManagement.Pages
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var selectedIndex = tableTask.SelectedIndex - 1;
-
             if (selectedIndex < 0)
+            {
+                Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
+                return;
+            }
+            if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
             {
                 Message.warn(this.FindForm(), "Vui lòng chọn công việc cần xóa!");
                 return;
             }
 
-            if (tableTask.DataSource is IList<MyTask> datalist && selectedIndex < datalist.Count)
+            if (tableTask.DataSource is IList<MyTask> list && selectedIndex < list.Count)
             {
-                var task = datalist[selectedIndex];
+                var task = list[selectedIndex];
+                //string massage = "Bạn có muốn xóa?";
+                //frmInforXoa frmInforXoa = new frmInforXoa(massage);
+                //if(frmInforXoa.ShowDialog() == DialogResult.OK)
+                //{
+                //    TaskRepository taskRepository = new TaskRepository();
+                //    taskRepository.Delete(task.TaskID);
+                //    loadData();
 
-                if (task == null)
-                {
-                    Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
-                    return;
-                }
-
+                //}
                 var modalConfig = Modal.config(
                     this.FindForm(),
                     "Xác nhận xoá",
-                    $"Bạn có chắc muốn xoá công việc \"{task.TaskName}\" không?",
+                    $"Bạn có chắc muốn xoá nhiệm vụ \"{task.TaskName}\" không?",
                     TType.Warn
                 );
-
                 modalConfig.OkText = "Xoá";
                 modalConfig.CancelText = "Huỷ";
-                modalConfig.OkType = TTypeMini.Success;
-
+                modalConfig.OkType = TTypeMini.Primary;
                 modalConfig.OnOk = (cfg) =>
                 {
                     try
                     {
-                        TaskRepository taskRepository = new TaskRepository();
-                        taskRepository.Delete(task.TaskID);
+                        taskRepository.Delete(task.ProjectID);
                         loadData();
 
-                        Message.success(this.FindForm(), "Xóa công việc thành công!");
+                        Message.success(this.FindForm(), "Xóa nhiệm vụ thành công!");
                     }
                     catch (Exception ex)
                     {
-                        Message.error(this.FindForm(), "Lỗi khi xoá công việc: " + ex.Message);
+                        Message.error(this.FindForm(), "Lỗi khi xoá nhiệm vụ: " + ex.Message);
                     }
-
-                    return true; // Đóng modal sau khi xử lý xong
+                    return true; // Đóng modal
                 };
-
                 Modal.open(modalConfig);
+
+                loadData() ;
             }
             else
             {
-                Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
+            }
+       
+        }
+
+        private void menuStrip_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                int sel = tableTask.SelectedIndex;
+                if (sel >= 0)
+                {
+                    menuStrip.Show(Cursor.Position);
+                }
             }
         }
 
+        private void taskToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tableTask.SelectedIndex - 1;
+            if (tableTask.DataSource is IList<EmployeeManagement.Models.Task> tasks && selectedIndex >= 0 && selectedIndex < tasks.Count)
+            {
+                var record = tasks[selectedIndex];
+                if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
+                int id = record.ProjectID;
+                ManageEmployee frm = new ManageEmployee();
+                //frm.frmManageTasks_Load(id);
+                frm.ShowDialog();
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
+            }
+        }
+
+        
     }
 }
    

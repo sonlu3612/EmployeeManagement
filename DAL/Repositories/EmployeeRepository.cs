@@ -44,6 +44,8 @@ namespace EmployeeManagement.DAL.Repositories
             return employees;
         }
 
+        
+
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
         /// </summary>
@@ -419,6 +421,80 @@ namespace EmployeeManagement.DAL.Repositories
                 Console.WriteLine($"[EmployeeRepository.GetForGrid2] Lỗi: {ex.Message}");
             }
             return employees;
+        }
+
+        public List<Employee> GetByTask(int taskId)
+        {
+            List<Employee> list = new List<Employee>();
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+            new SqlParameter("@TaskID", taskId)
+                };
+
+                string sql = @"
+            SELECT
+                e.EmployeeID,
+                e.FullName,
+                e.Position,
+                e.Gender,
+                e.DepartmentID,
+                e.AvatarPath,
+                e.Address,
+                e.HireDate,
+                e.IsActive,
+                u.Email,
+                u.Phone,
+                u.Role
+            FROM Employees e
+            INNER JOIN TaskAssignments ta ON ta.EmployeeID = e.EmployeeID
+            LEFT JOIN Users u ON u.UserID = e.EmployeeID
+            WHERE ta.TaskID = @TaskID AND e.IsActive = 1
+            ORDER BY e.FullName";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+                foreach (DataRow row in dt.Rows)
+                {
+                    Employee emp = new Employee
+                    {
+                        EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
+                        FullName = row["FullName"]?.ToString(),
+                        Position = row["Position"]?.ToString(),
+                        Gender = row["Gender"]?.ToString(),
+                        DepartmentID = row["DepartmentID"] != DBNull.Value ? (int?)Convert.ToInt32(row["DepartmentID"]) : null,
+                        AvatarPath = row["AvatarPath"]?.ToString(),
+                        Address = row["Address"]?.ToString(),
+                        HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
+                        IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
+                        Email = row["Email"]?.ToString(),
+                        Phone = row["Phone"]?.ToString(),
+                        Role = row["Role"]?.ToString()
+                    };
+
+                    // Đọc ảnh từ đường dẫn (nếu có)
+                    try
+                    {
+                        if (!string.IsNullOrWhiteSpace(emp.AvatarPath) && File.Exists(emp.AvatarPath))
+                            emp.AvatarData = File.ReadAllBytes(emp.AvatarPath);
+                        else
+                            emp.AvatarData = null;
+                    }
+                    catch
+                    {
+                        emp.AvatarData = null;
+                    }
+
+                    list.Add(emp);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[EmployeeRepository.GetByTask] Lỗi: {ex.Message}");
+                throw;
+            }
+
+            return list;
         }
     }
 }

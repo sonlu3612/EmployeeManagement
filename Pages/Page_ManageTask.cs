@@ -5,6 +5,7 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
 using Task = EmployeeManagement.Models.Task;
@@ -16,7 +17,7 @@ namespace EmployeeManagement.Pages
         private TaskRepository _taskRepository = new TaskRepository();
         private int projectId;
         private List<Task> _cachedTasks = new List<Task>();
-
+        //private User _user = 
         public Page_ManageTask()
         {
             InitializeComponent();
@@ -40,6 +41,7 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("UpdateDate", "Update Date"));
 
             LoadData();
+            loadEmployeesName();
         }
 
         private void LoadData()
@@ -80,8 +82,37 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        private EmployeeRepository employeeRepository = new EmployeeRepository();
+        private void loadEmployeesName()
+        {
+            var employees = employeeRepository.GetAll();
+
+            ddownEmployee.Items.Clear();
+            ddownEmployee.Items.Insert(0, "Tất cả");
+
+            foreach (var emp in employees)
+            {
+                string displayText = $"{emp.EmployeeID} - {emp.FullName}";
+                ddownEmployee.Items.Add(displayText);
+            }
+        }
+
+       
+
         #region Add / Edit / Delete / Click
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            frmTask frmTask = new frmTask(projectId);
+            //frmTask.ShowDialog();
+            if (frmTask.ShowDialog() == DialogResult.OK)
+            {
+                LoadData();
+                //frmTask.Close();
+            }
+
+
+        }
         private void btnThem_Click(object sender, EventArgs e)
         {
             //frmTask frm = new frmTask(projectId); // nếu constructor có param projectId
@@ -129,7 +160,7 @@ namespace EmployeeManagement.Pages
 
             if (selectedIndex < 0)
             {
-                Message.warn(this.FindForm(), "Vui lòng chọn task cần xóa!");
+                Message.warn(this.FindForm(), "Vui lòng chọn nhiệm vụ cần xóa!");
                 return;
             }
 
@@ -139,14 +170,14 @@ namespace EmployeeManagement.Pages
 
                 if (record == null)
                 {
-                    Message.error(this.FindForm(), "Không thể lấy dữ liệu task được chọn!");
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
                     return;
                 }
 
                 var modalConfig = Modal.config(
                     this.FindForm(),
                     "Xác nhận xoá",
-                    $"Bạn có chắc muốn xoá task \"{record.TaskName}\" không?",
+                    $"Bạn có chắc muốn xoá nhiệm vụ \"{record.TaskName}\" không?",
                     TType.Warn
                 );
                 modalConfig.OkText = "Xoá";
@@ -159,11 +190,11 @@ namespace EmployeeManagement.Pages
                         _taskRepository.Delete(record.TaskID);
                         LoadData();
 
-                        Message.success(this.FindForm(), "Xóa task thành công!");
+                        Message.success(this.FindForm(), "Xóa nhiệm vụ thành công!");
                     }
                     catch (Exception ex)
                     {
-                        Message.error(this.FindForm(), "Lỗi khi xoá task: " + ex.Message);
+                        Message.error(this.FindForm(), "Lỗi khi xoá nhiệm vụ: " + ex.Message);
                     }
                     return true; // Đóng modal
                 };
@@ -171,7 +202,7 @@ namespace EmployeeManagement.Pages
             }
             else
             {
-                Message.error(this.FindForm(), "Không thể lấy dữ liệu task được chọn!");
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
             }
         }
 
@@ -219,25 +250,147 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        //private void ddownEmployee_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        //{
+        //    ddownStatus.Text = e.Value?.ToString() ?? "";
+        //    var filtered = _cachedTasks.Where(t => (t.AssignedTo ?? 0).ToString().Contains(ddownStatus.Text)).ToList();
+        //    tbTask.DataSource = filtered;
+        //}
+
+        //private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        //{
+        //    ddownStatus.Text = e.Value?.ToString() ?? "";
+        //    var filtered = _cachedTasks.Where(t => t.Status != null && t.Status.Contains(ddownStatus.Text)).ToList();
+        //    tbTask.DataSource = filtered;
+        //}
+
+        private TaskRepository taskRepository = new TaskRepository();
+        private void ddownEmployee_SelectedValueChanged(object sender, EventArgs e)
+        {
+            tbTask.DataSource = null;
+
+            string selected = ddownEmployee.SelectedValue.ToString();
+
+            try
+            {
+
+                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                {
+                    LoadData();
+                }
+                else
+                {
+                    List<Task> tasks = new List<Task>();
+
+
+                    int employeeId = int.Parse(selected.Split('-')[0].Trim());
+                    tasks = taskRepository.GetByEmployee(employeeId);
+                    tbTask.DataSource = tasks.ToList();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
+            }
+        }
+
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
-            ddownStatus.Text = e.Value?.ToString() ?? "";
-            var filtered = _cachedTasks.Where(t => t.Status != null && t.Status.Contains(ddownStatus.Text)).ToList();
-            tbTask.DataSource = filtered;
+            tbTask.DataSource = null;
+            string selected = ddownStatus.SelectedValue.ToString();
+            try
+            {
+                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                {
+                    LoadData();
+                }
+                else if (selected == "Quá hạn")
+                {
+                    List<Task> tasks = new List<Task>();
+                    tasks = taskRepository.GetOverdueTasks();
+                    //foreach(var task in tasks)
+                    //{
+                    //    task.Status = "Quá hạn";
+                    //    taskRepository.Update(task);
+
+                    //}
+                    tbTask.DataSource = tasks.ToList();
+                }
+                else
+                {
+                    List<Task> tasks = new List<Task>();
+                    List<Task> tasksByStatus = new List<Task>();
+                    tasks = taskRepository.GetAll();
+
+                    foreach (var task in tasks)
+                    {
+                        if (task.Status == selected)
+                        {
+                            tasksByStatus.Add(task);
+                        }
+                    }
+                    tbTask.DataSource = tasksByStatus.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
+            }
         }
+
 
         private void btnSync_Click(object sender, EventArgs e)
         {
             LoadData();
-            ddownStatus.Text = "Nhân viên";
+            ddownEmployee.Text = "Nhân viên";
             ddownStatus.Text = "Trạng thái";
             txtTim.Text = "";
         }
 
+
         #endregion
 
-        private void tbTask_CellClick(object sender, TableClickEventArgs e)
+
+        private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+            if (e.ClickedItem.Text == "Thêm nhân viên")
+            {
+                var selectedIndex = tbTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tbTask.DataSource is List<Task> datalist)
+                {
+                    var task = datalist[selectedIndex];
+                    frmAssignEmployee frmAssignEmployee = new frmAssignEmployee(task.TaskID);
+                    frmAssignEmployee.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+            else if (e.ClickedItem.Text == "Cập nhật")
+            {
+                var selectedIndex = tbTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tbTask.DataSource is List<Task> datalist)
+                {
+                    var task = datalist[selectedIndex];
+
+                    frmTask frmTask = new frmTask(task);
+                    frmTask.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+        }
+
+        private void tbTask_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                int sel = tbTask.SelectedIndex;
+                if (sel >= 0)
+                {
+                    menuStrip.Show(Cursor.Position);
+                }
+            }
 
         }
     }
