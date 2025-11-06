@@ -334,6 +334,7 @@ GO
 
 INSERT INTO dbo.Employees (EmployeeID, FullName, Position, DepartmentID, AvatarPath, Address, HireDate)
 VALUES
+(1, N'Vũ Lê', N'Quản trị viên', NULL, NULL, NULL, '2020-03-11'), -- TODO: Fix later
 (2, N'Nguyễn Văn An', N'Lập trình viên', 1, '/Uploads/Avatars/20240101120000_avatar_nva.jpg', N'123 Láng Hạ, Hà Nội', '2020-03-15'),
 (3, N'Trần Thị Bình', N'Trưởng phòng Nhân sự', 2, '/Uploads/Avatars/20240101120100_avatar_ttb.png', N'456 Giải Phóng, Hà Nội', '2019-07-20'),
 (4, N'Lê Minh Cường', N'Trưởng phòng IT', 1, '/Uploads/Avatars/20240101120200_avatar_lmc.jpg', N'789 Trường Chinh, Hà Nội', '2018-11-10'),

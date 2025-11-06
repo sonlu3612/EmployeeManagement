@@ -193,6 +193,7 @@
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
             this.documentsToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.documentsToolStripMenuItem.Text = "Documents";
+            this.documentsToolStripMenuItem.Click += new System.EventHandler(this.documentsToolStripMenuItem_Click);
             // 
             // Page_Project
             // 

@@ -15,6 +15,7 @@ namespace EmployeeManagement.Pages
     public partial class Page_Project : UserControl
     {
         private IRepository<Project> _projectRepository = new ProjectRepository();
+        private ProjectFileRepository _projectFileRepository = new ProjectFileRepository();
 
         public Page_Project()
         {
@@ -38,13 +39,31 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("EndDate", "End Date"));
             tbProject.Columns.Add(new Column("Status", "Status"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
+            tbProject.Columns.Add(new Column("Document", "Document"));
+            tbProject.Columns.Add(new Column("FileCount", "Files"));
 
             LoadData();
         }
 
         private void LoadData()
         {
-            tbProject.DataSource = _projectRepository.GetAll().ToList();
+            var projects = _projectRepository.GetAll().ToList();
+
+            var projectsWithFileCount = projects.Select(p => new
+            {
+                p.ProjectID,
+                p.ProjectName,
+                p.Description,
+                p.StartDate,
+                p.EndDate,
+                p.Status,
+                p.CreatedBy,
+                Document = "Open File",
+                FileCount = GetProjectFileCount(p.ProjectID)
+            }).ToList();
+
+            tbProject.DataSource = projectsWithFileCount;
+
             if (cbNhanVien.Items.Count == 0)
             {
                 cbNhanVien.Items.AddRange(_projectRepository.GetAll().Select(p => p.CreatedBy.ToString()).Distinct().ToArray());
@@ -52,6 +71,18 @@ namespace EmployeeManagement.Pages
             if (cbTrangThai.Items.Count == 0)
             {
                 cbTrangThai.Items.AddRange(_projectRepository.GetAll().Select(p => p.Status).Distinct().ToArray());
+            }
+        }
+
+        private int GetProjectFileCount(int projectId)
+        {
+            try
+            {
+                return _projectFileRepository.GetByProject(projectId).Count;
+            }
+            catch
+            {
+                return 0;
             }
         }
 
@@ -109,7 +140,7 @@ namespace EmployeeManagement.Pages
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            frmProject frm = new frmProject(); 
+            frmProject frm = new frmProject();
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 var newProject = frm.Tag as Project;
@@ -124,7 +155,14 @@ namespace EmployeeManagement.Pages
 
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
-
+            if (e.Column.Key == "Document")
+            {
+                if (e.Record != null)
+                {
+                    dynamic record = e.Record;
+                    OpenProjectFileDialog(record.ProjectID, record.ProjectName);
+                }
+            }
         }
 
         private void tbProject_MouseDown(object sender, MouseEventArgs e)
@@ -204,7 +242,6 @@ namespace EmployeeManagement.Pages
             }
         }
 
-
         private void cbNhanVien_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             cbNhanVien.Text = e.Value?.ToString() ?? "";
@@ -230,6 +267,36 @@ namespace EmployeeManagement.Pages
             tbProject.DataSource = filteredProjects;
         }
 
+        private void documentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbProject.SelectedIndex - 1;
+            if (selectedIndex >= 0)
+            {
+                var dataSource = tbProject.DataSource as IList<dynamic>;
+                if (dataSource != null && selectedIndex < dataSource.Count)
+                {
+                    var record = dataSource[selectedIndex];
+                    OpenProjectFileDialog(record.ProjectID, record.ProjectName);
+                }
+                else
+                {
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
+                }
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Vui lòng chọn dự án!");
+            }
+        }
+
+        private void OpenProjectFileDialog(int projectId, string projectName)
+        {
+            frmProjectFile frm = new frmProjectFile();
+            frm.LoadProjectFiles(projectId, projectName);
+            frm.ShowDialog();
+            LoadData();
+        }
+
         private void Page_Project_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -240,6 +307,8 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("EndDate", "End Date"));
             tbProject.Columns.Add(new Column("Status", "Status"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
+            tbProject.Columns.Add(new Column("Document", "Document"));
+            tbProject.Columns.Add(new Column("FileCount", "Files"));
 
             LoadData();
         }
