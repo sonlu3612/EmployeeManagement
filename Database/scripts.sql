@@ -443,6 +443,111 @@ GO
 
 PRINT '==> Database schema updated successfully for multiple roles and project manager!';
 GO
+
+-- Bước 1: Thêm trường CompletionStatus vào TaskAssignments (nếu chưa có)
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'CompletionStatus' AND Object_ID = Object_ID(N'dbo.TaskAssignments'))
+BEGIN
+    ALTER TABLE dbo.TaskAssignments
+        ADD CompletionStatus NVARCHAR(20) NOT NULL DEFAULT (N'Pending')
+        CHECK (CompletionStatus IN (N'Pending', N'In Progress', N'Completed'));
+    PRINT 'Column [CompletionStatus] added to [TaskAssignments].';
+END
+GO
+
+-- Bước 2: Thêm trường CompletedDate (optional, để theo dõi thời gian hoàn thành)
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'CompletedDate' AND Object_ID = Object_ID(N'dbo.TaskAssignments'))
+BEGIN
+    ALTER TABLE dbo.TaskAssignments
+        ADD CompletedDate DATETIME NULL;
+    PRINT 'Column [CompletedDate] added to [TaskAssignments].';
+END
+GO
+
+-- Bước 3: Tạo trigger để update Tasks.Status khi tất cả assignments completed
+IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_TaskAssignments_UpdateStatus')
+BEGIN
+    CREATE OR ALTER TRIGGER TR_TaskAssignments_UpdateStatus
+ON dbo.TaskAssignments
+AFTER UPDATE, INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Update CompletedDate for newly completed assignments
+    UPDATE ta
+    SET CompletedDate = GETDATE()
+    FROM dbo.TaskAssignments ta
+    INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID
+    WHERE i.CompletionStatus = N'Completed' AND ta.CompletedDate IS NULL;
+
+    -- Process each distinct TaskID
+    DECLARE @TaskID INT;
+
+    DECLARE task_cursor CURSOR LOCAL FAST_FORWARD FOR
+    SELECT DISTINCT TaskID FROM inserted;
+
+    OPEN task_cursor;
+    FETCH NEXT FROM task_cursor INTO @TaskID;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Check if all assignments are completed
+        DECLARE @AllCompleted BIT = 1;
+
+        IF EXISTS (
+            SELECT 1 
+            FROM TaskAssignments
+            WHERE TaskID = @TaskID AND CompletionStatus != N'Completed'
+        )
+            SET @AllCompleted = 0;
+
+        -- Update task status
+        UPDATE dbo.Tasks
+        SET Status = CASE 
+            WHEN @AllCompleted = 1 THEN N'Hoàn thành'
+            ELSE N'Đang thực hiện'
+        END
+        WHERE TaskID = @TaskID;
+
+        FETCH NEXT FROM task_cursor INTO @TaskID;
+    END
+
+    CLOSE task_cursor;
+    DEALLOCATE task_cursor;
+END;
+        WHERE i.CompletionStatus = N'Completed' AND ta.CompletedDate IS NULL;
+    END;
+    PRINT 'Trigger [TR_TaskAssignments_UpdateStatus] created.';
+END
+GO
+
+-- Bước 4: (Optional) Trigger để prevent update nếu task đã hoàn thành
+IF NOT EXISTS (SELECT * FROM sys.triggers WHERE name = 'TR_TaskAssignments_PreventUpdateIfCompleted')
+BEGIN
+    CREATE TRIGGER TR_TaskAssignments_PreventUpdateIfCompleted
+    ON dbo.TaskAssignments
+    INSTEAD OF UPDATE
+    AS
+    BEGIN
+        IF EXISTS (SELECT 1 FROM deleted WHERE CompletionStatus = N'Completed')
+        BEGIN
+            RAISERROR ('Cannot update completed assignment.', 16, 1);
+            ROLLBACK TRANSACTION;
+        END
+        ELSE
+        BEGIN
+            -- Proceed with update
+            UPDATE ta
+            SET CompletionStatus = i.CompletionStatus,
+                -- Cập nhật các trường khác nếu cần
+                AssignedDate = i.AssignedDate
+            FROM dbo.TaskAssignments ta
+            INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID;
+        END
+    END;
+    PRINT 'Trigger [TR_TaskAssignments_PreventUpdateIfCompleted] created.';
+END
+GO
 -- =============================================
 -- INDEXES CREATION
 -- =============================================
@@ -608,3 +713,24 @@ PRINT 'Login: 0900000001 / Admin@123!';
 PRINT '========================================';
 GO
 
+-- Thêm trường ManagerBy vào Projects (nếu chưa có)
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE name = 'ManagerBy' AND object_id = OBJECT_ID('dbo.Projects'))
+BEGIN
+    ALTER TABLE dbo.Projects
+        ADD ManagerBy INT NULL;
+    PRINT 'Column [ManagerBy] added to [Projects].';
+END
+GO
+
+-- Thêm constraint FK (nếu chưa có), sử dụng ON DELETE NO ACTION
+IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Projects_ManagerBy' AND parent_object_id = OBJECT_ID('dbo.Projects'))
+BEGIN
+    ALTER TABLE dbo.Projects
+        ADD CONSTRAINT FK_Projects_ManagerBy FOREIGN KEY (ManagerBy)
+            REFERENCES dbo.Employees(EmployeeID) ON DELETE NO ACTION ON UPDATE NO ACTION;
+    PRINT 'Constraint [FK_Projects_ManagerBy] added with ON DELETE NO ACTION.';
+END
+GO
+
+PRINT '==> Bảng Projects đã được cập nhật thành công!';
+GO

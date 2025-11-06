@@ -33,7 +33,7 @@
             this.panel1 = new AntdUI.Panel();
             this.btnXoa = new AntdUI.Button();
             this.btnThem = new AntdUI.Button();
-            this.cbNhanVien = new AntdUI.Dropdown();
+            this.cbQuanLy = new AntdUI.Dropdown();
             this.cbTrangThai = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
@@ -62,7 +62,7 @@
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.Controls.Add(this.btnXoa);
             this.panel1.Controls.Add(this.btnThem);
-            this.panel1.Controls.Add(this.cbNhanVien);
+            this.panel1.Controls.Add(this.cbQuanLy);
             this.panel1.Controls.Add(this.cbTrangThai);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
@@ -108,18 +108,18 @@
             this.btnThem.Text = "Thêm";
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
             // 
-            // cbNhanVien
+            // cbQuanLy
             // 
-            this.cbNhanVien.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.cbNhanVien.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbNhanVien.ForeColor = System.Drawing.Color.White;
-            this.cbNhanVien.Location = new System.Drawing.Point(471, 3);
-            this.cbNhanVien.Name = "cbNhanVien";
-            this.cbNhanVien.ShowArrow = true;
-            this.cbNhanVien.Size = new System.Drawing.Size(135, 35);
-            this.cbNhanVien.TabIndex = 4;
-            this.cbNhanVien.Text = "Nhân viên";
-            this.cbNhanVien.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
+            this.cbQuanLy.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.cbQuanLy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbQuanLy.ForeColor = System.Drawing.Color.White;
+            this.cbQuanLy.Location = new System.Drawing.Point(471, 3);
+            this.cbQuanLy.Name = "cbQuanLy";
+            this.cbQuanLy.ShowArrow = true;
+            this.cbQuanLy.Size = new System.Drawing.Size(135, 35);
+            this.cbQuanLy.TabIndex = 4;
+            this.cbQuanLy.Text = "Quản lý";
+            this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
             // 
             // cbTrangThai
             // 
@@ -215,7 +215,7 @@
         private AntdUI.Panel panel1;
         private AntdUI.Button btnXoa;
         private AntdUI.Button btnThem;
-        private AntdUI.Dropdown cbNhanVien;
+        private AntdUI.Dropdown cbQuanLy;
         private AntdUI.Dropdown cbTrangThai;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;

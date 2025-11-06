@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance1 = new AntdUI.HyperlinkLabel.LinkAppearance();
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance2 = new AntdUI.HyperlinkLabel.LinkAppearance();
+            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance3 = new AntdUI.HyperlinkLabel.LinkAppearance();
+            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance4 = new AntdUI.HyperlinkLabel.LinkAppearance();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dtEndDate = new AntdUI.DatePicker();
             this.label7 = new AntdUI.Label();
@@ -42,7 +42,7 @@
             this.btnHuy = new AntdUI.Button();
             this.button1 = new AntdUI.Button();
             this.dtStartDate = new AntdUI.DatePicker();
-            this.cbCreate = new AntdUI.Dropdown();
+            this.cbManager = new AntdUI.Dropdown();
             this.txtProjectName = new AntdUI.Input();
             this.label6 = new AntdUI.Label();
             this.label3 = new AntdUI.Label();
@@ -65,7 +65,7 @@
             this.panel1.Controls.Add(this.btnHuy);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.dtStartDate);
-            this.panel1.Controls.Add(this.cbCreate);
+            this.panel1.Controls.Add(this.cbManager);
             this.panel1.Controls.Add(this.txtProjectName);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label3);
@@ -96,10 +96,10 @@
             // 
             // hyperlinkLabel1
             // 
-            this.hyperlinkLabel1.HoverStyle = linkAppearance1;
+            this.hyperlinkLabel1.HoverStyle = linkAppearance3;
             this.hyperlinkLabel1.Location = new System.Drawing.Point(188, 321);
             this.hyperlinkLabel1.Name = "hyperlinkLabel1";
-            this.hyperlinkLabel1.NormalStyle = linkAppearance2;
+            this.hyperlinkLabel1.NormalStyle = linkAppearance4;
             this.hyperlinkLabel1.Size = new System.Drawing.Size(75, 23);
             this.hyperlinkLabel1.TabIndex = 73;
             this.hyperlinkLabel1.Text = "Đính kèm";
@@ -197,15 +197,16 @@
             this.dtStartDate.Size = new System.Drawing.Size(321, 33);
             this.dtStartDate.TabIndex = 65;
             // 
-            // cbCreate
+            // cbManager
             // 
-            this.cbCreate.BorderWidth = 2F;
-            this.cbCreate.Location = new System.Drawing.Point(160, 245);
-            this.cbCreate.Name = "cbCreate";
-            this.cbCreate.ShowArrow = true;
-            this.cbCreate.Size = new System.Drawing.Size(321, 32);
-            this.cbCreate.TabIndex = 64;
-            this.cbCreate.Text = "                                    ";
+            this.cbManager.BorderWidth = 2F;
+            this.cbManager.Location = new System.Drawing.Point(160, 245);
+            this.cbManager.Name = "cbManager";
+            this.cbManager.ShowArrow = true;
+            this.cbManager.Size = new System.Drawing.Size(321, 32);
+            this.cbManager.TabIndex = 64;
+            this.cbManager.Text = "                                    ";
+            this.cbManager.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbManager_SelectedValueChanged);
             // 
             // txtProjectName
             // 
@@ -224,7 +225,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(149, 27);
             this.label6.TabIndex = 62;
-            this.label6.Text = "Người tạo:";
+            this.label6.Text = "Người quản lý:";
             // 
             // label3
             // 
@@ -292,7 +293,7 @@
         private AntdUI.Button btnHuy;
         private AntdUI.Button button1;
         private AntdUI.DatePicker dtStartDate;
-        private AntdUI.Dropdown cbCreate;
+        private AntdUI.Dropdown cbManager;
         private AntdUI.Input txtProjectName;
         private AntdUI.Label label6;
         private AntdUI.Label label3;

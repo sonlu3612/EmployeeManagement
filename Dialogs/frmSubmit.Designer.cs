@@ -97,6 +97,7 @@
             this.btnHuy.Size = new System.Drawing.Size(85, 41);
             this.btnHuy.TabIndex = 38;
             this.btnHuy.Text = "Hủy";
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
             // 
             // btnLuu
             // 
@@ -111,6 +112,7 @@
             this.btnLuu.TabIndex = 37;
             this.btnLuu.Text = "Lưu";
             this.btnLuu.Type = AntdUI.TTypeMini.Primary;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // ddownStatus
             // 
@@ -125,6 +127,7 @@
             this.ddownStatus.Size = new System.Drawing.Size(217, 32);
             this.ddownStatus.TabIndex = 35;
             this.ddownStatus.Text = "                                    ";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // txtDescription
             // 
@@ -253,6 +256,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmSubmit";
             this.Text = "frmSubmit";
+            this.Load += new System.EventHandler(this.frmSubmit_Load);
             this.ResumeLayout(false);
 
         }

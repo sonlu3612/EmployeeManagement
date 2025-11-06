@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -32,9 +33,12 @@ namespace EmployeeManagement.DAL.Repositories
                 p.Status,
                 p.CreatedBy,
                 e.FullName AS CreatedByName,
+                p.ManagerBy,
+                m.FullName AS ManagerName,
                 p.CreatedDate
             FROM Projects p
             LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
+            LEFT JOIN Employees m ON p.ManagerBy = m.EmployeeID
             ORDER BY p.ProjectID DESC";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
@@ -63,7 +67,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@ProjectID", id)
                 };
                 string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy, CreatedDate
                     FROM Projects
                     WHERE ProjectID = @ProjectID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
@@ -99,9 +103,12 @@ namespace EmployeeManagement.DAL.Repositories
                     @"SELECT p.ProjectID,p.ProjectName,p.Description,p.StartDate,p.EndDate, p.Status,
                     p.CreatedBy,
                     e.FullName AS CreatedByName,
+                    p.ManagerBy,
+                    m.FullName AS ManagerName,
                     p.CreatedDate
                     FROM Projects p
                     LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
+                    LEFT JOIN Employees m ON p.ManagerBy = m.EmployeeID
                     WHERE p.CreatedBy = @EmployeeID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in dt.Rows)
@@ -139,11 +146,12 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
                     new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@CreatedBy", entity.CreatedBy)
+                    new SqlParameter("@CreatedBy", entity.CreatedBy),
+                    new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
                  };
                 string sql =
-                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy)
-                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy)";
+                    @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy)
+                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy, @ManagerBy)";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -176,7 +184,8 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
                     new SqlParameter("@StartDate", entity.StartDate),
                     new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
-                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value)
+                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
+                    new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
                  };
                 string sql =
                     @"UPDATE Projects
@@ -184,7 +193,8 @@ namespace EmployeeManagement.DAL.Repositories
                     Description = @Description,
                     StartDate = @StartDate,
                     EndDate = @EndDate,
-                    Status = @Status
+                    Status = @Status,
+                    ManagerBy = @ManagerBy
                     WHERE ProjectID = @ProjectID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
@@ -228,7 +238,7 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Status", status ?? (object)DBNull.Value)
                 };
                 string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, CreatedDate
+                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy, CreatedDate
                     FROM Projects
                     WHERE Status = @Status";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
@@ -315,7 +325,9 @@ namespace EmployeeManagement.DAL.Repositories
                 EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
                 Status = row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
                 CreatedBy = row["CreatedBy"] != DBNull.Value ? Convert.ToInt32(row["CreatedBy"]) : 0,
-                CreatedByName = row.Table.Columns.Contains("CreatedByName") && row["CreatedByName"] != DBNull.Value ? row["CreatedByName"].ToString() : null
+                CreatedByName = row.Table.Columns.Contains("CreatedByName") && row["CreatedByName"] != DBNull.Value ? row["CreatedByName"].ToString() : null,
+                ManagerBy = row.Table.Columns.Contains("ManagerBy") && row["ManagerBy"] != DBNull.Value ? (int?)Convert.ToInt32(row["ManagerBy"]) : null,
+                ManagerName = row.Table.Columns.Contains("ManagerName") && row["ManagerName"] != DBNull.Value ? row["ManagerName"].ToString() : null
             };
         }
     }

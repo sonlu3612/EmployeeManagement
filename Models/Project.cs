@@ -12,5 +12,7 @@ namespace EmployeeManagement.Models
         public string Status { get; set; }
         public int CreatedBy { get; set; }
         public string CreatedByName { get; internal set; }
+        public int? ManagerBy { get; set; }
+        public string ManagerName { get; internal set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AntdUI;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
@@ -24,6 +25,7 @@ namespace EmployeeManagement.Pages
             InitializeComponent();
         }
         private TaskRepository taskRepository = new TaskRepository();
+        
         private void Page_Task_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -167,6 +169,16 @@ namespace EmployeeManagement.Pages
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
             }
+            else if (e.ClickedItem.Text == "Cập nhật tiến độ")
+            {
+                var selectedIndex = tableTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+                {
+                    var task = datalist[selectedIndex];
+                    frmSubmit frm = new frmSubmit(task, SessionManager.CurrentUser.UserID);
+                    frm.ShowDialog();
+                }
+            }
         }
         private void btnDelete_Click(object sender, EventArgs e)
         {
@@ -250,6 +262,11 @@ namespace EmployeeManagement.Pages
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
+        }
+
+        private void cậpNhậtTiếnĐộToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

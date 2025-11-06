@@ -339,54 +339,40 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 // Mapping TaskID (trường bắt buộc)
                 TaskID = row.Table.Columns.Contains("TaskID") && row["TaskID"] != DBNull.Value ? Convert.ToInt32(row["TaskID"]) : 0,
-
                 // Mapping ProjectID (trường bắt buộc)
                 ProjectID = row.Table.Columns.Contains("ProjectID") && row["ProjectID"] != DBNull.Value ? Convert.ToInt32(row["ProjectID"]) : 0,
-
                 // Mapping ProjectName (cho hiển thị)
                 ProjectName = row.Table.Columns.Contains("ProjectName") && row["ProjectName"] != DBNull.Value
                     ? row["ProjectName"].ToString()
                     : null,
-
                 // Mapping TaskName (nullable string)
                 TaskName = row.Table.Columns.Contains("TaskName") && row["TaskName"] != DBNull.Value ? row["TaskName"].ToString() : null,
-
                 // Mapping Description (nullable string)
                 Description = row.Table.Columns.Contains("Description") && row["Description"] != DBNull.Value ? row["Description"].ToString() : null,
-
                 // **Mapping CreatedBy (ID người tạo)**
                 CreatedBy = row.Table.Columns.Contains("CreatedBy") && row["CreatedBy"] != DBNull.Value ? Convert.ToInt32(row["CreatedBy"]) : 0,
-
                 // Mapping tên người tạo (nếu SELECT ec.FullName AS CreatedByName)
                 // UI của bạn dùng "EmployeeName" column, nên map vào property EmployeeName để bind trực tiếp
                 EmployeeName = row.Table.Columns.Contains("CreatedByName") && row["CreatedByName"] != DBNull.Value
                     ? row["CreatedByName"].ToString()
                     : null,
-
                 // Mapping AssignedEmployeeNames (aggregate string -> list)
                 AssignedEmployeeNames = row.Table.Columns.Contains("AssignedEmployeeNames") && row["AssignedEmployeeNames"] != DBNull.Value
                     ? row["AssignedEmployeeNames"].ToString().Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList()
                     : new List<string>(),
-
                 // Mapping Status (nullable string)
                 Status = row.Table.Columns.Contains("Status") && row["Status"] != DBNull.Value ? row["Status"].ToString() : null,
-
                 // Mapping Priority (nullable string)
                 Priority = row.Table.Columns.Contains("Priority") && row["Priority"] != DBNull.Value ? row["Priority"].ToString() : null,
-
                 // Mapping Deadline (nullable DateTime)
                 Deadline = row.Table.Columns.Contains("Deadline") && row["Deadline"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["Deadline"]) : null,
-
                 // Mapping CreatedDate (DateTime bắt buộc)
                 CreatedDate = row.Table.Columns.Contains("CreatedDate") && row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue,
-
                 // Mapping LastUpdatedDate
                 LastUpdatedDate = row.Table.Columns.Contains("UpdatedDate") && row["UpdatedDate"] != DBNull.Value ? Convert.ToDateTime(row["UpdatedDate"]) : DateTime.MinValue
             };
-
             return task;
         }
-
         // Method mới: Assign employees to task (gọi sau Insert/Update)
         public bool AssignEmployees(int taskId, List<int> employeeIds, int assignedBy)
         {
@@ -415,6 +401,51 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 Console.WriteLine($"[TaskRepository.AssignEmployees] Lỗi: {ex.Message}");
                 return false;
+            }
+        }
+        public bool UpdateAssignmentStatus(int taskId, int employeeId, string newStatus)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@TaskID", taskId),
+                    new SqlParameter("@EmployeeID", employeeId),
+                    new SqlParameter("@CompletionStatus", newStatus)
+                };
+                string sql =
+                    @"UPDATE TaskAssignments
+                      SET CompletionStatus = @CompletionStatus
+                      WHERE TaskID = @TaskID AND EmployeeID = @EmployeeID";
+                int rowsAffected = DatabaseHelper.ExecuteNonQuery(sql, parameters);
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TaskRepository.UpdateAssignmentStatus] Lỗi: {ex.Message}");
+                return false;
+            }
+        }
+        public string GetAssignmentStatus(int taskId, int employeeId)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@TaskID", taskId),
+                    new SqlParameter("@EmployeeID", employeeId)
+                };
+                string sql =
+                    @"SELECT CompletionStatus
+                      FROM TaskAssignments
+                      WHERE TaskID = @TaskID AND EmployeeID = @EmployeeID";
+                object result = DatabaseHelper.ExecuteScalar(sql, parameters);
+                return result != null && result != DBNull.Value ? result.ToString() : "Pending";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TaskRepository.GetAssignmentStatus] Lỗi: {ex.Message}");
+                return "Pending";
             }
         }
     }

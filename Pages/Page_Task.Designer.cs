@@ -33,14 +33,14 @@
             this.btnDelete = new AntdUI.Button();
             this.ddownEmployee = new AntdUI.Dropdown();
             this.ddownStatus = new AntdUI.Dropdown();
-            this.btnSync = new AntdUI.Button();
-            this.btnSearch = new AntdUI.Button();
             this.input1 = new AntdUI.Input();
             this.tableTask = new AntdUI.Table();
             this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cậpNhậtTiếnĐộToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnSync = new AntdUI.Button();
+            this.btnSearch = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -111,35 +111,6 @@
             this.ddownStatus.Text = "Trạng thái";
             this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
-            // btnSync
-            // 
-            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.BackHover = System.Drawing.Color.White;
-            this.btnSync.BorderWidth = 2F;
-            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
-            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(273, 4);
-            this.btnSync.Name = "btnSync";
-            this.btnSync.Size = new System.Drawing.Size(51, 35);
-            this.btnSync.TabIndex = 2;
-            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.BackHover = System.Drawing.Color.White;
-            this.btnSearch.BorderWidth = 2F;
-            this.btnSearch.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.Icon = global::EmployeeManagement.Properties.Resources.search_white;
-            this.btnSearch.IconHover = global::EmployeeManagement.Properties.Resources.search_blue;
-            this.btnSearch.Location = new System.Drawing.Point(225, 3);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(51, 35);
-            this.btnSearch.TabIndex = 1;
-            // 
             // input1
             // 
             this.input1.Location = new System.Drawing.Point(3, 3);
@@ -190,6 +161,36 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
             this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
+            this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.BackHover = System.Drawing.Color.White;
+            this.btnSync.BorderWidth = 2F;
+            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
+            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
+            this.btnSync.Location = new System.Drawing.Point(273, 4);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(51, 35);
+            this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.BackHover = System.Drawing.Color.White;
+            this.btnSearch.BorderWidth = 2F;
+            this.btnSearch.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.Icon = global::EmployeeManagement.Properties.Resources.search_white;
+            this.btnSearch.IconHover = global::EmployeeManagement.Properties.Resources.search_blue;
+            this.btnSearch.Location = new System.Drawing.Point(225, 3);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(51, 35);
+            this.btnSearch.TabIndex = 1;
             // 
             // Page_Task
             // 
