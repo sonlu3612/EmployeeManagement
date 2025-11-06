@@ -94,6 +94,7 @@
             this.btnAdd.Size = new System.Drawing.Size(74, 41);
             this.btnAdd.TabIndex = 6;
             this.btnAdd.Text = "Thêm";
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnSync
             // 

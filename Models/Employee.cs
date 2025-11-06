@@ -21,5 +21,7 @@ namespace EmployeeManagement.Models
         public string ProjectSummary { get; set; } // dạng "2/5"
         public string TaskSummary { get; set; }    // dạng "4/10"
         public byte[] AvatarData { get; set; }     // dữ liệu ảnh thực tế
+
+        public bool IsSelected { get; set; }
     }
 }

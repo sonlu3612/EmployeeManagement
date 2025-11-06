@@ -32,7 +32,6 @@ namespace EmployeeManagement.Pages
             tbTask.Columns.Add(new Column("ProjectName", "Project Name"));
             tbTask.Columns.Add(new Column("TaskName", "Task Name"));
             tbTask.Columns.Add(new Column("Description", "Description"));
-            tbTask.Columns.Add(new Column("AssignedTo", "Assigned To"));
             tbTask.Columns.Add(new Column("CreateBy", "Owner"));
             tbTask.Columns.Add(new Column("Deadline", "Deadline"));
             tbTask.Columns.Add(new Column("Status", "Status"));
@@ -352,8 +351,46 @@ namespace EmployeeManagement.Pages
 
         #endregion
 
-        private void tbTask_CellClick(object sender, TableClickEventArgs e)
+
+        private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
+            if (e.ClickedItem.Text == "Thêm nhân viên")
+            {
+                var selectedIndex = tbTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tbTask.DataSource is List<Task> datalist)
+                {
+                    var task = datalist[selectedIndex];
+                    frmAssignEmployee frmAssignEmployee = new frmAssignEmployee(task.TaskID);
+                    frmAssignEmployee.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+            else if (e.ClickedItem.Text == "Cập nhật")
+            {
+                var selectedIndex = tbTask.SelectedIndex - 1;
+                if (selectedIndex >= 0 && tbTask.DataSource is List<Task> datalist)
+                {
+                    var task = datalist[selectedIndex];
+
+                    frmTask frmTask = new frmTask(task);
+                    frmTask.ShowDialog();
+
+                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                }
+            }
+        }
+
+        private void tbTask_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                int sel = tbTask.SelectedIndex;
+                if (sel >= 0)
+                {
+                    menuStrip.Show(Cursor.Position);
+                }
+            }
 
         }
     }

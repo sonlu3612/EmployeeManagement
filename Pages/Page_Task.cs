@@ -283,6 +283,8 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
+
+        
     }
 }
    

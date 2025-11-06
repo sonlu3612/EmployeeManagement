@@ -20,7 +20,7 @@ namespace EmployeeManagement.Dialogs
     public partial class frmTask : Form
     {
         private MyTask _task;
-        private int _projectID;
+        private int? _projectID;
 
         public frmTask(int projectId)
         {
@@ -36,34 +36,44 @@ namespace EmployeeManagement.Dialogs
 
         private void frmTask_Load(object sender, EventArgs e)
         {
-            if (_task == null && _projectID == null)
-            {
+            if (_task == null && !_projectID.HasValue)
+            {   
                 _task = new MyTask();
                 ddownProjectID.Enabled = true;
+                ddownStatus.Text = "Cần làm";
+                dateStart.Text = DateTime.Now.ToString("yyyy-MM-dd");
             }
-            else if(_projectID != null)
+            else if(_projectID.HasValue)
             {
                 _task = new MyTask();
-                _task.ProjectID = _projectID;
+                _task.ProjectID = _projectID.Value;
                 ddownProjectID.Text = _projectID.ToString();
                 ddownProjectID.Enabled = false;
+                ddownStatus.Text = "Cần làm";
+                dateStart.Text = DateTime.Now.ToString("yyyy-MM-dd");
             }
             else if( _task != null)
             {
-                txtTaskName.Text = _task.TaskName;
+                txtMaNguoiTao.Enabled = false;
+                dateStart.Text = _task.CreatedDate.ToString("yyyy-MM-dd");
+                dateStart.Enabled = false;
                 ddownProjectID.Text = _task.ProjectID.ToString();
+               
+
+                txtTaskName.Text = _task.TaskName;
+                //ddownProjectID.SelectedValue = _task.ProjectID.ToString();
                 txtDescription.Text = _task.Description;
-                ddownOwnerID.Text = _task.CreatedBy.ToString();
+                txtMaNguoiTao.Text = _task.CreatedBy.ToString();
                 ddownStatus.Text = _task.Status;
                 dateStart.Text = _task.CreatedDate.ToString();
                 ddownPriority.Text = _task.Priority;
-                dateEnd.Text = _task.Deadline.ToString();
+                dateEnd.Text = _task.Deadline?.ToString("yyyy-MM-dd") ?? "Chưa có";
                 ddownProjectID.Enabled = false;
 
             }
 
             loadProjectsID();
-            loadEmployeesID();
+            //loadEmployeesID();
 
         }
 
@@ -79,15 +89,15 @@ namespace EmployeeManagement.Dialogs
         }
 
         private EmployeeRepository employeeRepository = new EmployeeRepository();
-        private void loadEmployeesID()
-        {
-            var IDs = employeeRepository.GetAll();
-            ddownOwnerID.Items.Clear();
-            foreach (var id in IDs)
-            {
-                ddownOwnerID.Items.Add(id.EmployeeID+"-"+id.FullName);
-            }
-        }
+        //private void loadEmployeesID()
+        //{
+        //    var IDs = employeeRepository.GetAll();
+        //    ddownOwnerID.Items.Clear();
+        //    foreach (var id in IDs)
+        //    {
+        //        ddownOwnerID.Items.Add(id.EmployeeID+"-"+id.FullName);
+        //    }
+        //}
 
         private TaskRepository taskRepository = new TaskRepository();
         private void loadPriority()
@@ -113,6 +123,7 @@ namespace EmployeeManagement.Dialogs
             modalConfig.OkType = TTypeMini.Primary;
             modalConfig.OnOk = (cfg) =>
             {
+                
                 return true;
             };
             AntdUI.Modal.open(modalConfig);
@@ -125,41 +136,37 @@ namespace EmployeeManagement.Dialogs
                 if(_task.TaskID == 0)
                 {
                     var insertTask = new MyTask();
-                    ddownStatus.Text = "Cần làm";
-                    dateStart.Text = DateTime.Now.ToString("yyyy-MM-dd");
-                    if(_projectID == null)
+                    
+                    if(!_projectID.HasValue)
                     {
-                        int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
-
-
                         insertTask = new MyTask
                         {
                             TaskID = _task.TaskID,
                             TaskName = txtTaskName.Text,
                             ProjectID = Convert.ToInt32(ddownProjectID.SelectedValue.ToString()),
                             Description = txtDescription.Text,
-                            CreatedBy = employeeID,
+                            CreatedBy = int.Parse(txtMaNguoiTao.Text),
                             Status = ddownStatus.Text,
                             CreatedDate = DateTime.Now,
                             Priority = ddownPriority.Text,
+                            Deadline = dateEnd.Value
                           
                         };
 
                     }
                     else
                     {
-                        int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
-
                         insertTask = new MyTask
                         {
                             TaskID = _task.TaskID,
                             TaskName = txtTaskName.Text,
-                            ProjectID = _projectID,
+                            ProjectID = _projectID.Value,
                             Description = txtDescription.Text,
-                            CreatedBy = employeeID,
-                            Status = "Cần làm",
+                            CreatedBy = int.Parse(txtMaNguoiTao.Text),
+                            Status = ddownStatus.Text,
                             CreatedDate = DateTime.Now,
                             Priority = ddownPriority.Text,
+                            Deadline = dateEnd.Value
                             
                         };
 
@@ -181,15 +188,15 @@ namespace EmployeeManagement.Dialogs
                 }
                 else 
                 {
-                    int employeeID = int.Parse(ddownOwnerID.Text.Split('-')[0].Trim());
-
+                    
+                   
                     var updateTask = new MyTask
                     {
                         TaskID = _task.TaskID,
                         TaskName = txtTaskName.Text,
                         ProjectID = Convert.ToInt32(ddownProjectID.Text),
                         Description = txtDescription.Text,
-                        CreatedBy = employeeID,
+                        CreatedBy = int.Parse(txtMaNguoiTao.Text),
                         Status = ddownStatus.Text,
                         //CreatedDate = DateTime.Now
                         CreatedDate = _task.CreatedDate,
@@ -213,11 +220,6 @@ namespace EmployeeManagement.Dialogs
         private void ddownProjectID_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             ddownProjectID.Text = ddownProjectID.SelectedValue.ToString();
-        }
-
-        private void ddownOwnerID_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
-        {
-            ddownOwnerID.Text = ddownOwnerID.SelectedValue.ToString();
         }
 
         private void ddownStatus_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
