@@ -114,6 +114,12 @@
     <Compile Include="Dialogs\frmInforHuy.Designer.cs">
       <DependentUpon>frmInforHuy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Managers\frmManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Managers\frmManager.Designer.cs">
+      <DependentUpon>frmManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Department.cs" />
     <Compile Include="Dialogs\frmInfor.cs">
       <SubType>Form</SubType>
@@ -163,12 +169,6 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Managers\frmManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Managers\frmManager.Designer.cs">
-      <DependentUpon>frmManager.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeFile.cs" />
     <Compile Include="Models\Project.cs" />
@@ -177,6 +177,12 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskFile.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Pages\Page_Account.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_Account.Designer.cs">
+      <DependentUpon>Page_Account.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_AssignEmployee.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -285,6 +291,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Managers\frmManager.resx">
       <DependentUpon>frmManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_Account.resx">
+      <DependentUpon>Page_Account.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_AssignEmployee.resx">
       <DependentUpon>Page_AssignEmployee.cs</DependentUpon>

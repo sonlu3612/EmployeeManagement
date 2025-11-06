@@ -12,7 +12,7 @@ namespace EmployeeManagement.Models
         public string DepartmentName { get; set; } // For display
         public string AvatarPath { get; set; }
         public string Address { get; set; }
-        public DateTime HireDate { get; set; }
+        public DateTime? HireDate { get; set; }
         public bool IsActive { get; set; }
 
         public string Email { get; set; }
