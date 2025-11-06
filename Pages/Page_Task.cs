@@ -170,9 +170,6 @@ namespace EmployeeManagement.Pages
                     //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
                 }
             }
-           
-            
-
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

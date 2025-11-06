@@ -40,14 +40,15 @@ namespace EmployeeManagement.Pages
         {
             if (IsInDesignMode()) return;
 
+            string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
+
             // Thêm cột Avatar sử dụng ColumnSelect để hiển thị ảnh
-            var avatarCol = new AntdUI.ColumnSelect("EmployeeID", "Avatar");
+            var avatarCol = new AntdUI.ColumnSelect("EmployeeID", "Ảnh");
             avatarCol.CellType = AntdUI.SelectCellType.Icon; // Chỉ hiển thị icon (ảnh)
             avatarCol.SetAlign(AntdUI.ColumnAlign.Center); // Căn giữa
             avatarCol.SetWidth("80"); // Đặt chiều rộng cột (có thể điều chỉnh)
             tbNV.Columns.Add(avatarCol);
 
-            tbNV.Columns.Add(new AntdUI.Column("EmployeeID", "ID"));
             tbNV.Columns.Add(new AntdUI.Column("FullName", "Họ và tên"));
             tbNV.Columns.Add(new AntdUI.Column("Gender", "Giới tính"));
             tbNV.Columns.Add(new AntdUI.Column("Email", "Email"));
@@ -55,36 +56,39 @@ namespace EmployeeManagement.Pages
             tbNV.Columns.Add(new AntdUI.Column("ProjectSummary", "Dự án"));
             tbNV.Columns.Add(new AntdUI.Column("TaskSummary", "Nhiệm vụ"));
 
-            // Lấy tất cả nhân viên để tạo Items cho ColumnSelect (mỗi Item có Tag = EmployeeID, Icon = Image từ đường dẫn tuyệt đối để test)
+            tbNV.RowHeight = 100;
+            tbNV.RowHeightHeader = 30;
+
+            // Lấy tất cả nhân viên để tạo Items cho ColumnSelect (mỗi Item có Tag = EmployeeID, Icon = Image từ đường dẫn được lưu của mỗi nhân viên)
             var allEmployees = employeeRepository.GetAll();
 
-            // Sử dụng loop để tạo Items với try-catch để xử lý lỗi Image.FromFile (thay vì FromStream, dùng đường dẫn tuyệt đối cho test)
+            // Sử dụng loop để tạo Items với try-catch để xử lý lỗi Image.FromFile
             var items = new List<AntdUI.SelectItem>();
             foreach (var emp in allEmployees)
             {
                 Image icon = null;
                 try
                 {
-                    // Để test: Sử dụng đường dẫn tuyệt đối trên máy (thay bằng path thực tế của bạn, ví dụ C:\\Users\\YourName\\Pictures\\test_avatar.jpg)
-                    // Nếu emp.AvatarPath là đường dẫn, dùng emp.AvatarPath; ở đây hardcode để test
-                    string testPath = @"C:\Users\Admin\Hình ảnh\Saved Pictures\avt1.jpg"; // Thay bằng đường dẫn tuyệt đối thực tế trên máy bạn
-                    if (File.Exists(testPath))
+                    if (!string.IsNullOrEmpty(emp.AvatarPath))
                     {
-                        icon = Image.FromFile(testPath);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"File không tồn tại: {testPath}");
+                        string fullPath = Path.Combine(projectRoot, emp.AvatarPath);
+                        if (File.Exists(fullPath))
+                        {
+                            icon = Image.FromFile(fullPath);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"File không tồn tại: {fullPath}");
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Xử lý lỗi: Có thể log hoặc bỏ qua, set icon = null hoặc ảnh default
-                    Console.WriteLine($"Lỗi load avatar từ đường dẫn tuyệt đối cho EmployeeID {emp.EmployeeID}: {ex.Message}");
+                    Console.WriteLine($"Lỗi load avatar từ đường dẫn cho EmployeeID {emp.EmployeeID}: {ex.Message}");
                     // Optional: icon = Properties.Resources.DefaultAvatar; // Nếu có ảnh default
                 }
                 items.Add(new AntdUI.SelectItem(0, icon, emp.FullName ?? "", emp.EmployeeID));
-
             }
             avatarCol.Items = items;
 

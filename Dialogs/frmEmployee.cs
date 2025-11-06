@@ -157,7 +157,6 @@ namespace EmployeeManagement.Dialogs
                         string destPath = Path.Combine(avatarFolder, newFileName);
 
                         File.Copy(selectedFile, destPath, true);
-                        MessageBox.Show($"Ảnh được lưu tại:\n{destPath}");
 
                         img.Image = Image.FromFile(destPath);
 
