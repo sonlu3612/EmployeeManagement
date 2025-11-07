@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -131,10 +132,9 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
                     //new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
-
                     //new SqlParameter("@AvatarData", SqlDbType.VarBinary)
                     //{
-                    //    Value = entity.AvatarData ?? (object)DBNull.Value
+                    // Value = entity.AvatarData ?? (object)DBNull.Value
                     //}
                 };
                 string sql =
@@ -145,7 +145,7 @@ namespace EmployeeManagement.DAL.Repositories
                     DepartmentID = @DepartmentID,
                     AvatarPath = @AvatarPath,
                     Address = @Address,
-                    
+                   
                     IsActive = @IsActive
                     WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -387,7 +387,7 @@ namespace EmployeeManagement.DAL.Repositories
                     u.Phone,
                     STRING_AGG(ur.Role, ', ') AS Roles
                 FROM Employees e
-                INNER JOIN Users u ON e.EmployeeID = u.UserID
+                INNER JOIN Users u ON u.UserID = e.EmployeeID
                 LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
                 WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
                 GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
@@ -486,7 +486,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
-
         public Employee GetFromIdUser(int id)
         {
             try
@@ -496,7 +495,7 @@ namespace EmployeeManagement.DAL.Repositories
             new SqlParameter("@EmployeeID", id)
                 };
                 string sql = @"
-            SELECT 
+            SELECT
                 e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
                 e.AvatarPath, e.Address, e.HireDate, e.IsActive,
                 d.DepartmentName,
@@ -517,31 +516,28 @@ namespace EmployeeManagement.DAL.Repositories
                       AND p.Status = N'Hoàn thành'
                 ), 0) AS CompletedProjects,
                 ISNULL((
-                    SELECT COUNT(*) 
-                    FROM Tasks t2 
-                    INNER JOIN TaskAssignments ta2 ON ta2.TaskID = t2.TaskID 
+                    SELECT COUNT(*)
+                    FROM Tasks t2
+                    INNER JOIN TaskAssignments ta2 ON ta2.TaskID = t2.TaskID
                     WHERE ta2.EmployeeID = e.EmployeeID
                 ), 0) AS TotalTasks,
                 ISNULL((
-                    SELECT COUNT(*) 
-                    FROM Tasks t3 
-                    INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID 
+                    SELECT COUNT(*)
+                    FROM Tasks t3
+                    INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID
                     WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = N'Hoàn thành'
                 ), 0) AS CompletedTasks
             FROM Employees e
             LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
             LEFT JOIN Users u ON u.UserID = e.EmployeeID
             WHERE e.EmployeeID = @EmployeeID";
-
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 if (dt.Rows.Count == 0)
                 {
                     return null;
                 }
-
                 DataRow row = dt.Rows[0];
                 Employee employee = MapDataRowToEmployee(row);
-
                 // Mapping for summary
                 int totalPrj = row["TotalProjects"] != DBNull.Value ? Convert.ToInt32(row["TotalProjects"]) : 0;
                 int completedPrj = row["CompletedProjects"] != DBNull.Value ? Convert.ToInt32(row["CompletedProjects"]) : 0;
@@ -549,11 +545,9 @@ namespace EmployeeManagement.DAL.Repositories
                 int completedTask = row["CompletedTasks"] != DBNull.Value ? Convert.ToInt32(row["CompletedTasks"]) : 0;
                 employee.ProjectSummary = $"{completedPrj}/{totalPrj}";
                 employee.TaskSummary = $"{completedTask}/{totalTask}";
-
                 // Mapping for Users
                 employee.Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null;
                 employee.Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null;
-
                 // Load AvatarData
                 try
                 {
@@ -566,13 +560,67 @@ namespace EmployeeManagement.DAL.Repositories
                 {
                     employee.AvatarData = null;
                 }
-
                 return employee;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[EmployeeRepository.GetById] Lỗi: {ex.Message}");
                 throw;
+            }
+        }
+        /// <summary>
+        /// Cập nhật thông tin nhân viên bao gồm email và số điện thoại từ bảng Users
+        /// </summary>
+        /// <param name="entity">Đối tượng Employee với dữ liệu cập nhật</param>
+        /// <returns>True nếu thành công, false nếu thất bại</returns>
+        public bool UpdateWithContact(Employee entity)
+        {
+            try
+            {
+                // Update Employees table
+                SqlParameter[] employeeParams = new SqlParameter[]
+                {
+                    new SqlParameter("@EmployeeID", entity.EmployeeID),
+                    new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
+                    new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
+                    new SqlParameter("@Gender", entity.Gender ?? (object)DBNull.Value),
+                    new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
+                    new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
+                    new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
+                    new SqlParameter("@IsActive", entity.IsActive)
+                };
+                string employeeSql =
+                    @"UPDATE Employees
+                      SET FullName = @FullName,
+                          Position = @Position,
+                          Gender = @Gender,
+                          DepartmentID = @DepartmentID,
+                          AvatarPath = @AvatarPath,
+                          Address = @Address,
+                          IsActive = @IsActive
+                      WHERE EmployeeID = @EmployeeID";
+                DatabaseHelper.ExecuteNonQuery(employeeSql, employeeParams);
+
+                // Update Users table for Phone and Email (assuming UserID = EmployeeID)
+                SqlParameter[] userParams = new SqlParameter[]
+                {
+                    new SqlParameter("@UserID", entity.EmployeeID),
+                    new SqlParameter("@Phone", entity.Phone ?? (object)DBNull.Value),
+                    new SqlParameter("@Email", entity.Email ?? (object)DBNull.Value)
+                };
+                string userSql =
+                    @"UPDATE Users
+                      SET Phone = @Phone,
+                          Email = @Email
+                      WHERE UserID = @UserID";
+                DatabaseHelper.ExecuteNonQuery(userSql, userParams);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[EmployeeRepository.UpdateWithContact] Lỗi: {ex.Message}");
+                return false;
             }
         }
     }

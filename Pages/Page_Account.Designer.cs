@@ -31,7 +31,6 @@
             this.panel2 = new AntdUI.Panel();
             this.panel5 = new AntdUI.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label1 = new AntdUI.Label();
             this.txtGioiTinh = new AntdUI.Input();
             this.txtEmail = new AntdUI.Input();
             this.txtSoDienThoai = new AntdUI.Input();
@@ -55,7 +54,6 @@
             this.label2 = new AntdUI.Label();
             this.panel2.SuspendLayout();
             this.panel5.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,29 +99,18 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.Transparent;
-            this.panel3.Controls.Add(this.label1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(336, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(764, 55);
+            this.panel3.Size = new System.Drawing.Size(764, 28);
             this.panel3.TabIndex = 26;
-            // 
-            // label1
-            // 
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.label1.Location = new System.Drawing.Point(6, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(348, 49);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Thông tin cá nhân";
             // 
             // txtGioiTinh
             // 
             this.txtGioiTinh.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtGioiTinh.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtGioiTinh.BorderWidth = 2F;
-            this.txtGioiTinh.Location = new System.Drawing.Point(600, 520);
+            this.txtGioiTinh.Location = new System.Drawing.Point(601, 493);
             this.txtGioiTinh.Name = "txtGioiTinh";
             this.txtGioiTinh.Size = new System.Drawing.Size(348, 46);
             this.txtGioiTinh.TabIndex = 25;
@@ -133,7 +120,7 @@
             this.txtEmail.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtEmail.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtEmail.BorderWidth = 2F;
-            this.txtEmail.Location = new System.Drawing.Point(600, 455);
+            this.txtEmail.Location = new System.Drawing.Point(601, 427);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(348, 46);
             this.txtEmail.TabIndex = 24;
@@ -143,7 +130,7 @@
             this.txtSoDienThoai.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtSoDienThoai.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtSoDienThoai.BorderWidth = 2F;
-            this.txtSoDienThoai.Location = new System.Drawing.Point(600, 385);
+            this.txtSoDienThoai.Location = new System.Drawing.Point(601, 366);
             this.txtSoDienThoai.Name = "txtSoDienThoai";
             this.txtSoDienThoai.Size = new System.Drawing.Size(348, 46);
             this.txtSoDienThoai.TabIndex = 23;
@@ -153,7 +140,7 @@
             this.txtDiaChi.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtDiaChi.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtDiaChi.BorderWidth = 2F;
-            this.txtDiaChi.Location = new System.Drawing.Point(600, 313);
+            this.txtDiaChi.Location = new System.Drawing.Point(601, 301);
             this.txtDiaChi.Name = "txtDiaChi";
             this.txtDiaChi.Size = new System.Drawing.Size(348, 46);
             this.txtDiaChi.TabIndex = 22;
@@ -163,7 +150,7 @@
             this.txtChucVu.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtChucVu.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtChucVu.BorderWidth = 2F;
-            this.txtChucVu.Location = new System.Drawing.Point(599, 247);
+            this.txtChucVu.Location = new System.Drawing.Point(601, 231);
             this.txtChucVu.Name = "txtChucVu";
             this.txtChucVu.Size = new System.Drawing.Size(348, 46);
             this.txtChucVu.TabIndex = 21;
@@ -173,7 +160,7 @@
             this.txtPhongBan.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtPhongBan.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtPhongBan.BorderWidth = 2F;
-            this.txtPhongBan.Location = new System.Drawing.Point(600, 185);
+            this.txtPhongBan.Location = new System.Drawing.Point(601, 164);
             this.txtPhongBan.Name = "txtPhongBan";
             this.txtPhongBan.Size = new System.Drawing.Size(348, 46);
             this.txtPhongBan.TabIndex = 20;
@@ -183,7 +170,7 @@
             this.txtHoTen.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtHoTen.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtHoTen.BorderWidth = 2F;
-            this.txtHoTen.Location = new System.Drawing.Point(600, 120);
+            this.txtHoTen.Location = new System.Drawing.Point(600, 98);
             this.txtHoTen.Name = "txtHoTen";
             this.txtHoTen.Size = new System.Drawing.Size(348, 46);
             this.txtHoTen.TabIndex = 19;
@@ -193,7 +180,7 @@
             this.txtMaNhanVien.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtMaNhanVien.BorderHover = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.txtMaNhanVien.BorderWidth = 2F;
-            this.txtMaNhanVien.Location = new System.Drawing.Point(600, 57);
+            this.txtMaNhanVien.Location = new System.Drawing.Point(601, 34);
             this.txtMaNhanVien.Name = "txtMaNhanVien";
             this.txtMaNhanVien.Size = new System.Drawing.Size(347, 43);
             this.txtMaNhanVien.TabIndex = 18;
@@ -207,7 +194,7 @@
             this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(846, 572);
+            this.btnAdd.Location = new System.Drawing.Point(840, 567);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(142, 48);
             this.btnAdd.TabIndex = 17;
@@ -218,7 +205,7 @@
             // 
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(399, 540);
+            this.label9.Location = new System.Drawing.Point(399, 504);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(165, 26);
             this.label9.TabIndex = 15;
@@ -228,7 +215,7 @@
             // 
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(399, 475);
+            this.label8.Location = new System.Drawing.Point(399, 438);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(165, 26);
             this.label8.TabIndex = 13;
@@ -238,7 +225,7 @@
             // 
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(399, 405);
+            this.label7.Location = new System.Drawing.Point(399, 377);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(165, 26);
             this.label7.TabIndex = 11;
@@ -248,7 +235,7 @@
             // 
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(399, 333);
+            this.label6.Location = new System.Drawing.Point(399, 312);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(165, 26);
             this.label6.TabIndex = 9;
@@ -258,7 +245,7 @@
             // 
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(399, 267);
+            this.label5.Location = new System.Drawing.Point(399, 242);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(165, 26);
             this.label5.TabIndex = 7;
@@ -268,7 +255,7 @@
             // 
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(399, 205);
+            this.label4.Location = new System.Drawing.Point(399, 173);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(165, 26);
             this.label4.TabIndex = 5;
@@ -278,7 +265,7 @@
             // 
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(399, 135);
+            this.label3.Location = new System.Drawing.Point(399, 108);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(165, 26);
             this.label3.TabIndex = 3;
@@ -301,25 +288,26 @@
             // lblEmail
             // 
             this.lblEmail.BackColor = System.Drawing.Color.Transparent;
-            this.lblEmail.Location = new System.Drawing.Point(28, 488);
+            this.lblEmail.Location = new System.Drawing.Point(92, 465);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(264, 23);
+            this.lblEmail.Size = new System.Drawing.Size(174, 23);
             this.lblEmail.TabIndex = 5;
             this.lblEmail.Text = "";
+            this.lblEmail.Click += new System.EventHandler(this.lblEmail_Click);
             // 
             // lblTen
             // 
             this.lblTen.BackColor = System.Drawing.Color.Transparent;
-            this.lblTen.Location = new System.Drawing.Point(28, 450);
+            this.lblTen.Location = new System.Drawing.Point(97, 427);
             this.lblTen.Name = "lblTen";
-            this.lblTen.Size = new System.Drawing.Size(264, 23);
+            this.lblTen.Size = new System.Drawing.Size(150, 23);
             this.lblTen.TabIndex = 4;
             this.lblTen.Text = "";
             // 
             // avatar1
             // 
             this.avatar1.BackColor = System.Drawing.Color.Black;
-            this.avatar1.Location = new System.Drawing.Point(72, 180);
+            this.avatar1.Location = new System.Drawing.Point(62, 137);
             this.avatar1.Name = "avatar1";
             this.avatar1.Round = true;
             this.avatar1.Size = new System.Drawing.Size(194, 232);
@@ -331,7 +319,7 @@
             // 
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(399, 68);
+            this.label2.Location = new System.Drawing.Point(399, 43);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(140, 23);
             this.label2.TabIndex = 0;
@@ -347,7 +335,6 @@
             this.Size = new System.Drawing.Size(1100, 631);
             this.panel2.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
-            this.panel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -378,6 +365,5 @@
         private AntdUI.Input txtHoTen;
         private AntdUI.Input txtMaNhanVien;
         private System.Windows.Forms.Panel panel3;
-        private AntdUI.Label label1;
     }
 }

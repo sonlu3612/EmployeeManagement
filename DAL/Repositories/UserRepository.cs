@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+
 namespace EmployeeManagement.DAL.Repositories
 {
     public class UserRepository : IRepository<User>
@@ -49,6 +50,25 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
+        public bool VerifyPassword(int userId, string passwordHash)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+            new SqlParameter("@UserID", userId),
+            new SqlParameter("@PasswordHash", passwordHash)
+                };
+                string sql = @"SELECT 1 FROM Users WHERE UserID = @UserID AND PasswordHash = @PasswordHash";
+                var dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+                return dt.Rows.Count > 0;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public User GetByEmail(string email)
         {
             try
@@ -241,7 +261,6 @@ namespace EmployeeManagement.DAL.Repositories
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
             };
         }
-
         private User MapDataRowToUser(DataRow row)
         {
             return new User
