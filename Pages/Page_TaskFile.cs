@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
+
 namespace EmployeeManagement.Pages
 {
     public partial class Page_TaskFile : UserControl
@@ -19,6 +20,8 @@ namespace EmployeeManagement.Pages
         private FileService _fileService;
         private int _currentTaskId;
         private string _currentTaskName;
+        private List<dynamic> originalFiles; // Lưu danh sách gốc để filter/sort
+
         public Page_TaskFile()
         {
             InitializeComponent();
@@ -26,48 +29,13 @@ namespace EmployeeManagement.Pages
             _employeeRepository = new EmployeeRepository();
             _fileService = new FileService();
         }
+
         public void LoadTaskFiles(int taskId, string taskName)
         {
             _currentTaskId = taskId;
+            Console.WriteLine(_currentTaskId);
             _currentTaskName = taskName;
             this.Text = $"Quản lý Tập Tin Nhiệm Vụ - {taskName}";
-            LoadData();
-        }
-        private void LoadData()
-        {
-            try
-            {
-                var files = _taskFileRepository.GetByTask(_currentTaskId);
-                var filesWithType = files.Select(f => new
-                {
-                    f.TaskFileID,
-                    f.TaskID,
-                    f.Title,
-                    f.FileName,
-                    FileType = GetFileType(f.FileName),
-                    File = "Mở tập tin",
-                    f.CreatedBy,
-                    f.CreatedAt,
-                    f.TaskTitle,
-                    f.CreatedByName,
-                    Actions = new AntdUI.CellLink[]
-                 {
-                    new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-                        .SetIcon("EditOutlined"),
-                    new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-                        .SetIcon("DownloadOutlined"),
-                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
-                 }
-                }).ToList();
-                tbFiles.DataSource = filesWithType;
-            }
-            catch (Exception ex)
-            {
-                Message.error(this.FindForm(), "Lỗi khi tải dữ liệu: " + ex.Message);
-            }
-        }
-        private void Page_TaskFile_Load(object sender, EventArgs e)
-        {
             tbFiles.Columns.Add(new Column("Title", "File Name") { Width = "22%" });
             tbFiles.Columns.Add(new Column("FileType", "Attachment Type") { Width = "15%" });
             var fileColumn = new Column("File", "Tập tin") { Width = "12%" };
@@ -84,21 +52,15 @@ namespace EmployeeManagement.Pages
             ddSort.Items.Add("Tên Z-A");
             ddSort.Items.Add("Ngày thêm mới nhất");
             ddSort.Items.Add("Ngày thêm cũ nhất");
+            LoadData();
         }
-        private void btnSearch_Click(object sender, EventArgs e)
+
+        private void LoadData()
         {
             try
             {
                 var files = _taskFileRepository.GetByTask(_currentTaskId);
-                string searchText = txtSearch.Text?.Trim() ?? "";
-                if (!string.IsNullOrWhiteSpace(searchText))
-                {
-                    files = files.Where(f =>
-                  (!string.IsNullOrEmpty(f.Title) && f.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0) ||
-                     (!string.IsNullOrEmpty(f.FileName) && f.FileName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
-                     ).ToList();
-                }
-                var filesWithType = files.Select(f => new
+                originalFiles = files.Select(f => new
                 {
                     f.TaskFileID,
                     f.TaskID,
@@ -111,16 +73,43 @@ namespace EmployeeManagement.Pages
                     f.TaskTitle,
                     f.CreatedByName,
                     Actions = new AntdUI.CellLink[]
-                          {
-                    new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-                        .SetIcon("EditOutlined"),
-                    new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-                        .SetIcon("DownloadOutlined"),
-                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
-                  }
-                }).ToList();
-                tbFiles.DataSource = filesWithType;
-                if (filesWithType.Count == 0)
+                    {
+                        new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default).SetIcon("EditOutlined"),
+                        new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary).SetIcon("DownloadOutlined"),
+                        new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
+                    }
+                }).ToList<dynamic>();
+                tbFiles.DataSource = originalFiles;
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi tải dữ liệu: " + ex.Message);
+            }
+        }
+
+        private void Page_TaskFile_Load(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string searchText = txtSearch.Text?.Trim().ToLower() ?? "";
+                if (string.IsNullOrEmpty(searchText))
+                {
+                    tbFiles.DataSource = originalFiles;
+                    return;
+                }
+
+                var filtered = originalFiles.Where(f =>
+                    (f.Title?.ToString().ToLower().Contains(searchText) ?? false) ||
+                    (f.FileName?.ToString().ToLower().Contains(searchText) ?? false)
+                ).ToList();
+
+                tbFiles.DataSource = filtered;
+                if (filtered.Count == 0)
                 {
                     Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
                 }
@@ -130,56 +119,35 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
             }
         }
+
         private void ddSort_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
-            try
+            if (originalFiles == null || originalFiles.Count == 0) return;
+
+            string sortOption = e.Value?.ToString() ?? "";
+            List<dynamic> sorted = new List<dynamic>(originalFiles);
+
+            switch (sortOption)
             {
-                var files = _taskFileRepository.GetByTask(_currentTaskId);
-                string sortOption = ddSort.SelectedValue.ToString();
-                switch (sortOption)
-                {
-                    case "Tên A-Z":
-                        files = files.OrderBy(f => f.Title).ToList();
-                        break;
-                    case "Tên Z-A":
-                        files = files.OrderByDescending(f => f.Title).ToList();
-                        break;
-                    case "Ngày thêm mới nhất":
-                        files = files.OrderByDescending(f => f.CreatedAt).ToList();
-                        break;
-                    case "Ngày thêm cũ nhất":
-                        files = files.OrderBy(f => f.CreatedAt).ToList();
-                        break;
-                }
-                var filesWithType = files.Select(f => new
-                {
-                    f.TaskFileID,
-                    f.TaskID,
-                    f.Title,
-                    f.FileName,
-                    FileType = GetFileType(f.FileName),
-                    File = "Mở tập tin",
-                    f.CreatedBy,
-                    f.CreatedAt,
-                    f.TaskTitle,
-                    f.CreatedByName,
-                    Actions = new AntdUI.CellLink[]
-                  {
-                    new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-                        .SetIcon("EditOutlined"),
-                    new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-                        .SetIcon("DownloadOutlined"),
-                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error)
-                        .SetIcon("DeleteOutlined")
-                        }
-                }).ToList();
-                tbFiles.DataSource = filesWithType;
+                case "Tên A-Z":
+                    sorted = sorted.OrderBy(f => f.Title?.ToString()).ToList();
+                    break;
+                case "Tên Z-A":
+                    sorted = sorted.OrderByDescending(f => f.Title?.ToString()).ToList();
+                    break;
+                case "Ngày thêm mới nhất":
+                    sorted = sorted.OrderByDescending(f => f.CreatedAt).ToList();
+                    break;
+                case "Ngày thêm cũ nhất":
+                    sorted = sorted.OrderBy(f => f.CreatedAt).ToList();
+                    break;
+                default:
+                    return;
             }
-            catch (Exception ex)
-            {
-                Message.error(this.FindForm(), "Lỗi khi sắp xếp: " + ex.Message);
-            }
+
+            tbFiles.DataSource = sorted;
         }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -199,7 +167,7 @@ namespace EmployeeManagement.Pages
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
                     openFileDialog.Title = "Chọn file để tải lên";
-                    openFileDialog.Filter = "All Files|*.*|Documents|*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.txt|Images|*.jpg;*.jpeg;*.png|Archives|*.zip;*.rar";
+                    openFileDialog.Filter = "All Files|*.*|Documents|*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx|Images|*.jpg;*.jpeg;*.png|Archives|*.zip;*.rar";
                     openFileDialog.Multiselect = true;
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
@@ -234,6 +202,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tải lên file: " + ex.Message);
             }
         }
+
         private void tbFiles_CellClick(object sender, TableClickEventArgs e)
         {
             if (e.Record == null) return;
@@ -242,7 +211,14 @@ namespace EmployeeManagement.Pages
             {
                 OpenFile(record.FileName);
             }
+            else if (e.Column.Key == "CreatedByName")
+            {
+                // TODO: May be in the future we can show employee details when clicking on the creator's name
+                //frmEmployee frm = new frmEmployee();
+                //frm.ShowDialog();
+            }
         }
+
         private void tbFiles_CellButtonClick(object sender, AntdUI.TableButtonEventArgs e)
         {
             if (e.Record == null) return;
@@ -260,6 +236,7 @@ namespace EmployeeManagement.Pages
                 DeleteFile(record);
             }
         }
+
         private void tbFiles_CellDoubleClick(object sender, TableClickEventArgs e)
         {
             if (e.Record != null)
@@ -268,6 +245,7 @@ namespace EmployeeManagement.Pages
                 OpenFile(record.FileName);
             }
         }
+
         private void EditFile(dynamic record)
         {
             try
@@ -333,6 +311,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi sửa tên file: " + ex.Message);
             }
         }
+
         private void DownloadFile(dynamic record)
         {
             try
@@ -361,6 +340,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tải xuống file: " + ex.Message);
             }
         }
+
         private void DeleteFile(dynamic record)
         {
             try
@@ -371,16 +351,16 @@ namespace EmployeeManagement.Pages
                 string dateAdded = Convert.ToDateTime(record.CreatedAt).ToString("dd/MM/yyyy HH:mm");
                 string createdBy = record.CreatedByName;
                 string confirmMessage = $"Bạn có chắc muốn xóa file này không?\n\n" +
-                    $"Tên file: {fileName}\n" +
-                 $"Loại file: {fileType}\n" +
-                     $"Ngày thêm: {dateAdded}\n" +
-                   $"Người tạo: {createdBy}";
+                                        $"Tên file: {fileName}\n" +
+                                        $"Loại file: {fileType}\n" +
+                                        $"Ngày thêm: {dateAdded}\n" +
+                                        $"Người tạo: {createdBy}";
                 var modalConfig = AntdUI.Modal.config(
-                          this.FindForm(),
-                  "Xác nhận xóa",
-                 confirmMessage,
-              TType.Warn
-                         );
+                    this.FindForm(),
+                    "Xác nhận xóa",
+                    confirmMessage,
+                    TType.Warn
+                );
                 modalConfig.OkText = "Xóa";
                 modalConfig.CancelText = "Hủy";
                 modalConfig.OkType = TTypeMini.Error;
@@ -404,6 +384,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi xóa file: " + ex.Message);
             }
         }
+
         private void OpenFile(string fileName)
         {
             try
@@ -423,6 +404,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi mở file: " + ex.Message);
             }
         }
+
         private string GetFileType(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -455,6 +437,12 @@ namespace EmployeeManagement.Pages
                 default:
                     return extension.TrimStart('.');
             }
+        }
+
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = string.Empty;
+            LoadData();
         }
     }
 }

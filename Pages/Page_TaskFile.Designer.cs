@@ -30,10 +30,11 @@
         {
             this.btnSearch = new AntdUI.Button();
             this.panel1 = new AntdUI.Panel();
-            this.btnAdd = new AntdUI.Button();
             this.ddSort = new AntdUI.Dropdown();
             this.txtSearch = new AntdUI.Input();
             this.tbFiles = new AntdUI.Table();
+            this.btnThem = new AntdUI.Button();
+            this.btnSync = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,47 +51,34 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.btnAdd);
+            this.panel1.Controls.Add(this.btnSync);
+            this.panel1.Controls.Add(this.btnThem);
             this.panel1.Controls.Add(this.ddSort);
             this.panel1.Controls.Add(this.btnSearch);
             this.panel1.Controls.Add(this.txtSearch);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(963, 50);
+            this.panel1.Size = new System.Drawing.Size(963, 44);
             this.panel1.TabIndex = 2;
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.BackHover = System.Drawing.Color.White;
-            this.btnAdd.BorderWidth = 2F;
-            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(883, 0);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(80, 50);
-            this.btnAdd.TabIndex = 3;
-            this.btnAdd.Text = "ADD";
             // 
             // ddSort
             // 
             this.ddSort.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.ddSort.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.ddSort.ForeColor = System.Drawing.Color.White;
-            this.ddSort.Location = new System.Drawing.Point(362, 8);
+            this.ddSort.Location = new System.Drawing.Point(410, 9);
             this.ddSort.Name = "ddSort";
             this.ddSort.ShowArrow = true;
             this.ddSort.Size = new System.Drawing.Size(159, 35);
             this.ddSort.TabIndex = 2;
             this.ddSort.Text = "Sắp xếp";
+            this.ddSort.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddSort_SelectedValueChanged);
             // 
             // txtSearch
             // 
@@ -104,11 +92,47 @@
             // tbFiles
             // 
             this.tbFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbFiles.EmptyText = "Không có tài liệu";
             this.tbFiles.Gap = 12;
             this.tbFiles.Location = new System.Drawing.Point(0, 0);
             this.tbFiles.Name = "tbFiles";
             this.tbFiles.Size = new System.Drawing.Size(963, 588);
             this.tbFiles.TabIndex = 3;
+            this.tbFiles.CellClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellClick);
+            this.tbFiles.CellButtonClick += new AntdUI.Table.ClickButtonEventHandler(this.tbFiles_CellButtonClick);
+            this.tbFiles.CellDoubleClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellDoubleClick);
+            // 
+            // btnThem
+            // 
+            this.btnThem.BackHover = System.Drawing.Color.White;
+            this.btnThem.BorderWidth = 2F;
+            this.btnThem.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnThem.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThem.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.ForeColor = System.Drawing.Color.White;
+            this.btnThem.Location = new System.Drawing.Point(889, 0);
+            this.btnThem.Name = "btnThem";
+            this.btnThem.Size = new System.Drawing.Size(74, 44);
+            this.btnThem.TabIndex = 8;
+            this.btnThem.Text = "Thêm";
+            this.btnThem.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.BackHover = System.Drawing.Color.White;
+            this.btnSync.BorderWidth = 2F;
+            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
+            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
+            this.btnSync.Location = new System.Drawing.Point(353, 8);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(51, 35);
+            this.btnSync.TabIndex = 9;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // Page_TaskFile
             // 
@@ -127,9 +151,10 @@
 
         private AntdUI.Button btnSearch;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnAdd;
         private AntdUI.Dropdown ddSort;
         private AntdUI.Input txtSearch;
         private AntdUI.Table tbFiles;
+        private AntdUI.Button btnThem;
+        private AntdUI.Button btnSync;
     }
 }

@@ -230,6 +230,7 @@
             this.uploadDragger1.Size = new System.Drawing.Size(75, 23);
             this.uploadDragger1.TabIndex = 44;
             this.uploadDragger1.Text = "uploadDragger1";
+            this.uploadDragger1.Click += new System.EventHandler(this.uploadDragger1_Click);
             // 
             // frmSubmit
             // 
