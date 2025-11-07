@@ -28,28 +28,9 @@ namespace EmployeeManagement.Pages
                    || (this.Site != null && this.Site.DesignMode);
         }
 
-        public void Page_Project_Load()
+        private List<dynamic> GetProjectsWithFileCount(IEnumerable<Project> projects)
         {
-            if (IsInDesignMode()) return;
-
-            tbProject.Columns.Add(new Column("ProjectID", "ID"));
-            tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
-            tbProject.Columns.Add(new Column("Description", "Description"));
-            tbProject.Columns.Add(new Column("StartDate", "Start Date"));
-            tbProject.Columns.Add(new Column("EndDate", "End Date"));
-            tbProject.Columns.Add(new Column("Status", "Status"));
-            tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
-            tbProject.Columns.Add(new Column("Document", "Document"));
-            tbProject.Columns.Add(new Column("FileCount", "Files"));
-
-            LoadData();
-        }
-
-        private void LoadData()
-        {
-            var projects = _projectRepository.GetAll().ToList();
-
-            var projectsWithFileCount = projects.Select(p => new
+            return projects.Select(p => new
             {
                 p.ProjectID,
                 p.ProjectName,
@@ -60,7 +41,14 @@ namespace EmployeeManagement.Pages
                 p.CreatedBy,
                 Document = "Open File",
                 FileCount = GetProjectFileCount(p.ProjectID)
-            }).ToList();
+            }).ToList<dynamic>();
+        }
+
+        private void LoadData()
+        {
+            var projects = _projectRepository.GetAll().ToList();
+
+            var projectsWithFileCount = GetProjectsWithFileCount(projects);
 
             tbProject.DataSource = projectsWithFileCount;
 
@@ -223,7 +211,7 @@ namespace EmployeeManagement.Pages
                                                    p.Status.IndexOf(statusFilter, StringComparison.OrdinalIgnoreCase) >= 0);
                 }
 
-                var result = projects.ToList();
+                var result = GetProjectsWithFileCount(projects);
 
                 tbProject.DataSource = result;
 
@@ -248,7 +236,8 @@ namespace EmployeeManagement.Pages
             var filteredProjects = _projectRepository.GetAll()
                 .Where(p => p.CreatedBy.ToString().Contains(cbNhanVien.Text))
                 .ToList();
-            tbProject.DataSource = filteredProjects;
+
+            tbProject.DataSource = GetProjectsWithFileCount(filteredProjects);
         }
 
         private void btnSync_Click(object sender, EventArgs e)
@@ -264,7 +253,8 @@ namespace EmployeeManagement.Pages
             var filteredProjects = _projectRepository.GetAll()
                 .Where(p => p.Status.Contains(cbTrangThai.Text))
                 .ToList();
-            tbProject.DataSource = filteredProjects;
+
+            tbProject.DataSource = GetProjectsWithFileCount(filteredProjects);
         }
 
         private void documentsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -303,12 +293,17 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("ProjectID", "ID"));
             tbProject.Columns.Add(new Column("ProjectName", "Project Name"));
             tbProject.Columns.Add(new Column("Description", "Description"));
+            var fileColumn = new Column("Document", "Document");
+            fileColumn.SetStyle(new AntdUI.Table.CellStyleInfo
+            {
+                ForeColor = System.Drawing.Color.Blue
+            });
+            tbProject.Columns.Add(fileColumn);
+            tbProject.Columns.Add(new Column("FileCount", "Files"));
             tbProject.Columns.Add(new Column("StartDate", "Start Date"));
             tbProject.Columns.Add(new Column("EndDate", "End Date"));
             tbProject.Columns.Add(new Column("Status", "Status"));
             tbProject.Columns.Add(new Column("CreatedBy", "Created By"));
-            tbProject.Columns.Add(new Column("Document", "Document"));
-            tbProject.Columns.Add(new Column("FileCount", "Files"));
 
             LoadData();
         }

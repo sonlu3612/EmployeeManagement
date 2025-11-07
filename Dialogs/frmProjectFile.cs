@@ -59,15 +59,14 @@ namespace EmployeeManagement.Dialogs
                  {
     // Nút SỬA - Default (xám)
     new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z\"/></svg>"),
+        .SetIcon("EditOutlined"),
 
     // Nút TẢI - Primary (xanh dương)
     new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M505.7 661a8 8 0 0 0 12.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z\"/></svg>"),
+        .SetIcon("DownloadOutlined"),
 
     // Nút XÓA - Error (đỏ)
-    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z\"/></svg>")
+                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
                      }
                 }).ToList();
 
@@ -81,7 +80,6 @@ namespace EmployeeManagement.Dialogs
 
         private void frmProjectFile_Load(object sender, EventArgs e)
         {
-            tbFiles.Columns.Add(new Column("ProjectFileID", "ID") { Width = "5%" });
             tbFiles.Columns.Add(new Column("Title", "File Name") { Width = "22%" });
             tbFiles.Columns.Add(new Column("FileType", "Attachment Type") { Width = "15%" });
 
@@ -93,8 +91,8 @@ namespace EmployeeManagement.Dialogs
             tbFiles.Columns.Add(fileColumn);
 
             tbFiles.Columns.Add(new Column("CreatedAt", "Date Added") { Width = "15%" });
-            tbFiles.Columns.Add(new Column("CreatedByName", "Created By") { Width = "13%" });
-            tbFiles.Columns.Add(new Column("Actions", "Actions") { Width = "18%" });
+            tbFiles.Columns.Add(new Column("CreatedByName", "Created By") { Width = "16%" });
+            tbFiles.Columns.Add(new Column("Actions", "Actions") { Width = "20%" });
 
             tbFiles.CellButtonClick += tbFiles_CellButtonClick;
 
@@ -135,15 +133,14 @@ namespace EmployeeManagement.Dialogs
                           {
     // Nút SỬA - Default (xám)
     new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z\"/></svg>"),
+        .SetIcon("EditOutlined"),
 
     // Nút TẢI - Primary (xanh dương)
     new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M505.7 661a8 8 0 0 0 12.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z\"/></svg>"),
+        .SetIcon("DownloadOutlined"),
 
     // Nút XÓA - Error (đỏ)
-    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error)
-        .SetIcon("<svg viewBox=\"0 0 1024 1024\"><path d=\"M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z\"/></svg>")
+                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
                   }
                 }).ToList();
 

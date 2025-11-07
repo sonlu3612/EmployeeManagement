@@ -64,9 +64,9 @@
             this.ddSort.Location = new System.Drawing.Point(362, 8);
             this.ddSort.Name = "ddSort";
             this.ddSort.ShowArrow = true;
-            this.ddSort.Size = new System.Drawing.Size(200, 35);
+            this.ddSort.Size = new System.Drawing.Size(159, 35);
             this.ddSort.TabIndex = 2;
-            this.ddSort.Text = "Attachment Type [All▼]";
+            this.ddSort.Text = "Sắp xếp";
             this.ddSort.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddSort_SelectedValueChanged);
             // 
             // btnSearch
