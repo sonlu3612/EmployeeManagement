@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance3 = new AntdUI.HyperlinkLabel.LinkAppearance();
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance4 = new AntdUI.HyperlinkLabel.LinkAppearance();
+            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance1 = new AntdUI.HyperlinkLabel.LinkAppearance();
+            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance2 = new AntdUI.HyperlinkLabel.LinkAppearance();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dtEndDate = new AntdUI.DatePicker();
             this.label7 = new AntdUI.Label();
@@ -96,10 +96,10 @@
             // 
             // hyperlinkLabel1
             // 
-            this.hyperlinkLabel1.HoverStyle = linkAppearance3;
+            this.hyperlinkLabel1.HoverStyle = linkAppearance1;
             this.hyperlinkLabel1.Location = new System.Drawing.Point(188, 321);
             this.hyperlinkLabel1.Name = "hyperlinkLabel1";
-            this.hyperlinkLabel1.NormalStyle = linkAppearance4;
+            this.hyperlinkLabel1.NormalStyle = linkAppearance2;
             this.hyperlinkLabel1.Size = new System.Drawing.Size(75, 23);
             this.hyperlinkLabel1.TabIndex = 73;
             this.hyperlinkLabel1.Text = "Đính kèm";
@@ -117,6 +117,7 @@
             this.cboStatus.Size = new System.Drawing.Size(321, 32);
             this.cboStatus.TabIndex = 72;
             this.cboStatus.Text = "                                    ";
+            this.cboStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cboStatus_SelectedValueChanged);
             // 
             // label1
             // 

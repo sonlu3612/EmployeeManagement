@@ -315,6 +315,8 @@ INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (12, 1013, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (13, 1015, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (14, 1018, N'Nhân viên', CAST(N'2025-11-06T13:41:23.207' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (15, 3, N'Quản lý phòng ban', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
+
 SET IDENTITY_INSERT [dbo].[UserRoles] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Users] ON 
@@ -531,3 +533,6 @@ ALTER TABLE [dbo].[TaskAssignments]  WITH CHECK ADD CHECK  (([CompletionStatus]=
 GO
 ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD CHECK  (([Role]=N'Quản lý dự án' OR [Role]=N'Nhân viên' OR [Role]=N'Quản lý phòng ban' OR [Role]='Admin'))
 GO
+
+select * from UserRoles
+join UserRoles ur on ur.UserID = Users.UserID

@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Vanara.PInvoke;
 using Message = AntdUI.Message;
 namespace EmployeeManagement.Pages
 {
@@ -22,6 +23,7 @@ namespace EmployeeManagement.Pages
         public Page_Project()
         {
             InitializeComponent();
+          
         }
         private bool IsInDesignMode()
         {
@@ -42,12 +44,16 @@ namespace EmployeeManagement.Pages
         }
         private void LoadData()
         {
+            System.Diagnostics.Debug.WriteLine(string.Join(",", SessionManager.CurrentUser.Roles));
+            System.Diagnostics.Debug.WriteLine(IsProjectManager());
             if (IsAdmin())
             {
                 visibleProjects = _projectRepository.GetAll().ToList();
             }
             else if (IsProjectManager())
             {
+                Console.WriteLine(string.Join(",", SessionManager.CurrentUser.Roles));
+
                 visibleProjects = _projectRepository.GetAll()
                     .Where(p => p.ManagerBy == SessionManager.CurrentUser.UserID)
                     .ToList();
@@ -389,6 +395,33 @@ namespace EmployeeManagement.Pages
             if (!IsAdmin() && !IsProjectManager())
             {
                 btnXoa.Enabled = false;
+            }
+        }
+
+
+        private void cậpNhậtToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbProject.SelectedIndex - 1;
+            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            {
+                var project = projects[selectedIndex];
+
+                if (!IsAdmin() && !IsProjectManager())
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền cập nhật nhiệm vụ này!");
+                    return;
+                }
+                frmProject frmProject = new frmProject(project);
+                if(frmProject.ShowDialog() == DialogResult.OK)
+                {
+                    Message.success(this.FindForm(), "Cập nhật dự án thành công");
+                    LoadData();
+                }
+
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Vui lòng chọn dự án cần chỉnh sửa!");
             }
         }
     }

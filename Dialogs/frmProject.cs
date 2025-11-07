@@ -3,7 +3,10 @@ using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
 using System;
+using System.ComponentModel;
+using System.Net;
 using System.Windows.Forms;
+using Message = AntdUI.Message;
 
 namespace EmployeeManagement.Dialogs
 {
@@ -20,17 +23,66 @@ namespace EmployeeManagement.Dialogs
             _project = project;
             _isEdit = project != null;
         }
+
+        private bool IsInDesignMode()
+        {
+            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
+                   || (this.Site != null && this.Site.DesignMode);
+        }
+        private bool IsAdmin()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
+        }
+        private bool IsProjectManager()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
+        }
+        private bool IsEmployee()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
+        }
         private void frmProject_Load(object sender, EventArgs e)
         {
             loadEmployeesName();
+            if (IsAdmin())
+            {
+                loadData();
+            }
+            else if (IsProjectManager())
+            {
+                loadData();
+                cbManager.Enabled = false;
+
+            }
+            else 
+            {
+                loadData();
+                txtProjectName.Enabled = false;
+
+                txtDescription.Enabled = false;
+                dtStartDate.Enabled = false;
+                dtEndDate.Enabled = false;
+                cbManager.Enabled = false ;
+                cboStatus.Enabled = false;
+
+            }
+
+            
+        }
+
+
+        private void loadData()
+        {
             if (_isEdit)
             {
                 txtProjectName.Text = _project.ProjectName;
                 txtDescription.Text = _project.Description;
                 dtStartDate.Value = _project.StartDate;
                 dtEndDate.Value = _project.EndDate;
-                cbManager.SelectedValue = _project.CreatedBy;
+                cbManager.Text = _project.CreatedBy.ToString();
+                cbManager.Text = _project.ManagerBy.ToString() + " - "+_project.ManagerName;
                 cbManager.SelectedValue = _project.ManagerBy;
+                cboStatus.Text = _project.Status;
             }
             else
             {
@@ -39,7 +91,8 @@ namespace EmployeeManagement.Dialogs
                 dtStartDate.Value = DateTime.Now;
                 dtEndDate.Value = DateTime.Now;
                 cbManager.SelectedValue = currentUser.UserID;
-                cboStatus.Text = "Planning";
+                cboStatus.Text = "Đang kế hoạch";
+                cboStatus.SelectedValue = cboStatus.Text;
             }
         }
         private void loadEmployeesName()
@@ -81,7 +134,7 @@ namespace EmployeeManagement.Dialogs
                     Description = txtDescription.Text.Trim(),
                     StartDate = (DateTime)dtStartDate.Value,
                     EndDate = dtEndDate.Value,
-                    Status = "Planning",
+                    Status = cboStatus.Text,
                     ManagerBy = managerId,
                     ManagerName = managerName,
                     CreatedBy = SessionManager.CurrentUser.UserID
@@ -90,11 +143,19 @@ namespace EmployeeManagement.Dialogs
                 if (_isEdit)
                 {
                     newProject.ProjectID = _project.ProjectID;
+                    _projectRepository.Update(newProject);
+                    //Message.success(this.FindForm(), "Cập nhật dự án thành công!");
+                }
+                else
+                {
+                    _projectRepository.Insert(newProject);
+                    //Message.success(this.FindForm(), "Thêm dự án thành công!");
                 }
 
                 DialogResult = DialogResult.OK;
                 Tag = newProject;
                 Close();
+                
             }
             catch (Exception ex)
             {
@@ -111,6 +172,11 @@ namespace EmployeeManagement.Dialogs
         private void cbManager_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             cbManager.Text = cbManager.SelectedValue.ToString();
+        }
+
+        private void cboStatus_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
+        {
+            cboStatus.Text = cboStatus.SelectedValue.ToString();
         }
     }
 }
