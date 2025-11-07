@@ -30,17 +30,18 @@
         {
             this.tbEmployee = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
+            this.ddownPB = new AntdUI.Dropdown();
             this.btnLuu = new AntdUI.Button();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.txtTim = new AntdUI.Input();
-            this.ddownPB = new AntdUI.Dropdown();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbEmployee
             // 
             this.tbEmployee.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbEmployee.EmptyText = "Không có nhân viên nào";
             this.tbEmployee.Gap = 12;
             this.tbEmployee.Location = new System.Drawing.Point(0, 41);
             this.tbEmployee.Name = "tbEmployee";
@@ -62,6 +63,19 @@
             this.panel1.Size = new System.Drawing.Size(841, 41);
             this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
+            // 
+            // ddownPB
+            // 
+            this.ddownPB.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownPB.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownPB.ForeColor = System.Drawing.Color.White;
+            this.ddownPB.Location = new System.Drawing.Point(330, 3);
+            this.ddownPB.Name = "ddownPB";
+            this.ddownPB.ShowArrow = true;
+            this.ddownPB.Size = new System.Drawing.Size(135, 35);
+            this.ddownPB.TabIndex = 7;
+            this.ddownPB.Text = "Phòng ban";
+            this.ddownPB.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownPB_SelectedValueChanged);
             // 
             // btnLuu
             // 
@@ -93,6 +107,7 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -107,6 +122,7 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // txtTim
             // 
@@ -116,18 +132,6 @@
             this.txtTim.Radius = 10;
             this.txtTim.Size = new System.Drawing.Size(216, 35);
             this.txtTim.TabIndex = 0;
-            // 
-            // ddownPB
-            // 
-            this.ddownPB.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddownPB.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ddownPB.ForeColor = System.Drawing.Color.White;
-            this.ddownPB.Location = new System.Drawing.Point(330, 3);
-            this.ddownPB.Name = "ddownPB";
-            this.ddownPB.ShowArrow = true;
-            this.ddownPB.Size = new System.Drawing.Size(135, 35);
-            this.ddownPB.TabIndex = 7;
-            this.ddownPB.Text = "Phòng ban";
             // 
             // Page_AssignEmployee
             // 

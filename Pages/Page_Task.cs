@@ -122,6 +122,7 @@ namespace EmployeeManagement.Pages
                     var displayList = visibleTasks.Select(t => CreateDisplayItem(t)).ToList();
                     tableTask.DataSource = displayList;
                     return;
+                    Message.success(this.FindForm(), $"Tìm thấy {visibleTasks.Count} nhiệm vụ.");
                 }
 
                 int employeeId = int.Parse(selected.Split('-')[0].Trim());

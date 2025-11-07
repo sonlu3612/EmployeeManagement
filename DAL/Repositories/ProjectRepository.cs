@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -329,6 +328,73 @@ namespace EmployeeManagement.DAL.Repositories
                 ManagerBy = row.Table.Columns.Contains("ManagerBy") && row["ManagerBy"] != DBNull.Value ? (int?)Convert.ToInt32(row["ManagerBy"]) : null,
                 ManagerName = row.Table.Columns.Contains("ManagerName") && row["ManagerName"] != DBNull.Value ? row["ManagerName"].ToString() : null
             };
+        }
+        /// <summary>
+        /// Lấy danh sách tất cả dự án với số lượng file đính kèm
+        /// </summary>
+        /// <returns>Danh sách dynamic với thông tin project và FileCount</returns>
+        public List<dynamic> GetAllWithFileCount()
+        {
+            List<dynamic> projects = new List<dynamic>();
+            try
+            {
+                string sql = @"
+                    SELECT 
+                        p.ProjectID,
+                        p.ProjectName,
+                        p.Description,
+                        p.StartDate,
+                        p.EndDate,
+                        p.Status,
+                        p.CreatedBy,
+                        e.FullName AS CreatedByName,
+                        p.ManagerBy,
+                        m.FullName AS ManagerName,
+                        p.CreatedDate,
+                        COUNT(pf.ProjectFileID) AS FileCount
+                    FROM Projects p
+                    LEFT JOIN Employees e ON p.CreatedBy = e.EmployeeID
+                    LEFT JOIN Employees m ON p.ManagerBy = m.EmployeeID
+                    LEFT JOIN ProjectFiles pf ON p.ProjectID = pf.ProjectID
+                    GROUP BY 
+                        p.ProjectID,
+                        p.ProjectName,
+                        p.Description,
+                        p.StartDate,
+                        p.EndDate,
+                        p.Status,
+                        p.CreatedBy,
+                        e.FullName,
+                        p.ManagerBy,
+                        m.FullName,
+                        p.CreatedDate
+                    ORDER BY p.ProjectID DESC";
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
+                foreach (DataRow row in dt.Rows)
+                {
+                    projects.Add(new
+                    {
+                        ProjectID = Convert.ToInt32(row["ProjectID"]),
+                        ProjectName = row["ProjectName"].ToString(),
+                        Description = row["Description"].ToString(),
+                        StartDate = Convert.ToDateTime(row["StartDate"]),
+                        EndDate = row["EndDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(row["EndDate"]) : null,
+                        Status = row["Status"].ToString(),
+                        CreatedBy = Convert.ToInt32(row["CreatedBy"]),
+                        CreatedByName = row["CreatedByName"].ToString(),
+                        ManagerBy = row["ManagerBy"] != DBNull.Value ? (int?)Convert.ToInt32(row["ManagerBy"]) : null,
+                        ManagerName = row["ManagerName"].ToString(),
+                        CreatedDate = Convert.ToDateTime(row["CreatedDate"]),
+                        FileCount = Convert.ToInt32(row["FileCount"])
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ProjectRepository.GetAllWithFileCount] Lỗi: {ex.Message}");
+                throw;
+            }
+            return projects;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace EmployeeManagement.Pages
             try
             {
                 string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
-                var allEmployees = employeeRepository.GetAll();
+                var allEmployees = employeeRepository.GetForGrid();
                 if (IsAdmin())
                 {
                     visibleEmployees = allEmployees.ToList();
@@ -92,9 +92,7 @@ namespace EmployeeManagement.Pages
                         .Where(e => e.EmployeeID == SessionManager.CurrentUser.UserID)
                         .ToList();
                 }
-                // ✅ Gán lại DataSource
                 tbNV.DataSource = visibleEmployees;
-                // ✅ Tạo lại danh sách ảnh avatar mỗi lần LoadData
                 var avatarCol = tbNV.Columns.FirstOrDefault(c => c.Key == "EmployeeID") as AntdUI.ColumnSelect;
                 if (avatarCol != null)
                 {
@@ -217,6 +215,8 @@ namespace EmployeeManagement.Pages
         }
         private void btnSync_Click(object sender, EventArgs e)
         {
+            txtTim.Text = string.Empty;
+            ddownGender.Text = "Giới tính";
             LoadData();
         }
         private void ddownGender_SelectedValueChanged(object sender, ObjectNEventArgs e)

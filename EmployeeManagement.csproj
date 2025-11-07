@@ -114,6 +114,12 @@
     <Compile Include="Dialogs\frmInforHuy.Designer.cs">
       <DependentUpon>frmInforHuy.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmProjectFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmProjectFile.Designer.cs">
+      <DependentUpon>frmProjectFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\frmSubmit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,6 +225,12 @@
     <Compile Include="Pages\Page_Project.Designer.cs">
       <DependentUpon>Page_Project.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Page_ProjectFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_ProjectFile.Designer.cs">
+      <DependentUpon>Page_ProjectFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Page_Task.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -230,6 +242,12 @@
     </Compile>
     <Compile Include="Pages\Page_ManageTask.Designer.cs">
       <DependentUpon>Page_ManageTask.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Page_TaskFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Pages\Page_TaskFile.Designer.cs">
+      <DependentUpon>Page_TaskFile.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -277,6 +295,9 @@
     <EmbeddedResource Include="Dialogs\frmProject.resx">
       <DependentUpon>frmProject.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmProjectFile.resx">
+      <DependentUpon>frmProjectFile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmSubmit.resx">
       <DependentUpon>frmSubmit.cs</DependentUpon>
     </EmbeddedResource>
@@ -317,11 +338,17 @@
     <EmbeddedResource Include="Pages\Page_Project.resx">
       <DependentUpon>Page_Project.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_ProjectFile.resx">
+      <DependentUpon>Page_ProjectFile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_Task.resx">
       <DependentUpon>Page_Task.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Pages\Page_ManageTask.resx">
       <DependentUpon>Page_ManageTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pages\Page_TaskFile.resx">
+      <DependentUpon>Page_TaskFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

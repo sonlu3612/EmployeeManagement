@@ -1,4 +1,5 @@
 ﻿using AntdUI;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
 using System;
 using System.CodeDom;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.ModelBinding;
 using System.Windows.Forms;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 using Message = AntdUI.Message;
@@ -50,6 +52,8 @@ namespace EmployeeManagement.Dialogs
                 ddownProjectID.Text = _projectID.ToString();
                 ddownProjectID.Enabled = false;
                 ddownStatus.Text = "Cần làm";
+                txtMaNguoiTao.Text = SessionManager.CurrentUser.UserID.ToString();
+                txtMaNguoiTao.Enabled = false;
                 dateStart.Text = DateTime.Now.ToString("yyyy-MM-dd");
             }
             else if( _task != null)
@@ -59,7 +63,8 @@ namespace EmployeeManagement.Dialogs
                 dateStart.Enabled = false;
                 ddownProjectID.Text = _task.ProjectID.ToString();
                
-
+                txtMaNguoiTao.Text = _task.CreatedBy.ToString();
+                txtMaNguoiTao.Enabled = false;
                 txtTaskName.Text = _task.TaskName;
                 //ddownProjectID.SelectedValue = _task.ProjectID.ToString();
                 txtDescription.Text = _task.Description;
@@ -67,7 +72,7 @@ namespace EmployeeManagement.Dialogs
                 ddownStatus.Text = _task.Status;
                 dateStart.Text = _task.CreatedDate.ToString();
                 ddownPriority.Text = _task.Priority;
-                dateEnd.Text = _task.Deadline?.ToString("yyyy-MM-dd") ?? "Chưa có";
+                dateEnd.Value = _task.Deadline;
                 ddownProjectID.Enabled = false;
 
             }

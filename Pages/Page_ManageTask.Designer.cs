@@ -156,6 +156,7 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // txtTim
             // 
@@ -169,6 +170,7 @@
             // tbTask
             // 
             this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTask.EmptyText = "Không có nhiệm vụ nào";
             this.tbTask.Gap = 12;
             this.tbTask.Location = new System.Drawing.Point(0, 41);
             this.tbTask.Name = "tbTask";

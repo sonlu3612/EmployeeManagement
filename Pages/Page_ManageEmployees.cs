@@ -154,6 +154,8 @@ namespace EmployeeManagement.Pages
         // eSync
         private void btnSync_Click(object sender, EventArgs eSync)
         {
+            txtTim.Text = string.Empty;
+            ddownGender.Text = "Giới tính";
             LoadData();
         }
 
