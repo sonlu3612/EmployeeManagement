@@ -52,7 +52,6 @@
             this.tbNV.Size = new System.Drawing.Size(918, 507);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
-            this.tbNV.CellClick += new AntdUI.Table.ClickEventHandler(this.table1_CellClick);
             this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
             // 
             // panel1
@@ -69,7 +68,6 @@
             this.panel1.Size = new System.Drawing.Size(918, 41);
             this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
-            this.panel1.Click += new System.EventHandler(this.panel1_Click);
             // 
             // btnDelete
             // 

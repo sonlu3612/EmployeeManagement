@@ -17,7 +17,7 @@ namespace EmployeeManagement.DAL
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in bytes)
                 {
-                    builder.Append(b.ToString("x2"));
+                    builder.Append(b.ToString("X2"));
                 }
                 return builder.ToString();
             }
