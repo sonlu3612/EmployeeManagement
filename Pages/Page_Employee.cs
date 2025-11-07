@@ -170,7 +170,8 @@ namespace EmployeeManagement.Pages
                 {
                     if (!IsDepartmentManager())
                     {
-                        Message.warn(this.FindForm(), "Bạn không có quyền xóa nhân viên!");
+                        btnDelete.Enabled = false;
+                        //Message.warn(this.FindForm(), "Bạn không có quyền xóa nhân viên!");
                         return;
                     }
                     var myDepartmentIds = departmentRepository.GetAll()
