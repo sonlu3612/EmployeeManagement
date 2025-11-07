@@ -138,5 +138,10 @@ namespace EmployeeManagement.Dialogs
         private void label2_Click(object sender, EventArgs e)
         {
         }
+
+        private void uploadDragger1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -196,6 +196,7 @@
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
             this.documentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.documentsToolStripMenuItem.Text = "Tài liệu";
+            this.documentsToolStripMenuItem.Click += new System.EventHandler(this.documentsToolStripMenuItem_Click);
             // 
             // cậpNhậtToolStripMenuItem
             // 

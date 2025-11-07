@@ -41,6 +41,7 @@
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cậpNhậtTiếnĐộToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tàiLiệuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -170,9 +171,10 @@
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.xóaToolStripMenuItem,
             this.quảnLýToolStripMenuItem,
-            this.cậpNhậtTiếnĐộToolStripMenuItem});
+            this.cậpNhậtTiếnĐộToolStripMenuItem,
+            this.tàiLiệuToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 70);
+            this.menuStrip.Size = new System.Drawing.Size(185, 114);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
@@ -193,6 +195,12 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
             this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
+            // 
+            // tàiLiệuToolStripMenuItem
+            // 
+            this.tàiLiệuToolStripMenuItem.Name = "tàiLiệuToolStripMenuItem";
+            this.tàiLiệuToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.tàiLiệuToolStripMenuItem.Text = "Tài liệu";
             // 
             // Page_Task
             // 
@@ -223,5 +231,6 @@
         private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quảnLýToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cậpNhậtTiếnĐộToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tàiLiệuToolStripMenuItem;
     }
 }

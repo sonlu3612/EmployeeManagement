@@ -30,22 +30,26 @@
         {
             this.tbFiles = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
+            this.btnThem = new AntdUI.Button();
             this.ddSort = new AntdUI.Dropdown();
             this.txtSearch = new AntdUI.Input();
-            this.btnSearch = new AntdUI.Button();
             this.btnSync = new AntdUI.Button();
-            this.btnThem = new AntdUI.Button();
+            this.btnSearch = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbFiles
             // 
             this.tbFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbFiles.EmptyText = "Không có tài liệu";
             this.tbFiles.Gap = 12;
             this.tbFiles.Location = new System.Drawing.Point(0, 44);
             this.tbFiles.Name = "tbFiles";
             this.tbFiles.Size = new System.Drawing.Size(924, 475);
             this.tbFiles.TabIndex = 3;
+            this.tbFiles.CellClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellClick);
+            this.tbFiles.CellButtonClick += new AntdUI.Table.ClickButtonEventHandler(this.tbFiles_CellButtonClick);
+            this.tbFiles.CellDoubleClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellDoubleClick);
             // 
             // panel1
             // 
@@ -60,55 +64,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(924, 44);
             this.panel1.TabIndex = 2;
-            // 
-            // ddSort
-            // 
-            this.ddSort.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.ddSort.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.ddSort.ForeColor = System.Drawing.Color.White;
-            this.ddSort.Location = new System.Drawing.Point(419, 8);
-            this.ddSort.Name = "ddSort";
-            this.ddSort.ShowArrow = true;
-            this.ddSort.Size = new System.Drawing.Size(159, 35);
-            this.ddSort.TabIndex = 2;
-            this.ddSort.Text = "Sắp xếp";
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Location = new System.Drawing.Point(12, 8);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.PlaceholderText = "Tìm kiếm...";
-            this.txtSearch.Radius = 10;
-            this.txtSearch.Size = new System.Drawing.Size(287, 35);
-            this.txtSearch.TabIndex = 0;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.BackHover = System.Drawing.Color.White;
-            this.btnSearch.BorderWidth = 2F;
-            this.btnSearch.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSearch.Icon = global::EmployeeManagement.Properties.Resources.search_white;
-            this.btnSearch.IconHover = global::EmployeeManagement.Properties.Resources.search_blue;
-            this.btnSearch.Location = new System.Drawing.Point(305, 8);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(51, 35);
-            this.btnSearch.TabIndex = 1;
-            // 
-            // btnSync
-            // 
-            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.BackHover = System.Drawing.Color.White;
-            this.btnSync.BorderWidth = 2F;
-            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
-            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(353, 8);
-            this.btnSync.Name = "btnSync";
-            this.btnSync.Size = new System.Drawing.Size(51, 35);
-            this.btnSync.TabIndex = 4;
             // 
             // btnThem
             // 
@@ -125,6 +80,59 @@
             this.btnThem.Size = new System.Drawing.Size(74, 44);
             this.btnThem.TabIndex = 7;
             this.btnThem.Text = "Thêm";
+            this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
+            // 
+            // ddSort
+            // 
+            this.ddSort.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddSort.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.ddSort.ForeColor = System.Drawing.Color.White;
+            this.ddSort.Location = new System.Drawing.Point(419, 8);
+            this.ddSort.Name = "ddSort";
+            this.ddSort.ShowArrow = true;
+            this.ddSort.Size = new System.Drawing.Size(159, 35);
+            this.ddSort.TabIndex = 2;
+            this.ddSort.Text = "Sắp xếp";
+            this.ddSort.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddSort_SelectedValueChanged);
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Location = new System.Drawing.Point(12, 8);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.PlaceholderText = "Tìm kiếm...";
+            this.txtSearch.Radius = 10;
+            this.txtSearch.Size = new System.Drawing.Size(287, 35);
+            this.txtSearch.TabIndex = 0;
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.BackHover = System.Drawing.Color.White;
+            this.btnSync.BorderWidth = 2F;
+            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
+            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
+            this.btnSync.Location = new System.Drawing.Point(353, 8);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(51, 35);
+            this.btnSync.TabIndex = 4;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.BackHover = System.Drawing.Color.White;
+            this.btnSearch.BorderWidth = 2F;
+            this.btnSearch.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSearch.Icon = global::EmployeeManagement.Properties.Resources.search_white;
+            this.btnSearch.IconHover = global::EmployeeManagement.Properties.Resources.search_blue;
+            this.btnSearch.Location = new System.Drawing.Point(305, 8);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(51, 35);
+            this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // Page_ProjectFile
             // 

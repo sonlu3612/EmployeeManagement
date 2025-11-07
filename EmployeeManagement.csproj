@@ -126,6 +126,12 @@
     <Compile Include="Dialogs\frmSubmit.Designer.cs">
       <DependentUpon>frmSubmit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\frmTaskFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\frmTaskFile.Designer.cs">
+      <DependentUpon>frmTaskFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Department.cs" />
     <Compile Include="Dialogs\frmInfor.cs">
       <SubType>Form</SubType>
@@ -303,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\frmTask.resx">
       <DependentUpon>frmTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\frmTaskFile.resx">
+      <DependentUpon>frmTaskFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ManageEmployee.resx">
       <DependentUpon>ManageEmployee.cs</DependentUpon>

@@ -39,33 +39,33 @@ namespace EmployeeManagement.Dialogs
             ddownDepartment.Items.Clear();
             ddownDepartment.Items.AddRange(departments.Select(d => d.DepartmentName).ToArray());
 
-            if (IsEdited)
-            {
-                txtName.Text = _employee.FullName;
-                txtEmail.Text = _employee.Email;
-                txtDienThoai.Text = _employee.Phone;
-                txtPosition.Text = _employee.Position;
-                txtDiaChi.Text = _employee.Address;
-                ddownGT.Text =  _employee.Gender;
-                dateStart.Value = _employee.HireDate;
+            //if (IsEdited)
+            //{
+            //    txtName.Text = _employee.FullName;
+            //    txtEmail.Text = _employee.Email;
+            //    txtDienThoai.Text = _employee.Phone;
+            //    txtPosition.Text = _employee.Position;
+            //    txtDiaChi.Text = _employee.Address;
+            //    ddownGT.Text =  _employee.Gender;
+            //    dateStart.Value = _employee.HireDate;
 
-            }
-            else
-            {
+            //}
+            //else
+            //{
                
-                dateStart.Value = DateTime.Today;
-            }
-            ddownDepartment.Enabled = false;
+            //    dateStart.Value = DateTime.Today;
+            //}
+            //ddownDepartment.Enabled = false;
 
-            if (!string.IsNullOrEmpty(_employee.AvatarPath))
-            {
-                string fullPath = Path.Combine(Application.StartupPath, "..", "..", _employee.AvatarPath.Replace("/", "\\"));
-                if (File.Exists(fullPath))
-                {
-                    img.Image = Image.FromFile(fullPath);
-                    img.Tag = _employee.AvatarPath;
-                }
-            }
+            //if (!string.IsNullOrEmpty(_employee.AvatarPath))
+            //{
+            //    string fullPath = Path.Combine(Application.StartupPath, "..", "..", _employee.AvatarPath.Replace("/", "\\"));
+            //    if (File.Exists(fullPath))
+            //    {
+            //        img.Image = Image.FromFile(fullPath);
+            //        img.Tag = _employee.AvatarPath;
+            //    }
+            //}
         }
 
         private void btnHuy_Click(object sender, EventArgs e)

@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
+
 namespace EmployeeManagement.Pages
 {
     public partial class Page_ProjectFile : UserControl
@@ -19,6 +20,8 @@ namespace EmployeeManagement.Pages
         private FileService _fileService;
         private int _currentProjectId;
         private string _currentProjectName;
+        private List<dynamic> originalFiles; // Lưu danh sách gốc để filter/sort
+
         public Page_ProjectFile()
         {
             InitializeComponent();
@@ -26,19 +29,42 @@ namespace EmployeeManagement.Pages
             _employeeRepository = new EmployeeRepository();
             _fileService = new FileService();
         }
+
         public void LoadProjectFiles(int projectId, string projectName)
         {
             _currentProjectId = projectId;
+            Console.WriteLine($"Loaded Project ID: {_currentProjectId}");
             _currentProjectName = projectName;
             this.Text = $"Quản lý Tập Tin Dự Án - {projectName}";
+            tbFiles.Columns.Add(new Column("Title", "Tên file") { Width = "22%" });
+            tbFiles.Columns.Add(new Column("FileType", "Loại file") { Width = "15%" });
+            var fileColumn = new Column("File", "Tập tin") { Width = "12%" };
+            fileColumn.SetStyle(new AntdUI.Table.CellStyleInfo
+            {
+                ForeColor = System.Drawing.Color.Blue
+            });
+            tbFiles.Columns.Add(fileColumn);
+            tbFiles.Columns.Add(new Column("CreatedAt", "Ngày thêm") { Width = "15%" });
+            tbFiles.Columns.Add(new Column("CreatedByName", "Thêm bởi") { Width = "16%" });
+            tbFiles.Columns.Add(new Column("Actions", "Hành động") { Width = "20%" });
+            ddSort.Items.Add("Tên A-Z");
+            ddSort.Items.Add("Tên Z-A");
+            ddSort.Items.Add("Ngày thêm mới nhất");
+            ddSort.Items.Add("Ngày thêm cũ nhất");
             LoadData();
         }
+
         private void LoadData()
         {
             try
             {
+                if (_currentProjectId <= 0)
+                {
+                    Message.error(this.FindForm(), "Invalid Project ID. Cannot load files.");
+                    return;
+                }
                 var files = _projectFileRepository.GetByProject(_currentProjectId);
-                var filesWithType = files.Select(f => new
+                originalFiles = files.Select(f => new
                 {
                     f.ProjectFileID,
                     f.ProjectID,
@@ -51,24 +77,20 @@ namespace EmployeeManagement.Pages
                     f.ProjectName,
                     f.CreatedByName,
                     Actions = new AntdUI.CellLink[]
-                 {
-    // Nút SỬA - Default (xám)
-    new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default)
-        .SetIcon("EditOutlined"),
-    // Nút TẢI - Primary (xanh dương)
-    new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary)
-        .SetIcon("DownloadOutlined"),
-    // Nút XÓA - Error (đỏ)
-                    new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
-                     }
-                }).ToList();
-                tbFiles.DataSource = filesWithType;
+                    {
+                        new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default).SetIcon("EditOutlined"),
+                        new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary).SetIcon("DownloadOutlined"),
+                        new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
+                    }
+                }).ToList<dynamic>();
+                tbFiles.DataSource = originalFiles;
             }
             catch (Exception ex)
             {
                 Message.error(this.FindForm(), "Lỗi khi tải dữ liệu: " + ex.Message);
             }
         }
+
         private void Page_ProjectFile_Load(object sender, EventArgs e)
         {
             tbFiles.Columns.Add(new Column("Title", "File Name") { Width = "22%" });
@@ -82,34 +104,96 @@ namespace EmployeeManagement.Pages
             tbFiles.Columns.Add(new Column("CreatedAt", "Date Added") { Width = "15%" });
             tbFiles.Columns.Add(new Column("CreatedByName", "Created By") { Width = "16%" });
             tbFiles.Columns.Add(new Column("Actions", "Actions") { Width = "20%" });
-            tbFiles.CellButtonClick += tbFiles_CellButtonClick;
             ddSort.Items.Add("Tên A-Z");
             ddSort.Items.Add("Tên Z-A");
             ddSort.Items.Add("Ngày thêm mới nhất");
             ddSort.Items.Add("Ngày thêm cũ nhất");
         }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            try
+            {
+                string searchText = txtSearch.Text?.Trim().ToLower() ?? "";
+                if (string.IsNullOrEmpty(searchText))
+                {
+                    tbFiles.DataSource = originalFiles;
+                    return;
+                }
 
+                var filtered = originalFiles.Where(f =>
+                    (f.Title?.ToString().ToLower().Contains(searchText) ?? false) ||
+                    (f.FileName?.ToString().ToLower().Contains(searchText) ?? false)
+                ).ToList();
+
+                tbFiles.DataSource = filtered;
+                if (filtered.Count == 0)
+                {
+                    Message.warn(this.FindForm(), "Không tìm thấy kết quả phù hợp.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
+            }
         }
+
         private void ddSort_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
+            if (originalFiles == null || originalFiles.Count == 0) return;
 
+            string sortOption = e.Value?.ToString() ?? "";
+            List<dynamic> sorted = new List<dynamic>(originalFiles);
+
+            switch (sortOption)
+            {
+                case "Tên A-Z":
+                    sorted = sorted.OrderBy(f => f.Title?.ToString()).ToList();
+                    break;
+                case "Tên Z-A":
+                    sorted = sorted.OrderByDescending(f => f.Title?.ToString()).ToList();
+                    break;
+                case "Ngày thêm mới nhất":
+                    sorted = sorted.OrderByDescending(f => f.CreatedAt).ToList();
+                    break;
+                case "Ngày thêm cũ nhất":
+                    sorted = sorted.OrderBy(f => f.CreatedAt).ToList();
+                    break;
+                default:
+                    return;
+            }
+
+            tbFiles.DataSource = sorted;
         }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
-
+            
         }
+
         private void tbFiles_CellClick(object sender, TableClickEventArgs e)
         {
-
+            if (e.Record == null) return;
+            dynamic record = e.Record;
+            if (e.Column.Key == "File")
+            {
+                OpenFile(record.FileName);
+            }
+            else if (e.Column.Key == "CreatedByName")
+            {
+                // TODO: May be in the future we can show employee details when clicking on the creator's name
+                //frmEmployee frm = new frmEmployee();
+                //frm.ShowDialog();
+            }
         }
+
         private void tbFiles_CellButtonClick(object sender, AntdUI.TableButtonEventArgs e)
         {
             if (e.Record == null) return;
             dynamic record = e.Record;
             if (e.Btn.Id == "edit")
             {
+                Console.WriteLine("edit");
                 EditFile(record);
             }
             else if (e.Btn.Id == "download")
@@ -121,10 +205,16 @@ namespace EmployeeManagement.Pages
                 DeleteFile(record);
             }
         }
+
         private void tbFiles_CellDoubleClick(object sender, TableClickEventArgs e)
         {
-
+            if (e.Record != null)
+            {
+                dynamic record = e.Record;
+                OpenFile(record.FileName);
+            }
         }
+
         private void EditFile(dynamic record)
         {
             try
@@ -190,6 +280,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi sửa tên file: " + ex.Message);
             }
         }
+
         private void DownloadFile(dynamic record)
         {
             try
@@ -218,6 +309,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tải xuống file: " + ex.Message);
             }
         }
+
         private void DeleteFile(dynamic record)
         {
             try
@@ -228,16 +320,16 @@ namespace EmployeeManagement.Pages
                 string dateAdded = Convert.ToDateTime(record.CreatedAt).ToString("dd/MM/yyyy HH:mm");
                 string createdBy = record.CreatedByName;
                 string confirmMessage = $"Bạn có chắc muốn xóa file này không?\n\n" +
-                    $"Tên file: {fileName}\n" +
-                 $"Loại file: {fileType}\n" +
-                     $"Ngày thêm: {dateAdded}\n" +
-                   $"Người tạo: {createdBy}";
+                                        $"Tên file: {fileName}\n" +
+                                        $"Loại file: {fileType}\n" +
+                                        $"Ngày thêm: {dateAdded}\n" +
+                                        $"Người tạo: {createdBy}";
                 var modalConfig = AntdUI.Modal.config(
-                          this.FindForm(),
-                  "Xác nhận xóa",
-                 confirmMessage,
-              TType.Warn
-                         );
+                    this.FindForm(),
+                    "Xác nhận xóa",
+                    confirmMessage,
+                    TType.Warn
+                );
                 modalConfig.OkText = "Xóa";
                 modalConfig.CancelText = "Hủy";
                 modalConfig.OkType = TTypeMini.Error;
@@ -261,6 +353,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi xóa file: " + ex.Message);
             }
         }
+
         private void OpenFile(string fileName)
         {
             try
@@ -280,6 +373,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi mở file: " + ex.Message);
             }
         }
+
         private string GetFileType(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -314,9 +408,71 @@ namespace EmployeeManagement.Pages
             }
         }
 
-        private void btnAdd_Click_1(object sender, EventArgs e)
+        private void btnSync_Click(object sender, EventArgs e)
         {
+            txtSearch.Text = string.Empty;
+            LoadData();
+        }
 
+        private void btnThem_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine($"Adding file for Project ID: {_currentProjectId}");
+            try
+            {
+                if (_currentProjectId <= 0)
+                {
+                    Message.error(this.FindForm(), "Invalid Project ID. Cannot add file.");
+                    return;
+                }
+                if (SessionManager.CurrentUser == null)
+                {
+                    Message.error(this.FindForm(), "Vui lòng đăng nhập lại!");
+                    return;
+                }
+                int currentUserId = SessionManager.CurrentUser.UserID;
+                var currentEmployee = _employeeRepository.GetById(currentUserId);
+                if (currentEmployee == null)
+                {
+                    Message.error(this.FindForm(), $"Không tìm thấy thông tin nhân viên cho User ID: {currentUserId}. Vui lòng liên hệ Admin!");
+                    return;
+                }
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    openFileDialog.Title = "Chọn file để tải lên";
+                    openFileDialog.Filter = "All Files|*.*|Documents|*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx|Images|*.jpg;*.jpeg;*.png|Archives|*.zip;*.rar";
+                    openFileDialog.Multiselect = true;
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        int successCount = 0;
+                        int failCount = 0;
+                        foreach (string filePath in openFileDialog.FileNames)
+                        {
+                            string title = Path.GetFileNameWithoutExtension(filePath);
+                            if (_fileService.UploadProjectFile(_currentProjectId, title, filePath, currentUserId))
+                            {
+                                successCount++;
+                            }
+                            else
+                            {
+                                failCount++;
+                            }
+                        }
+                        LoadData();
+                        if (failCount == 0)
+                        {
+                            Message.success(this.FindForm(), $"Đã tải lên thành công {successCount} file!");
+                        }
+                        else
+                        {
+                            Message.warn(this.FindForm(), $"Tải lên thành công {successCount} file, thất bại {failCount} file!");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi tải lên file: " + ex.Message);
+            }
         }
     }
 }

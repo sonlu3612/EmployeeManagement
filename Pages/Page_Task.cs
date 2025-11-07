@@ -1,6 +1,7 @@
 ﻿using AntdUI;
-using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.DAL.Services;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
@@ -9,13 +10,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
-using Task = EmployeeManagement.Models.Task;
+
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Task : UserControl
@@ -24,27 +22,34 @@ namespace EmployeeManagement.Pages
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private ProjectRepository projectRepository = new ProjectRepository();
         private List<MyTask> visibleTasks;
+        private List<dynamic> originalTasks; // Để filter/sort
+
         public Page_Task()
         {
             InitializeComponent();
         }
+
         private bool IsInDesignMode()
         {
             return LicenseManager.UsageMode == LicenseUsageMode.Designtime
                    || (this.Site != null && this.Site.DesignMode);
         }
+
         private bool IsAdmin()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
         }
+
         private bool IsProjectManager()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
         }
+
         private bool IsEmployee()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
         }
+
         private void loadData()
         {
             tableTask.DataSource = null;
@@ -74,6 +79,7 @@ namespace EmployeeManagement.Pages
                 {
                     visibleTasks = new List<MyTask>();
                 }
+                originalTasks = visibleTasks.Select(t => (dynamic)t).ToList(); // Để filter/sort
                 tableTask.DataSource = visibleTasks;
             }
             catch (Exception ex)
@@ -81,9 +87,11 @@ namespace EmployeeManagement.Pages
                 MessageBox.Show("Error loading tasks: " + ex.Message);
             }
         }
+
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
         }
+
         private void btnSync_Click(object sender, EventArgs e)
         {
             loadData();
@@ -91,6 +99,7 @@ namespace EmployeeManagement.Pages
             ddownEmployee.Text = "Người tạo";
             ddownStatus.Text = "Trạng thái";
         }
+
         private void loadEmployeesName()
         {
             var employees = employeeRepository.GetAll();
@@ -102,7 +111,8 @@ namespace EmployeeManagement.Pages
                 ddownEmployee.Items.Add(displayText);
             }
         }
-        private void ddownEmployee_SelectedValueChanged(object sender, EventArgs e)
+
+        private void ddownEmployee_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             tableTask.DataSource = null;
             string selected = ddownEmployee.SelectedValue?.ToString() ?? "";
@@ -132,6 +142,7 @@ namespace EmployeeManagement.Pages
                 MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
+
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             tableTask.DataSource = null;
@@ -163,6 +174,7 @@ namespace EmployeeManagement.Pages
                 MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
+
         private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             var selectedIndex = tableTask.SelectedIndex - 1;
@@ -214,7 +226,18 @@ namespace EmployeeManagement.Pages
                     loadData();
                 }
             }
+            else if (e.ClickedItem.Text == "Tài liệu")
+            {
+                if (!IsAdmin() && !isProjectManagerOfThis)
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho nhiệm vụ này!");
+                    return;
+                }
+                var frmFile = new frmTaskFile(task.TaskID);
+                frmFile.ShowDialog();
+            }
         }
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var selectedIndex = tableTask.SelectedIndex - 1;
@@ -263,6 +286,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
             }
         }
+
         private void menuStrip_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -274,6 +298,7 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
+
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tableTask.SelectedIndex - 1;
@@ -298,9 +323,11 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
             }
         }
+
         private void cậpNhậtTiếnĐộToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
+
         private void Page_Task_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -319,6 +346,7 @@ namespace EmployeeManagement.Pages
                 btnDelete.Enabled = false;
             }
         }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try

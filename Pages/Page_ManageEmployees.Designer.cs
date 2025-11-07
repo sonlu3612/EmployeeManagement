@@ -53,7 +53,7 @@
             this.tbNV.Size = new System.Drawing.Size(836, 482);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
-            this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
+           // this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
             // 
             // panel1
             // 
@@ -169,7 +169,7 @@
             this.cậpNhậtToolStripMenuItem.Name = "cậpNhậtToolStripMenuItem";
             this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cậpNhậtToolStripMenuItem.Text = "Cập nhật";
-            this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
+          //  this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
             // 
             // Page_ManageEmployees
             // 

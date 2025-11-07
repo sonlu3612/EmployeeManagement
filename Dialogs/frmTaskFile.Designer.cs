@@ -1,6 +1,6 @@
 ﻿namespace EmployeeManagement.Dialogs
 {
-    partial class frmProjectFile
+    partial class frmTaskFile
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.pageTasks = new AntdUI.PageHeader();
-            this.page_ProjectFile1 = new EmployeeManagement.Pages.Page_ProjectFile();
+            this.page_TaskFile1 = new EmployeeManagement.Pages.Page_TaskFile();
             this.SuspendLayout();
             // 
             // pageTasks
@@ -43,38 +43,37 @@
             this.pageTasks.Name = "pageTasks";
             this.pageTasks.ShowButton = true;
             this.pageTasks.ShowIcon = true;
-            this.pageTasks.Size = new System.Drawing.Size(989, 39);
-            this.pageTasks.TabIndex = 4;
+            this.pageTasks.Size = new System.Drawing.Size(978, 39);
+            this.pageTasks.TabIndex = 6;
             this.pageTasks.Text = "Tệp đính kèm";
             this.pageTasks.UseForeColorDrawIcons = true;
             this.pageTasks.UseSystemStyleColor = true;
             // 
-            // page_ProjectFile1
+            // page_TaskFile1
             // 
-            this.page_ProjectFile1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_ProjectFile1.Location = new System.Drawing.Point(0, 39);
-            this.page_ProjectFile1.Name = "page_ProjectFile1";
-            this.page_ProjectFile1.Size = new System.Drawing.Size(989, 517);
-            this.page_ProjectFile1.TabIndex = 5;
+            this.page_TaskFile1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_TaskFile1.Location = new System.Drawing.Point(0, 39);
+            this.page_TaskFile1.Name = "page_TaskFile1";
+            this.page_TaskFile1.Size = new System.Drawing.Size(978, 523);
+            this.page_TaskFile1.TabIndex = 7;
+            this.page_TaskFile1.Load += new System.EventHandler(this.frmTaskFile_Load);
             // 
-            // frmProjectFile
+            // frmTaskFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(989, 556);
-            this.Controls.Add(this.page_ProjectFile1);
+            this.ClientSize = new System.Drawing.Size(978, 562);
+            this.Controls.Add(this.page_TaskFile1);
             this.Controls.Add(this.pageTasks);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frmProjectFile";
-            this.Text = "frmProjectFile";
-     //       this.Load += new System.EventHandler(this.frmProjectFile_Load);
+            this.Name = "frmTaskFile";
+            this.Text = "frmTaskFile";
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
         private AntdUI.PageHeader pageTasks;
-        private Pages.Page_ProjectFile page_ProjectFile1;
+        private Pages.Page_TaskFile page_TaskFile1;
     }
 }

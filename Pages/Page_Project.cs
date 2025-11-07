@@ -5,13 +5,17 @@ using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vanara.PInvoke;
+using Label = AntdUI.Label;
 using Message = AntdUI.Message;
+
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Project : UserControl
@@ -21,28 +25,33 @@ namespace EmployeeManagement.Pages
         private readonly TaskRepository taskRepository = new TaskRepository();
         private ProjectFileRepository _projectFileRepository = new ProjectFileRepository();
         private List<dynamic> visibleProjects;
+
         public Page_Project()
         {
             InitializeComponent();
-         
         }
+
         private bool IsInDesignMode()
         {
             return LicenseManager.UsageMode == LicenseUsageMode.Designtime
                    || (this.Site != null && this.Site.DesignMode);
         }
+
         private bool IsAdmin()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
         }
+
         private bool IsProjectManager()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
         }
+
         private bool IsEmployee()
         {
             return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
         }
+
         private void LoadData()
         {
             System.Diagnostics.Debug.WriteLine(string.Join(",", SessionManager.CurrentUser.Roles));
@@ -81,6 +90,7 @@ namespace EmployeeManagement.Pages
                 cbTrangThai.Items.AddRange(visibleProjects.Select(p => p.Status).Distinct().ToArray());
             }
         }
+
         private void loadEmployeesName(AntdUI.Dropdown dropdown, string filterType)
         {
             var employees = employeeRepository.GetAll();
@@ -92,6 +102,7 @@ namespace EmployeeManagement.Pages
                 dropdown.Items.Add(displayText);
             }
         }
+
         private void btnXoa_Click(object sender, EventArgs e)
         {
             var selectedIndex = tbProject.SelectedIndex - 1;
@@ -100,9 +111,9 @@ namespace EmployeeManagement.Pages
                 Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
                 return;
             }
-            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList projects && selectedIndex < projects.Count)
             {
-                var record = projects[selectedIndex];
+                dynamic record = projects[selectedIndex];
                 if (record == null)
                 {
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
@@ -143,6 +154,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
+
         private void btnThem_Click(object sender, EventArgs e)
         {
             frmProject frm = new frmProject();
@@ -157,9 +169,11 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
+
         private void tbProject_CellClick(object sender, TableClickEventArgs e)
         {
         }
+
         private void tbProject_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -171,12 +185,13 @@ namespace EmployeeManagement.Pages
                 }
             }
         }
+
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
-                var record = projects[selectedIndex];
+                dynamic record = projects[selectedIndex];
                 if (!IsAdmin() && !(IsProjectManager() && record.ManagerBy == SessionManager.CurrentUser.UserID))
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền quản lý nhiệm vụ cho dự án này!");
@@ -193,12 +208,13 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
+
         private void chỉnhSửaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
-                var record = projects[selectedIndex];
+                dynamic record = projects[selectedIndex];
                 if (record == null)
                 {
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
@@ -209,7 +225,18 @@ namespace EmployeeManagement.Pages
                     Message.warn(this.FindForm(), "Bạn không có quyền chỉnh sửa dự án này!");
                     return;
                 }
-                frmProject frm = new frmProject(record);
+                var project = new Project
+                {
+                    ProjectID = record.ProjectID,
+                    ProjectName = record.ProjectName,
+                    Description = record.Description,
+                    StartDate = record.StartDate,
+                    EndDate = record.EndDate,
+                    Status = record.Status,
+                    CreatedBy = record.CreatedBy,
+                    ManagerBy = record.ManagerBy
+                };
+                frmProject frm = new frmProject(project);
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
                     var editedProject = frm.Tag as Project;
@@ -233,6 +260,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Vui lòng chọn dự án cần chỉnh sửa!");
             }
         }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
@@ -281,6 +309,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
             }
         }
+
         private void cbNhanVien_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             try
@@ -323,6 +352,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lọc theo nhân viên: " + ex.Message);
             }
         }
+
         private void cbQuanLy_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             try
@@ -355,6 +385,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lọc theo quản lý: " + ex.Message);
             }
         }
+
         private void btnSync_Click(object sender, EventArgs e)
         {
             LoadData();
@@ -362,6 +393,7 @@ namespace EmployeeManagement.Pages
             cbTrangThai.Text = "Trạng thái";
             txtTim.Text = string.Empty;
         }
+
         private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             cbTrangThai.Text = e.Value?.ToString() ?? "";
@@ -370,6 +402,7 @@ namespace EmployeeManagement.Pages
                 .ToList();
             tbProject.DataSource = filteredProjects;
         }
+
         private void Page_Project_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -380,7 +413,6 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Trạng thái"));
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
-            tbProject.Columns.Add(new Column("Document", "Tài liệu"));
             LoadData();
             if (!IsAdmin())
             {
@@ -391,19 +423,31 @@ namespace EmployeeManagement.Pages
                 btnXoa.Enabled = false;
             }
         }
+
         private void cậpNhậtToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
-                var project = projects[selectedIndex];
+                dynamic record = projects[selectedIndex];
                 if (!IsAdmin() && !IsProjectManager())
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền cập nhật nhiệm vụ này!");
                     return;
                 }
+                var project = new Project
+                {
+                    ProjectID = record.ProjectID,
+                    ProjectName = record.ProjectName,
+                    Description = record.Description,
+                    StartDate = record.StartDate,
+                    EndDate = record.EndDate,
+                    Status = record.Status,
+                    CreatedBy = record.CreatedBy,
+                    ManagerBy = record.ManagerBy
+                };
                 frmProject frmProject = new frmProject(project);
-                if(frmProject.ShowDialog() == DialogResult.OK)
+                if (frmProject.ShowDialog() == DialogResult.OK)
                 {
                     Message.success(this.FindForm(), "Cập nhật dự án thành công");
                     LoadData();
@@ -412,6 +456,29 @@ namespace EmployeeManagement.Pages
             else
             {
                 Message.error(this.FindForm(), "Vui lòng chọn dự án cần chỉnh sửa!");
+            }
+        }
+
+        private void documentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbProject.SelectedIndex - 1;
+            if (tbProject.DataSource is IList projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            {
+                dynamic record = projects[selectedIndex];
+                if (!IsAdmin() && !(IsProjectManager() && record.ManagerBy == SessionManager.CurrentUser.UserID))
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho dự án này!");
+                    return;
+                }
+                if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
+                int id = record.ProjectID;
+                var frm = new frmProjectFile(id);
+                Console.WriteLine(id);
+                frm.ShowDialog();
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
             }
         }
     }
