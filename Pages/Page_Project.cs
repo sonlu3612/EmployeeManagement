@@ -388,7 +388,12 @@ namespace EmployeeManagement.Pages
                     return;
                 }
                 frmProject frmProject = new frmProject(project);
-                frmProject.ShowDialog();
+                if(frmProject.ShowDialog() == DialogResult.OK)
+                {
+                    Message.success(this.FindForm(), "Cập nhật dự án thành công");
+                    LoadData();
+                }
+
             }
             else
             {
