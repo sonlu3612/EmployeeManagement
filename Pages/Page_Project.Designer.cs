@@ -55,7 +55,7 @@
             this.tbProject.Size = new System.Drawing.Size(1023, 617);
             this.tbProject.TabIndex = 3;
             this.tbProject.Text = "table1";
-            this.tbProject.CellClick += new AntdUI.Table.ClickEventHandler(this.tbProject_CellClick);
+            //this.tbProject.CellClick += new AntdUI.Table.ClickEventHandler(this.tbProject_CellClick);
             this.tbProject.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbProject_MouseDown);
             // 
             // panel1
@@ -120,7 +120,7 @@
             this.cbQuanLy.Size = new System.Drawing.Size(135, 35);
             this.cbQuanLy.TabIndex = 4;
             this.cbQuanLy.Text = "Quản lý";
-            this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
+            //this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
             // 
             // cbTrangThai
             // 

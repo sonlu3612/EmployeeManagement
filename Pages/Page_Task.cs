@@ -6,53 +6,70 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
-using Task = EmployeeManagement.Models.Task;
+
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Task : UserControl
     {
-        private TaskRepository taskRepository = new TaskRepository();
-        private EmployeeRepository employeeRepository = new EmployeeRepository();
-        private ProjectRepository projectRepository = new ProjectRepository();
-        private List<MyTask> visibleTasks;
+        private readonly TaskRepository taskRepository = new TaskRepository();
+        private readonly EmployeeRepository employeeRepository = new EmployeeRepository();
+        private readonly ProjectRepository projectRepository = new ProjectRepository();
+
+        // Danh sách gốc (dùng cho xóa, cập nhật, lọc)
+        private List<MyTask> visibleTasks = new List<MyTask>();
+
         public Page_Task()
         {
             InitializeComponent();
         }
-        private bool IsInDesignMode()
+
+        private bool IsInDesignMode() =>
+            LicenseManager.UsageMode == LicenseUsageMode.Designtime ||
+            (Site != null && Site.DesignMode);
+
+        private bool IsAdmin() =>
+            SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
+
+        private bool IsProjectManager() =>
+            SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
+
+        private bool IsEmployee() =>
+            SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
+
+        // Hàm tạo danh sách hiển thị (chỉ ngày)
+        private object CreateDisplayItem(MyTask t)
         {
-            return LicenseManager.UsageMode == LicenseUsageMode.Designtime
-                   || (this.Site != null && this.Site.DesignMode);
+            return new
+            {
+                t.ProjectName,
+                t.TaskName,
+                t.EmployeeName,
+                CreatedDateDisplay = t.CreatedDate.ToString("dd/MM/yyyy"),
+                DeadlineDisplay = t.Deadline.HasValue
+                    ? t.Deadline.Value.ToString("dd/MM/yyyy")
+                    : "N/A",
+                t.Status,
+                //t.Progress,
+                t.Priority,
+                t.TaskID,
+                t.ProjectID
+            };
         }
-        private bool IsAdmin()
-        {
-            return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
-        }
-        private bool IsProjectManager()
-        {
-            return SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
-        }
-        private bool IsEmployee()
-        {
-            return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
-        }
+
         private void loadData()
         {
             tableTask.DataSource = null;
             try
             {
+                List<MyTask> tasks = new List<MyTask>();
+
                 if (IsAdmin())
                 {
-                    visibleTasks = taskRepository.GetAll().ToList();
+                    tasks = taskRepository.GetAll().ToList();
                 }
                 else if (IsProjectManager())
                 {
@@ -60,108 +77,123 @@ namespace EmployeeManagement.Pages
                         .Where(p => p.ManagerBy == SessionManager.CurrentUser.UserID)
                         .Select(p => p.ProjectID)
                         .ToList();
+
                     foreach (var id in myProjectIds)
                     {
-                        visibleTasks = taskRepository.GetByProject(id);
+                        tasks.AddRange(taskRepository.GetByProject(id)); // GỘP TẤT CẢ
                     }
                 }
                 else if (IsEmployee())
                 {
-                    visibleTasks = taskRepository.GetByEmployee(SessionManager.CurrentUser.UserID);
+                    tasks = taskRepository.GetByEmployee(SessionManager.CurrentUser.UserID);
                 }
-                else
-                {
-                    visibleTasks = new List<MyTask>();
-                }
-                tableTask.DataSource = visibleTasks;
+
+                visibleTasks = tasks; // Lưu lại
+
+                var displayList = tasks.Select(t => CreateDisplayItem(t)).ToList();
+                tableTask.DataSource = displayList;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error loading tasks: " + ex.Message);
+                MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
-        private void tableTask_CellClick(object sender, TableClickEventArgs e)
-        {
-        }
-        private void btnSync_Click(object sender, EventArgs e)
-        {
-            loadData();
-        }
+
+        private void btnSync_Click(object sender, EventArgs e) => loadData();
+
         private void loadEmployeesName()
         {
             var employees = employeeRepository.GetAll();
             ddownEmployee.Items.Clear();
             ddownEmployee.Items.Insert(0, "Tất cả");
             foreach (var emp in employees)
-            {
-                string displayText = $"{emp.EmployeeID} - {emp.FullName}";
-                ddownEmployee.Items.Add(displayText);
-            }
+                ddownEmployee.Items.Add($"{emp.EmployeeID} - {emp.FullName}");
         }
+
         private void ddownEmployee_SelectedValueChanged(object sender, EventArgs e)
         {
             tableTask.DataSource = null;
-            string selected = ddownEmployee.SelectedValue.ToString();
+            string selected = ddownEmployee.SelectedValue?.ToString() ?? "";
+
             try
             {
                 if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
                 {
-                    tableTask.DataSource = visibleTasks;
+                    var displayList = visibleTasks.Select(t => CreateDisplayItem(t)).ToList();
+                    tableTask.DataSource = displayList;
+                    return;
                 }
-                else
-                {
-                    int employeeId = int.Parse(selected.Split('-')[0].Trim());
-                    List<Task> tasks;
-                    tasks = taskRepository.GetByEmployee(employeeId);
-                    tableTask.DataSource = tasks;
-                }
+
+                int employeeId = int.Parse(selected.Split('-')[0].Trim());
+                var tasks = taskRepository.GetByEmployee(employeeId);
+                var display = tasks.Select(t => CreateDisplayItem(t)).ToList();
+                tableTask.DataSource = display;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
+
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             tableTask.DataSource = null;
-            string selected = ddownStatus.SelectedValue.ToString();
+            string selected = ddownStatus.SelectedValue?.ToString() ?? "";
+
             try
             {
                 if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
                 {
-                    tableTask.DataSource = visibleTasks;
+                    var displayList = visibleTasks.Select(t => CreateDisplayItem(t)).ToList();
+                    tableTask.DataSource = displayList;
+                    return;
                 }
-                else if (selected == "Quá hạn")
+
+                IEnumerable<MyTask> filtered;
+
+                if (selected == "Quá hạn")
                 {
-                    List<MyTask> tasks = taskRepository.GetOverdueTasks()
-                        .Where(t => visibleTasks.Select(v => v.TaskID).Contains(t.TaskID))
-                        .ToList();
-                    tableTask.DataSource = tasks.ToList();
+                    filtered = taskRepository.GetOverdueTasks()
+                        .Where(t => visibleTasks.Any(v => v.TaskID == t.TaskID));
                 }
                 else
                 {
-                    List<MyTask> tasksByStatus = visibleTasks
-                        .Where(t => t.Status == selected)
-                        .ToList();
-                    tableTask.DataSource = tasksByStatus.ToList();
+                    filtered = visibleTasks.Where(t => t.Status == selected);
                 }
+
+                var display = filtered.Select(t => CreateDisplayItem(t)).ToList();
+                tableTask.DataSource = display;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
+
+        // Lấy task từ hàng được chọn (DataSource là anonymous)
+        private MyTask GetSelectedTask()
+        {
+            int index = tableTask.SelectedIndex-1;
+            if (index < 0) return null;
+
+            if (tableTask.DataSource is System.Collections.IList list && index < list.Count)
+            {
+                dynamic row = list[index];
+                int taskId = row.TaskID;
+                return visibleTasks.FirstOrDefault(t => t.TaskID == taskId);
+            }
+            return null;
+        }
+
         private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            var selectedIndex = tableTask.SelectedIndex - 1;
-            if (selectedIndex < 0 || !(tableTask.DataSource is List<MyTask> datalist))
-            {
-                return;
-            }
-            var task = datalist[selectedIndex];
+            var task = GetSelectedTask();
+            if (task == null) return;
+
             var userId = SessionManager.CurrentUser.UserID;
             var project = projectRepository.GetById(task.ProjectID);
             bool isProjectManagerOfThis = IsProjectManager() && project?.ManagerBy == userId;
+
             if (e.ClickedItem.Text == "Cập nhật")
             {
                 if (!IsAdmin() && !isProjectManagerOfThis)
@@ -169,8 +201,8 @@ namespace EmployeeManagement.Pages
                     Message.warn(this.FindForm(), "Bạn không có quyền cập nhật nhiệm vụ này!");
                     return;
                 }
-                frmTask frmTask = new frmTask(task);
-                frmTask.ShowDialog();
+                var frm = new frmTask(task);
+                if (frm.ShowDialog() == DialogResult.OK) loadData();
             }
             else if (e.ClickedItem.Text == "Danh sách nhân viên")
             {
@@ -179,119 +211,86 @@ namespace EmployeeManagement.Pages
                     Message.warn(this.FindForm(), "Bạn không có quyền quản lý nhân viên cho nhiệm vụ này!");
                     return;
                 }
-                frmAssignEmployee frmAssignEmployee = new frmAssignEmployee(task.TaskID);
-                frmAssignEmployee.ShowDialog();
+                new frmAssignEmployee(task.TaskID).ShowDialog();
             }
             else if (e.ClickedItem.Text == "Cập nhật tiến độ")
             {
-                bool isAssignedToTask = task.AssignedEmployeeIds != null && task.AssignedEmployeeIds.Contains(userId);
-
-                if (!isAssignedToTask)
+                bool isAssigned = task.AssignedEmployeeIds != null && task.AssignedEmployeeIds.Contains(userId);
+                if (!isAssigned)
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền cập nhật tiến độ cho nhiệm vụ này!");
                     return;
                 }
-
-                frmSubmit frm = new frmSubmit(task, userId);
-                frm.ShowDialog();
+                new frmSubmit(task, userId).ShowDialog();
             }
         }
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var selectedIndex = tableTask.SelectedIndex - 1;
-            if (selectedIndex < 0)
+            var task = GetSelectedTask();
+            if (task == null)
             {
                 Message.warn(this.FindForm(), "Vui lòng chọn công việc cần xóa!");
                 return;
             }
-            if (tableTask.DataSource is IList<MyTask> list && selectedIndex < list.Count)
+
+            var userId = SessionManager.CurrentUser.UserID;
+            var project = projectRepository.GetById(task.ProjectID);
+            if (!IsAdmin() && !(IsProjectManager() && project?.ManagerBy == userId))
             {
-                var task = list[selectedIndex];
-                var userId = SessionManager.CurrentUser.UserID;
-                var project = projectRepository.GetById(task.ProjectID);
-                if (!IsAdmin() && !(IsProjectManager() && project?.ManagerBy == userId))
+                Message.warn(this.FindForm(), "Bạn không có quyền xóa nhiệm vụ này!");
+                return;
+            }
+
+            var cfg = Modal.config(this.FindForm(),
+                "Xác nhận xoá",
+                $"Bạn có chắc muốn xoá nhiệm vụ \"{task.TaskName}\" không?",
+                TType.Warn);
+            cfg.OkText = "Xoá";
+            cfg.CancelText = "Huỷ";
+            cfg.OkType = TTypeMini.Primary;
+            cfg.OnOk = _ =>
+            {
+                try
                 {
-                    Message.warn(this.FindForm(), "Bạn không có quyền xóa nhiệm vụ này!");
-                    return;
+                    taskRepository.Delete(task.TaskID);
+                    loadData();
+                    Message.success(this.FindForm(), "Xóa nhiệm vụ thành công!");
                 }
-                var modalConfig = Modal.config(
-                    this.FindForm(),
-                    "Xác nhận xoá",
-                    $"Bạn có chắc muốn xoá nhiệm vụ \"{task.TaskName}\" không?",
-                    TType.Warn
-                );
-                modalConfig.OkText = "Xoá";
-                modalConfig.CancelText = "Huỷ";
-                modalConfig.OkType = TTypeMini.Primary;
-                modalConfig.OnOk = (cfg) =>
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        taskRepository.Delete(task.TaskID);
-                        loadData();
-                        Message.success(this.FindForm(), "Xóa nhiệm vụ thành công!");
-                    }
-                    catch (Exception ex)
-                    {
-                        Message.error(this.FindForm(), "Lỗi khi xoá nhiệm vụ: " + ex.Message);
-                    }
-                    return true; // Đóng modal
-                };
-                Modal.open(modalConfig);
-            }
-            else
-            {
-                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
-            }
+                    Message.error(this.FindForm(), "Lỗi khi xoá nhiệm vụ: " + ex.Message);
+                }
+                return true;
+            };
+            Modal.open(cfg);
         }
+
         private void menuStrip_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                int sel = tableTask.SelectedIndex;
-                if (sel >= 0)
-                {
-                    menuStrip.Show(Cursor.Position);
-                }
-            }
+            if (e.Button == MouseButtons.Right && tableTask.SelectedIndex >= 0)
+                menuStrip.Show(Cursor.Position);
         }
-        private void taskToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int selectedIndex = tableTask.SelectedIndex - 1;
-            if (tableTask.DataSource is IList<EmployeeManagement.Models.Task> tasks && selectedIndex >= 0 && selectedIndex < tasks.Count)
-            {
-                var record = tasks[selectedIndex];
-                if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!"); return; }
-                int id = record.ProjectID;
-                ManageEmployee frm = new ManageEmployee();
-                //frm.frmManageTasks_Load(id);
-                frm.ShowDialog();
-            }
-            else
-            {
-                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhiệm vụ được chọn!");
-            }
-        }
-        private void cậpNhậtTiếnĐộToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
+
         private void Page_Task_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
+
+            tableTask.Columns.Clear();
             tableTask.Columns.Add(new Column("ProjectName", "Dự án"));
             tableTask.Columns.Add(new Column("TaskName", "Nhiệm vụ"));
             tableTask.Columns.Add(new Column("EmployeeName", "Tạo bởi"));
-            tableTask.Columns.Add(new Column("CreatedDate", "Ngày tạo"));
-            tableTask.Columns.Add(new Column("Deadline", "Hạn hoàn thành"));
+            tableTask.Columns.Add(new Column("CreatedDateDisplay", "Ngày tạo"));
+            tableTask.Columns.Add(new Column("DeadlineDisplay", "Hạn hoàn thành"));
             tableTask.Columns.Add(new Column("Status", "Trạng thái"));
             tableTask.Columns.Add(new Column("Progress", "Tiến triển"));
             tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
+
             loadData();
             loadEmployeesName();
+
             if (!IsAdmin() && !IsProjectManager())
-            {
                 btnDelete.Enabled = false;
-            }
         }
     }
 }

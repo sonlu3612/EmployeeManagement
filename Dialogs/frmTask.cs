@@ -119,12 +119,13 @@ namespace EmployeeManagement.Dialogs
                 TType.Warn
             );
             modalConfig.OkText = "Hủy";
-            modalConfig.CancelText = "Thoát";
+            modalConfig.CancelText = "Tiếp tục";
             modalConfig.OkType = TTypeMini.Primary;
             modalConfig.OnOk = (cfg) =>
             {
-                
-                return true;
+                this.DialogResult = DialogResult.Cancel; // ĐÁNH DẤU HỦY
+                this.Close();
+                return true;   
             };
             AntdUI.Modal.open(modalConfig);
         }
