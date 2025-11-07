@@ -19,7 +19,7 @@ namespace EmployeeManagement.Pages
 
         private bool IsAdmin() => SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
         private bool IsManager() => SessionManager.CurrentUser?.Roles?.Contains("Quản lý phòng ban") ?? false;
-
+        private bool CanModify => IsAdmin() || IsManager();
         public Page_ManageEmployees()
         {
             InitializeComponent();
@@ -41,6 +41,9 @@ namespace EmployeeManagement.Pages
             tbNV.Columns.Add(new Column("HireDateDisplay", "Ngày vào làm"));
 
             LoadData();
+
+            btnAdd.Enabled = CanModify;
+            btnDelete.Enabled = CanModify;
         }
 
         private object CreateDisplayItem(Employee emp)
