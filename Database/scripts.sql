@@ -534,5 +534,142 @@ GO
 ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD CHECK  (([Role]=N'Quản lý dự án' OR [Role]=N'Nhân viên' OR [Role]=N'Quản lý phòng ban' OR [Role]='Admin'))
 GO
 
+CREATE TRIGGER TR_TaskAssignments_UpdateStatus    
+ON dbo.TaskAssignments    
+AFTER UPDATE, INSERT    
+AS    
+BEGIN    
+    SET NOCOUNT ON;    
+    
+    -- Update CompletedDate for newly completed assignments    
+    UPDATE ta    
+    SET CompletedDate = GETDATE()    
+    FROM dbo.TaskAssignments ta    
+    INNER JOIN inserted i ON ta.TaskAssignmentID = i.TaskAssignmentID    
+    WHERE i.CompletionStatus = N'Completed' AND ta.CompletedDate IS NULL;    
+    
+    -- Process each distinct TaskID    
+    DECLARE @TaskID INT;    
+    
+    DECLARE task_cursor CURSOR LOCAL FAST_FORWARD FOR    
+    SELECT DISTINCT TaskID FROM inserted;    
+    
+    OPEN task_cursor;    
+    FETCH NEXT FROM task_cursor INTO @TaskID;    
+    
+    WHILE @@FETCH_STATUS = 0    
+    BEGIN    
+        -- Check if all assignments are completed    
+        DECLARE @AllCompleted BIT = 1;    
+    
+        IF EXISTS (    
+            SELECT 1     
+            FROM TaskAssignments    
+            WHERE TaskID = @TaskID AND CompletionStatus != N'Completed'    
+        )    
+            SET @AllCompleted = 0;    
+    
+        -- Update task status    
+        UPDATE dbo.Tasks    
+        SET Status = CASE     
+            WHEN @AllCompleted = 1 THEN N'Hoàn thành'    
+            ELSE N'Đang thực hiện'    
+        END    
+        WHERE TaskID = @TaskID;    
+    
+        FETCH NEXT FROM task_cursor INTO @TaskID;    
+    END    
+    
+    CLOSE task_cursor;    
+    DEALLOCATE task_cursor;    
+END;
+GO
+
+-- 6. (Tùy chọn) Thêm trigger để enforce gán manager khi tạo department/project  
+-- Ví dụ cho Departments: Không cho insert nếu ManagerID NULL (có thể tùy chỉnh)  
+CREATE TRIGGER TR_Departments_Insert  
+ON dbo.Departments  
+AFTER INSERT  
+AS  
+BEGIN  
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)  
+    BEGIN  
+        RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);  
+        ROLLBACK TRANSACTION;  
+    END  
+END; 
+GO
+
+CREATE TRIGGER TR_Projects_Insert  
+ON dbo.Projects  
+AFTER INSERT  
+AS  
+BEGIN  
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)  
+    BEGIN  
+        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);  
+        ROLLBACK TRANSACTION;  
+    END  
+END;  
+GO
+
+CREATE   TRIGGER TR_Projects_UpdateStatus_FromTasks  
+ON dbo.Tasks  
+AFTER INSERT, UPDATE, DELETE  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+  
+    -- Tập các ProjectID bị ảnh hưởng bởi thao tác (insert/update/delete)  
+    ;WITH affected AS (  
+        SELECT DISTINCT ProjectID FROM inserted WHERE ProjectID IS NOT NULL  
+        UNION  
+        SELECT DISTINCT ProjectID FROM deleted  WHERE ProjectID IS NOT NULL  
+    ),  
+    -- Tính tổng số task và số task đã hoàn thành cho mỗi project bị ảnh hưởng  
+    stats AS (  
+        SELECT   
+            a.ProjectID,  
+            COUNT(t.TaskID) AS TotalTasks,  
+            SUM(CASE WHEN t.Status LIKE N'%hoàn%' THEN 1 ELSE 0 END) AS CompletedTasks  
+        FROM affected a  
+        LEFT JOIN dbo.Tasks t ON t.ProjectID = a.ProjectID  
+        GROUP BY a.ProjectID  
+    ),  
+    -- Xác định status mới theo quy tắc  
+    new_status AS (  
+        SELECT  
+            s.ProjectID,  
+            CASE  
+                WHEN s.TotalTasks = 0 THEN N'Lên kế hoạch'  
+                WHEN s.TotalTasks > 0 AND s.CompletedTasks = s.TotalTasks THEN N'Hoàn thành'  
+                ELSE N'Đang thực hiện'  
+            END AS StatusVN  
+        FROM stats s  
+    )  
+    -- Cập nhật Projects, chỉ update những record thực sự thay đổi  
+    UPDATE p  
+    SET p.Status = ns.StatusVN  -- (tuỳ chọn) cập nhật cột UpdatedDate nếu có  
+    FROM dbo.Projects p  
+    INNER JOIN new_status ns ON p.ProjectID = ns.ProjectID  
+    WHERE ISNULL(p.Status, N'') <> ns.StatusVN;  
+END;
+GO
+
+CREATE TRIGGER TR_UpdateTaskStatus_Expired
+ON dbo.Tasks
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Cập nhật trạng thái các task quá hạn (Deadline < hôm nay) và chưa hoàn thành
+    UPDATE t
+    SET t.Status = N'Hết hạn'
+    FROM dbo.Tasks t
+    WHERE t.Deadline < CAST(GETDATE() AS date)
+      AND t.Status NOT IN (N'Hoàn thành', N'Hết hạn');
+END
+GO
+
 select * from UserRoles
-join UserRoles ur on ur.UserID = Users.UserID

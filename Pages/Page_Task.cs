@@ -222,6 +222,15 @@ namespace EmployeeManagement.Pages
                     Message.warn(this.FindForm(), "Bạn không có quyền cập nhật tiến độ cho nhiệm vụ này!");
                     return;
                 }
+                if (task.Deadline.HasValue && DateTime.Now.Date > task.Deadline.Value.Date)
+                {
+                    // Cho phép Admin hoặc Quản lý dự án vẫn chỉnh sửa
+                    if (!IsAdmin() && !IsProjectManager())
+                    {
+                        Message.warn(this.FindForm(), "Nhiệm vụ đã hết hạn, bạn chỉ có thể xem!");
+                        return;
+                    }
+                }
                 new frmSubmit(task, userId).ShowDialog();
             }
         }
