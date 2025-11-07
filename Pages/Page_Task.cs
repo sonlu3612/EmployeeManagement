@@ -114,6 +114,7 @@ namespace EmployeeManagement.Pages
         {
             tableTask.DataSource = null;
             string selected = ddownEmployee.SelectedValue?.ToString() ?? "";
+            ddownEmployee.Text = selected;
 
             try
             {
@@ -140,6 +141,7 @@ namespace EmployeeManagement.Pages
         {
             tableTask.DataSource = null;
             string selected = ddownStatus.SelectedValue?.ToString() ?? "";
+            ddownStatus.Text = selected;
 
             try
             {
@@ -152,7 +154,7 @@ namespace EmployeeManagement.Pages
 
                 IEnumerable<MyTask> filtered;
 
-                if (selected == "Quá hạn")
+                if (selected == "Hết hạn")
                 {
                     filtered = taskRepository.GetOverdueTasks()
                         .Where(t => visibleTasks.Any(v => v.TaskID == t.TaskID));
