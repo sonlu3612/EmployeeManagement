@@ -129,20 +129,25 @@ namespace EmployeeManagement.DAL.Repositories
                     new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
                     new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
                     new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
-                    new SqlParameter("@HireDate", entity.HireDate),
+                    //new SqlParameter("@HireDate", entity.HireDate),
                     new SqlParameter("@IsActive", entity.IsActive)
+
+                    //new SqlParameter("@AvatarData", SqlDbType.VarBinary)
+                    //{
+                    //    Value = entity.AvatarData ?? (object)DBNull.Value
+                    //}
                 };
                 string sql =
                     @"UPDATE Employees
-                      SET FullName = @FullName,
-                          Position = @Position,
-                          Gender = @Gender,
-                          DepartmentID = @DepartmentID,
-                          AvatarPath = @AvatarPath,
-                          Address = @Address,
-                          HireDate = @HireDate,
-                          IsActive = @IsActive
-                      WHERE EmployeeID = @EmployeeID";
+                    SET FullName = @FullName,
+                    Position = @Position,
+                    Gender = @Gender,
+                    DepartmentID = @DepartmentID,
+                    AvatarPath = @AvatarPath,
+                    Address = @Address,
+                    
+                    IsActive = @IsActive
+                    WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
                 return true;
             }
@@ -480,6 +485,96 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
             return list;
+        }
+
+        public Employee GetFromIdUser(int id)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+            new SqlParameter("@EmployeeID", id)
+                };
+                string sql = @"
+            SELECT 
+                e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
+                e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                d.DepartmentName,
+                u.Email, u.Phone, u.Role,
+                ISNULL((
+                    SELECT COUNT(DISTINCT p.ProjectID)
+                    FROM Projects p
+                    LEFT JOIN Tasks t ON t.ProjectID = p.ProjectID
+                    LEFT JOIN TaskAssignments ta ON ta.TaskID = t.TaskID
+                    WHERE p.CreatedBy = e.EmployeeID OR ta.EmployeeID = e.EmployeeID
+                ), 0) AS TotalProjects,
+                ISNULL((
+                    SELECT COUNT(DISTINCT p.ProjectID)
+                    FROM Projects p
+                    LEFT JOIN Tasks t ON t.ProjectID = p.ProjectID
+                    LEFT JOIN TaskAssignments ta ON ta.TaskID = t.TaskID
+                    WHERE (p.CreatedBy = e.EmployeeID OR ta.EmployeeID = e.EmployeeID)
+                      AND p.Status = N'Hoàn thành'
+                ), 0) AS CompletedProjects,
+                ISNULL((
+                    SELECT COUNT(*) 
+                    FROM Tasks t2 
+                    INNER JOIN TaskAssignments ta2 ON ta2.TaskID = t2.TaskID 
+                    WHERE ta2.EmployeeID = e.EmployeeID
+                ), 0) AS TotalTasks,
+                ISNULL((
+                    SELECT COUNT(*) 
+                    FROM Tasks t3 
+                    INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID 
+                    WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = N'Hoàn thành'
+                ), 0) AS CompletedTasks
+            FROM Employees e
+            LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
+            LEFT JOIN Users u ON u.UserID = e.EmployeeID
+            WHERE e.EmployeeID = @EmployeeID";
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+                if (dt.Rows.Count == 0)
+                {
+                    return null;
+                }
+
+                DataRow row = dt.Rows[0];
+                Employee employee = MapDataRowToEmployee(row);
+
+                // Mapping for summary
+                int totalPrj = row["TotalProjects"] != DBNull.Value ? Convert.ToInt32(row["TotalProjects"]) : 0;
+                int completedPrj = row["CompletedProjects"] != DBNull.Value ? Convert.ToInt32(row["CompletedProjects"]) : 0;
+                int totalTask = row["TotalTasks"] != DBNull.Value ? Convert.ToInt32(row["TotalTasks"]) : 0;
+                int completedTask = row["CompletedTasks"] != DBNull.Value ? Convert.ToInt32(row["CompletedTasks"]) : 0;
+                employee.ProjectSummary = $"{completedPrj}/{totalPrj}";
+                employee.TaskSummary = $"{completedTask}/{totalTask}";
+
+                // Mapping for Users
+                employee.Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null;
+                employee.Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null;
+                employee.Role = row["Role"] != DBNull.Value ? row["Role"].ToString() : null;
+
+                // Load AvatarData
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(employee.AvatarPath) && File.Exists(employee.AvatarPath))
+                        employee.AvatarData = File.ReadAllBytes(employee.AvatarPath);
+                    else
+                        employee.AvatarData = null;
+                }
+                catch
+                {
+                    employee.AvatarData = null;
+                }
+
+                return employee;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[EmployeeRepository.GetById] Lỗi: {ex.Message}");
+                throw;
+            }
         }
     }
 }

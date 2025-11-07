@@ -6,6 +6,7 @@ using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 
 namespace EmployeeManagement
@@ -73,6 +74,7 @@ namespace EmployeeManagement
             if (select == "My Profile")
             {
                 tabs1.SelectedTab = tabMyProfile;
+                
                 phTrangChu.Text = "My Profile";
             }
             if (select == "Employees")
@@ -97,7 +99,7 @@ namespace EmployeeManagement
             btnChangePass.Loading = true;
             int userID = _currentUser.UserID;
             string oldPass = hp.Hash(txtMKC.Text);
-
+            Console.WriteLine(_currentUser.PasswordHash + "\n");
             if (oldPass == _currentUser.PasswordHash)
             {
                 string newPass = txtMKM.Text;
@@ -108,6 +110,8 @@ namespace EmployeeManagement
                     txtMKM.Text = "";
                     txtXNMK.Text = "";
                     txtMKM.Focus();
+                    btnChangePass.Loading = false;
+                    return;
                 }
                 if (newPass == confirmPass)
                 {
@@ -117,6 +121,9 @@ namespace EmployeeManagement
                     {
                         labelMatKhau.ForeColor = Color.Green;
                         labelMatKhau.Text = "Đổi mật khẩu thành công!";
+                        txtMKC.Text = "";
+                        txtMKM.Text = "";
+                        txtXNMK.Text = "";
                     }
                     else
                     {
@@ -132,8 +139,34 @@ namespace EmployeeManagement
             else
             {
                 labelMatKhau.Text = "Mật khẩu cũ không đúng!";
+                Console.WriteLine(txtMKC.Text + "\n" + oldPass);
                 txtMKC.Focus();
             }
+            btnChangePass.Loading = false;
+        }
+
+
+        private EmployeeRepository employeeRepository = new EmployeeRepository();
+        private void page_Account1_Load(object sender, EventArgs e)
+        {
+            var employee = employeeRepository.GetFromIdUser(_currentUser.UserID);
+            //if (employee == null)
+            //{
+            //    MessageBox.Show("Không tìm thấy nhân viên cho UserID = " + _currentUser.UserID);
+            //    return;
+            //}
+
+            page_Account1.LoadProfile(employee);
+            if (page_Account1 != null && employee != null) // Assuming page_Account1 is the instance of Page_Account in tabMyProfile
+            {
+                page_Account1.LoadProfile(employee);
+            }
+
+        }
+
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            tabs1.SelectedTab = tabProject;
         }
 
        

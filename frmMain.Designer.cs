@@ -67,7 +67,6 @@ namespace EmployeeManagement
             this.tabCompany = new AntdUI.TabPage();
             this.tabDatabase = new AntdUI.TabPage();
             this.tabLogout = new AntdUI.TabPage();
-            this.tabMyProfile = new AntdUI.TabPage();
             this.tpPhongBan = new AntdUI.TabPage();
             this.page_Department1 = new EmployeeManagement.Pages.Page_Department();
             this.panel3 = new AntdUI.Panel();
@@ -84,6 +83,7 @@ namespace EmployeeManagement
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.divider4 = new AntdUI.Divider();
+            this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
             this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -131,7 +131,6 @@ namespace EmployeeManagement
             this.tabs1.Controls.Add(this.tabNV);
             this.tabs1.Controls.Add(this.tabCompany);
             this.tabs1.Controls.Add(this.tabDatabase);
-            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabLogout);
             this.tabs1.Controls.Add(this.tabMyProfile);
             this.tabs1.Controls.Add(this.tpPhongBan);
@@ -239,6 +238,7 @@ namespace EmployeeManagement
             this.btnThoat.TabIndex = 8;
             this.btnThoat.Text = "Thoát";
             this.btnThoat.Type = AntdUI.TTypeMini.Primary;
+            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
             // btnChangePass
             // 
@@ -617,6 +617,14 @@ namespace EmployeeManagement
             this.divider4.TabIndex = 14;
             this.divider4.Text = "";
             this.divider4.Thickness = 0.9F;
+            // 
+            // page_Department2
+            // 
+            this.page_Department2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Department2.Location = new System.Drawing.Point(0, 0);
+            this.page_Department2.Name = "page_Department2";
+            this.page_Department2.Size = new System.Drawing.Size(1023, 658);
+            this.page_Department2.TabIndex = 0;
             // 
             // page_Department2
             // 

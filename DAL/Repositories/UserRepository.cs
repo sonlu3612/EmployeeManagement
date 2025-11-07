@@ -238,7 +238,21 @@ namespace EmployeeManagement.DAL.Repositories
                 PasswordHash = null,
                 Roles = new List<string>(), // Will be populated separately
                 IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
-                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.MinValue
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
+            };
+        }
+
+        private User MapDataRowToUser(DataRow row)
+        {
+            return new User
+            {
+                UserID = row["UserID"] != DBNull.Value ? Convert.ToInt32(row["UserID"]) : 0,
+                Phone = row["Phone"]?.ToString(),
+                Email = row["Email"]?.ToString(),
+                PasswordHash = row["PasswordHash"]?.ToString(),
+                Role = row["Role"]?.ToString(),
+                IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"]),
+                CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
             };
         }
         public int InsertAndReturnId(User user)

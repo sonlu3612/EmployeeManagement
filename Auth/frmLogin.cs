@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
+using Message = AntdUI.Message;
+using System.Drawing.Text;
 
 namespace EmployeeManagement.Auth
 {
@@ -45,32 +47,34 @@ namespace EmployeeManagement.Auth
             User user = userRepository.ValidateLogin(name,pass);
             if (user == null)
             {
-                
+                Message.error(this.FindForm(), "Tên đăng nhập hoặc mật khẩu không đúng!");
                 //labelThongBao.Text = "Tên đăng nhập hoặc mật khẩu không đúng.";
                 btnDangNhap.Loading = false;
                 txtTaiKhoan.Focus();
-                Task.Delay(2000).ContinueWith(t =>
-                {
-                    this.Invoke((Action)(() =>
-                    {
-                        //labelThongBao.Text = "";
-                        //txtTaiKhoan.Text = "";
-                        //txtMatKhau.Text = "";
-                    }));
-                });
+                //Task.Delay(2000).ContinueWith(t =>
+                //{
+                //    this.Invoke((Action)(() =>
+                //    {
+                //        //labelThongBao.Text = "";
+                //        //txtTaiKhoan.Text = "";
+                //        //txtMatKhau.Text = "";
+                //    }));
+                //});
             }
             else
             {
-                Task.Delay(2000).ContinueWith(t =>
-                {
-                    this.Invoke((Action)(() =>
-                    {
-                        btnDangNhap.Loading = false;
-                        //MessageBox.Show("Login successful!");
+                Message.success(this.FindForm(), "Đăng nhập thành công!");
+
+                //    Task.Delay(2000).ContinueWith(t =>
+                //    {
+                //        this.Invoke((Action)(() =>
+                //        {
+                //            btnDangNhap.Loading = false;
+                //            //MessageBox.Show("Login successful!");
 
 
-                    }));
-                });
+                //        }));
+                //    });
                 SessionManager.SetCurrentUser(user);
 
                     frmMain mainForm = new frmMain(user);
