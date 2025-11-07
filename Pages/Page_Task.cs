@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
 
-
+// TODO: Nếu có thể thêm progress
 namespace EmployeeManagement.Pages
 {
     public partial class Page_Task : UserControl
@@ -26,18 +26,14 @@ namespace EmployeeManagement.Pages
 
         private TaskRepository taskRepository = new TaskRepository();
         private TaskFileRepository _taskFileRepository = new TaskFileRepository();
+
         private void Page_Task_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
             tableTask.Columns.Add(new Column("ProjectName", "Dự án"));
             tableTask.Columns.Add(new Column("TaskName", "Nhiệm vụ"));
             tableTask.Columns.Add(new Column("EmployeeName", "Tạo bởi"));
-            tableTask.Columns.Add(new Column("CreatedDate", "Ngày tạo"));
-            tableTask.Columns.Add(new Column("Deadline", "Hạn hoàn thành"));
-            tableTask.Columns.Add(new Column("Status", "Trạng thái"));
-            tableTask.Columns.Add(new Column("Progress", "Tiến triển"));
-            tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
-            
+
             var docColumn = new Column("Document", "Tài liệu");
             docColumn.SetStyle(new AntdUI.Table.CellStyleInfo
             {
@@ -45,6 +41,11 @@ namespace EmployeeManagement.Pages
             });
             tableTask.Columns.Add(docColumn);
             tableTask.Columns.Add(new Column("FileCount", "Số lượng tài liệu"));
+            tableTask.Columns.Add(new Column("CreatedDate", "Ngày tạo"));
+            tableTask.Columns.Add(new Column("Deadline", "Hạn hoàn thành"));
+            tableTask.Columns.Add(new Column("Status", "Trạng thái"));
+            //tableTask.Columns.Add(new Column("Progress", "Tiến triển"));
+            tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
 
             loadData();
             loadEmployeesName();
@@ -67,7 +68,7 @@ namespace EmployeeManagement.Pages
                 t.CreatedDate,
                 t.Deadline,
                 t.Status,
-                t.Progress,
+                //t.Progress,
                 t.Priority,
                 Document = "Mở tập tin",
                 FileCount = GetTaskFileCount(t.TaskID)
@@ -96,13 +97,11 @@ namespace EmployeeManagement.Pages
                 var tasksWithFileCount = GetTasksWithFileCount(tasks);
 
                 tableTask.DataSource = tasksWithFileCount;
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error loading tasks: " + ex.Message);
             }
-
         }
 
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
@@ -135,12 +134,13 @@ namespace EmployeeManagement.Pages
         }
 
         private EmployeeRepository employeeRepository = new EmployeeRepository();
+
         private void loadEmployeesName()
         {
             var employees = employeeRepository.GetAll();
 
-            ddownEmployee.Items.Clear(); 
-            ddownEmployee.Items.Insert(0,"Tất cả");
+            ddownEmployee.Items.Clear();
+            ddownEmployee.Items.Insert(0, "Tất cả");
 
             foreach (var emp in employees)
             {
@@ -157,7 +157,6 @@ namespace EmployeeManagement.Pages
 
             try
             {
-               
                 if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
                 {
                     loadData();
@@ -168,7 +167,7 @@ namespace EmployeeManagement.Pages
 
                     int employeeId = int.Parse(selected.Split('-')[0].Trim());
                     tasks = taskRepository.GetByEmployee(employeeId);
-                    
+
                     var tasksWithFileCount = GetTasksWithFileCount(tasks);
                     tableTask.DataSource = tasksWithFileCount;
                 }
@@ -203,18 +202,18 @@ namespace EmployeeManagement.Pages
 
         private void menuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if(e.ClickedItem.Text == "Cập nhật")
+            if (e.ClickedItem.Text == "Cập nhật")
             {
                 var selectedIndex = tableTask.SelectedIndex - 1;
                 if (selectedIndex >= 0)
                 {
                     dynamic record = null;
-                    
+
                     if (tableTask.DataSource is IList<dynamic> dataList && selectedIndex < dataList.Count)
                     {
                         record = dataList[selectedIndex];
                     }
-                    
+
                     if (record != null)
                     {
                         var task = taskRepository.GetById(record.TaskID);
@@ -281,7 +280,5 @@ namespace EmployeeManagement.Pages
 
             Modal.open(modalConfig);
         }
-
     }
 }
-   
