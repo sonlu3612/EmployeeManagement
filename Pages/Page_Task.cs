@@ -25,6 +25,7 @@ namespace EmployeeManagement.Pages
         }
 
         private TaskRepository taskRepository = new TaskRepository();
+        private TaskFileRepository _taskFileRepository = new TaskFileRepository();
         private void Page_Task_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -36,6 +37,14 @@ namespace EmployeeManagement.Pages
             tableTask.Columns.Add(new Column("Status", "Trạng thái"));
             tableTask.Columns.Add(new Column("Progress", "Tiến triển"));
             tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
+            
+            var docColumn = new Column("Document", "Tài liệu");
+            docColumn.SetStyle(new AntdUI.Table.CellStyleInfo
+            {
+                ForeColor = System.Drawing.Color.Blue
+            });
+            tableTask.Columns.Add(docColumn);
+            tableTask.Columns.Add(new Column("FileCount", "Số lượng tài liệu"));
 
             loadData();
             loadEmployeesName();
@@ -47,6 +56,36 @@ namespace EmployeeManagement.Pages
                    || (this.Site != null && this.Site.DesignMode);
         }
 
+        private List<dynamic> GetTasksWithFileCount(IEnumerable<MyTask> tasks)
+        {
+            return tasks.Select(t => new
+            {
+                t.TaskID,
+                t.TaskName,
+                t.ProjectName,
+                t.EmployeeName,
+                t.CreatedDate,
+                t.Deadline,
+                t.Status,
+                t.Progress,
+                t.Priority,
+                Document = "Mở tập tin",
+                FileCount = GetTaskFileCount(t.TaskID)
+            }).ToList<dynamic>();
+        }
+
+        private int GetTaskFileCount(int taskId)
+        {
+            try
+            {
+                return _taskFileRepository.GetByTask(taskId).Count;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
         private void loadData()
         {
             tableTask.DataSource = null;
@@ -54,7 +93,9 @@ namespace EmployeeManagement.Pages
             {
                 var tasks = taskRepository.GetAll();
 
-                tableTask.DataSource = tasks.ToList();
+                var tasksWithFileCount = GetTasksWithFileCount(tasks);
+
+                tableTask.DataSource = tasksWithFileCount;
 
             }
             catch (Exception ex)
@@ -66,17 +107,26 @@ namespace EmployeeManagement.Pages
 
         private void tableTask_CellClick(object sender, TableClickEventArgs e)
         {
-            menuStrip.Show(tableTask, e.Location);
-            //var selectedIndex = tableTask.SelectedIndex - 1;
-            //if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
-            //{
-            //    var task = datalist[selectedIndex];
-            //    frmTask frmTask = new frmTask(task);
-            //    frmTask.Show();
+            if (e.Column.Key == "Document")
+            {
+                if (e.Record != null)
+                {
+                    dynamic record = e.Record;
+                    OpenTaskFileDialog(record.TaskID, record.TaskName);
+                }
+            }
+            else
+            {
+                menuStrip.Show(tableTask, e.Location);
+            }
+        }
 
-            //    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
-            //}
-
+        private void OpenTaskFileDialog(int taskId, string taskName)
+        {
+            frmTaskFile frm = new frmTaskFile();
+            frm.LoadTaskFiles(taskId, taskName);
+            frm.ShowDialog();
+            loadData();
         }
 
         private void btnSync_Click(object sender, EventArgs e)
@@ -116,14 +166,12 @@ namespace EmployeeManagement.Pages
                 {
                     List<MyTask> tasks = new List<MyTask>();
 
-
                     int employeeId = int.Parse(selected.Split('-')[0].Trim());
                     tasks = taskRepository.GetByEmployee(employeeId);
-                    tableTask.DataSource = tasks.ToList();
-
+                    
+                    var tasksWithFileCount = GetTasksWithFileCount(tasks);
+                    tableTask.DataSource = tasksWithFileCount;
                 }
-
-                
             }
             catch (Exception ex)
             {
@@ -158,21 +206,26 @@ namespace EmployeeManagement.Pages
             if(e.ClickedItem.Text == "Cập nhật")
             {
                 var selectedIndex = tableTask.SelectedIndex - 1;
-                if (selectedIndex >= 0 && tableTask.DataSource is List<MyTask> datalist)
+                if (selectedIndex >= 0)
                 {
-                    var task = datalist[selectedIndex];
-
-
-
-                    frmTask frmTask = new frmTask(task);
-                    frmTask.Show();
-
-                    //Console.WriteLine($"Clicked on Task ID: {task.TaskID} - {task.TaskName}");
+                    dynamic record = null;
+                    
+                    if (tableTask.DataSource is IList<dynamic> dataList && selectedIndex < dataList.Count)
+                    {
+                        record = dataList[selectedIndex];
+                    }
+                    
+                    if (record != null)
+                    {
+                        var task = taskRepository.GetAll().FirstOrDefault(t => t.TaskID == record.TaskID);
+                        if (task != null)
+                        {
+                            frmTask frmTask = new frmTask(task);
+                            frmTask.Show();
+                        }
+                    }
                 }
             }
-           
-            
-
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -185,51 +238,48 @@ namespace EmployeeManagement.Pages
                 return;
             }
 
-            if (tableTask.DataSource is IList<MyTask> datalist && selectedIndex < datalist.Count)
+            dynamic record = null;
+            if (tableTask.DataSource is IList<dynamic> dataList && selectedIndex < dataList.Count)
             {
-                var task = datalist[selectedIndex];
-
-                if (task == null)
-                {
-                    Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
-                    return;
-                }
-
-                var modalConfig = Modal.config(
-                    this.FindForm(),
-                    "Xác nhận xoá",
-                    $"Bạn có chắc muốn xoá công việc \"{task.TaskName}\" không?",
-                    TType.Warn
-                );
-
-                modalConfig.OkText = "Xoá";
-                modalConfig.CancelText = "Huỷ";
-                modalConfig.OkType = TTypeMini.Success;
-
-                modalConfig.OnOk = (cfg) =>
-                {
-                    try
-                    {
-                        TaskRepository taskRepository = new TaskRepository();
-                        taskRepository.Delete(task.TaskID);
-                        loadData();
-
-                        Message.success(this.FindForm(), "Xóa công việc thành công!");
-                    }
-                    catch (Exception ex)
-                    {
-                        Message.error(this.FindForm(), "Lỗi khi xoá công việc: " + ex.Message);
-                    }
-
-                    return true; // Đóng modal sau khi xử lý xong
-                };
-
-                Modal.open(modalConfig);
+                record = dataList[selectedIndex];
             }
-            else
+
+            if (record == null)
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu công việc được chọn!");
+                return;
             }
+
+            var modalConfig = Modal.config(
+                this.FindForm(),
+                "Xác nhận xoá",
+                $"Bạn có chắc muốn xoá công việc \"{record.TaskName}\" không?",
+                TType.Warn
+            );
+
+            modalConfig.OkText = "Xoá";
+            modalConfig.CancelText = "Huỷ";
+            modalConfig.OkType = TTypeMini.Success;
+
+            modalConfig.OnOk = (cfg) =>
+            {
+                try
+                {
+                    TaskRepository taskRepository = new TaskRepository();
+                    taskRepository.Delete(record.TaskID);
+                    loadData();
+
+                    Message.success(this.FindForm(), "Xóa công việc thành công!");
+                }
+                catch (Exception ex)
+                {
+                    Message.error(this.FindForm(), "Lỗi khi xoá công việc: " + ex.Message);
+                }
+
+                return true;
+            };
+
+            Modal.open(modalConfig);
         }
 
     }
