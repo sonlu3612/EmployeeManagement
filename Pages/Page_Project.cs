@@ -19,11 +19,12 @@ namespace EmployeeManagement.Pages
         private readonly ProjectRepository _projectRepository = new ProjectRepository();
         private readonly EmployeeRepository employeeRepository = new EmployeeRepository();
         private readonly TaskRepository taskRepository = new TaskRepository();
-        private List<Project> visibleProjects;
+        private ProjectFileRepository _projectFileRepository = new ProjectFileRepository();
+        private List<dynamic> visibleProjects;
         public Page_Project()
         {
             InitializeComponent();
-          
+         
         }
         private bool IsInDesignMode()
         {
@@ -46,15 +47,15 @@ namespace EmployeeManagement.Pages
         {
             System.Diagnostics.Debug.WriteLine(string.Join(",", SessionManager.CurrentUser.Roles));
             System.Diagnostics.Debug.WriteLine(IsProjectManager());
+            var allProjects = _projectRepository.GetAllWithFileCount();
             if (IsAdmin())
             {
-                visibleProjects = _projectRepository.GetAll().ToList();
+                visibleProjects = allProjects;
             }
             else if (IsProjectManager())
             {
                 Console.WriteLine(string.Join(",", SessionManager.CurrentUser.Roles));
-
-                visibleProjects = _projectRepository.GetAll()
+                visibleProjects = allProjects
                     .Where(p => p.ManagerBy == SessionManager.CurrentUser.UserID)
                     .ToList();
             }
@@ -62,13 +63,13 @@ namespace EmployeeManagement.Pages
             {
                 var myTasks = taskRepository.GetByEmployee(SessionManager.CurrentUser.UserID);
                 var projectIds = myTasks.Select(t => t.ProjectID).Distinct().ToList();
-                visibleProjects = _projectRepository.GetAll()
+                visibleProjects = allProjects
                     .Where(p => projectIds.Contains(p.ProjectID))
                     .ToList();
             }
             else
             {
-                visibleProjects = new List<Project>();
+                visibleProjects = new List<dynamic>();
             }
             tbProject.DataSource = visibleProjects;
             if (cbQuanLy.Items.Count == 0)
@@ -99,7 +100,7 @@ namespace EmployeeManagement.Pages
                 Message.warn(this.FindForm(), "Vui lòng chọn dự án cần xóa!");
                 return;
             }
-            if (tbProject.DataSource is IList<Project> projects && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
                 if (record == null)
@@ -172,9 +173,8 @@ namespace EmployeeManagement.Pages
         }
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
                 if (!IsAdmin() && !(IsProjectManager() && record.ManagerBy == SessionManager.CurrentUser.UserID))
@@ -196,7 +196,7 @@ namespace EmployeeManagement.Pages
         private void chỉnhSửaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
                 if (record == null)
@@ -288,7 +288,6 @@ namespace EmployeeManagement.Pages
                 var selectedValue = e.Value?.ToString()?.Trim();
                 if (string.IsNullOrEmpty(selectedValue))
                     return;
-
                 if (selectedValue.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
                 {
                     cbQuanLy.Text = "Tất cả";
@@ -296,22 +295,17 @@ namespace EmployeeManagement.Pages
                     Message.success(this.FindForm(), $"Hiển thị {visibleProjects.Count} dự án.");
                     return;
                 }
-
                 var parts = selectedValue.Split(new[] { '-' }, 2, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length == 2)
                 {
                     if (int.TryParse(parts[0].Trim(), out int employeeId))
                     {
                         string fullName = parts[1].Trim();
-
                         cbQuanLy.Text = fullName;
-
                         var projects = visibleProjects
                             .Where(p => p.ManagerBy == employeeId)
                             .ToList();
-
                         tbProject.DataSource = projects;
-
                         Message.success(this.FindForm(), $"Tìm thấy {projects.Count} dự án.");
                     }
                     else
@@ -329,7 +323,6 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lọc theo nhân viên: " + ex.Message);
             }
         }
-
         private void cbQuanLy_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             try
@@ -387,6 +380,7 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Trạng thái"));
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
+            tbProject.Columns.Add(new Column("Document", "Tài liệu"));
             LoadData();
             if (!IsAdmin())
             {
@@ -397,15 +391,12 @@ namespace EmployeeManagement.Pages
                 btnXoa.Enabled = false;
             }
         }
-
-
         private void cậpNhậtToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int selectedIndex = tbProject.SelectedIndex - 1;
-            if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            if (tbProject.DataSource is IList<dynamic> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var project = projects[selectedIndex];
-
                 if (!IsAdmin() && !IsProjectManager())
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền cập nhật nhiệm vụ này!");
@@ -417,7 +408,6 @@ namespace EmployeeManagement.Pages
                     Message.success(this.FindForm(), "Cập nhật dự án thành công");
                     LoadData();
                 }
-
             }
             else
             {
