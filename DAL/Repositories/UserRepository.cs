@@ -250,7 +250,6 @@ namespace EmployeeManagement.DAL.Repositories
                 Phone = row["Phone"]?.ToString(),
                 Email = row["Email"]?.ToString(),
                 PasswordHash = row["PasswordHash"]?.ToString(),
-                Role = row["Role"]?.ToString(),
                 IsActive = row["IsActive"] != DBNull.Value && Convert.ToBoolean(row["IsActive"]),
                 CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : DateTime.Now
             };

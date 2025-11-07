@@ -156,11 +156,11 @@ namespace EmployeeManagement
             //    return;
             //}
 
-            page_Account1.LoadProfile(employee);
-            if (page_Account1 != null && employee != null) // Assuming page_Account1 is the instance of Page_Account in tabMyProfile
-            {
-                page_Account1.LoadProfile(employee);
-            }
+            //page_Account1.LoadProfile(employee);
+            //if (page_Account1 != null && employee != null) // Assuming page_Account1 is the instance of Page_Account in tabMyProfile
+            //{
+            //    page_Account1.LoadProfile(employee);
+            //}
 
         }
 

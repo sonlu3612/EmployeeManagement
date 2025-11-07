@@ -553,7 +553,6 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping for Users
                 employee.Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null;
                 employee.Phone = row["Phone"] != DBNull.Value ? row["Phone"].ToString() : null;
-                employee.Role = row["Role"] != DBNull.Value ? row["Role"].ToString() : null;
 
                 // Load AvatarData
                 try

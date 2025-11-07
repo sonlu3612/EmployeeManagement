@@ -84,7 +84,6 @@ namespace EmployeeManagement
             this.label6 = new System.Windows.Forms.Label();
             this.divider4 = new AntdUI.Divider();
             this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
-            this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tabs1.SuspendLayout();
@@ -94,6 +93,7 @@ namespace EmployeeManagement
             this.tabTask.SuspendLayout();
             this.tabNV.SuspendLayout();
             this.tpPhongBan.SuspendLayout();
+            this.tabMyProfile = new AntdUI.TabPage();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel8.SuspendLayout();
