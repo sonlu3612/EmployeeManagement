@@ -126,6 +126,7 @@
     <Compile Include="Dialogs\frmSubmit.Designer.cs">
       <DependentUpon>frmSubmit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Localizer.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Dialogs\frmInfor.cs">
       <SubType>Form</SubType>

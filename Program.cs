@@ -1,13 +1,15 @@
-﻿using EmployeeManagement.DAL.Interfaces;
+﻿using AntdUI;
+using EmployeeManagement.Auth;
+using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.DAL.Repositories;
-using EmployeeManagement.Models;
 using EmployeeManagement.Dialogs;
+using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
-using EmployeeManagement.Auth;
 
 namespace EmployeeManagement
 {
@@ -17,12 +19,15 @@ namespace EmployeeManagement
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
+            // Set language
+            "vi-VN".SetLanguage();
+            AntdUI.Localization.Provider = new Localizer();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new frmLogin());
-
         }
     }
 }
