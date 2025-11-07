@@ -233,6 +233,16 @@ namespace EmployeeManagement.Pages
                 }
                 new frmSubmit(task, userId).ShowDialog();
             }
+            else if (e.ClickedItem.Text == "Tài liệu")
+            {
+                if (!IsAdmin() && !isProjectManagerOfThis)
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho nhiệm vụ này!");
+                    return;
+                }
+                var frmFile = new frmTaskFile(task.TaskID);
+                frmFile.ShowDialog();
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

@@ -30,11 +30,11 @@
         {
             this.btnSearch = new AntdUI.Button();
             this.panel1 = new AntdUI.Panel();
+            this.btnSync = new AntdUI.Button();
+            this.btnThem = new AntdUI.Button();
             this.ddSort = new AntdUI.Dropdown();
             this.txtSearch = new AntdUI.Input();
             this.tbFiles = new AntdUI.Table();
-            this.btnThem = new AntdUI.Button();
-            this.btnSync = new AntdUI.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +66,38 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(963, 44);
             this.panel1.TabIndex = 2;
+            // 
+            // btnSync
+            // 
+            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.BackHover = System.Drawing.Color.White;
+            this.btnSync.BorderWidth = 2F;
+            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
+            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
+            this.btnSync.Location = new System.Drawing.Point(353, 8);
+            this.btnSync.Name = "btnSync";
+            this.btnSync.Size = new System.Drawing.Size(51, 35);
+            this.btnSync.TabIndex = 9;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
+            // 
+            // btnThem
+            // 
+            this.btnThem.BackHover = System.Drawing.Color.White;
+            this.btnThem.BorderWidth = 2F;
+            this.btnThem.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnThem.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThem.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.btnThem.ForeColor = System.Drawing.Color.White;
+            this.btnThem.Location = new System.Drawing.Point(889, 0);
+            this.btnThem.Name = "btnThem";
+            this.btnThem.Size = new System.Drawing.Size(74, 44);
+            this.btnThem.TabIndex = 8;
+            this.btnThem.Text = "Thêm";
+            this.btnThem.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // ddSort
             // 
@@ -102,44 +134,13 @@
             this.tbFiles.CellButtonClick += new AntdUI.Table.ClickButtonEventHandler(this.tbFiles_CellButtonClick);
             this.tbFiles.CellDoubleClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellDoubleClick);
             // 
-            // btnThem
-            // 
-            this.btnThem.BackHover = System.Drawing.Color.White;
-            this.btnThem.BorderWidth = 2F;
-            this.btnThem.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnThem.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnThem.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnThem.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThem.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnThem.ForeColor = System.Drawing.Color.White;
-            this.btnThem.Location = new System.Drawing.Point(889, 0);
-            this.btnThem.Name = "btnThem";
-            this.btnThem.Size = new System.Drawing.Size(74, 44);
-            this.btnThem.TabIndex = 8;
-            this.btnThem.Text = "Thêm";
-            this.btnThem.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnSync
-            // 
-            this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.BackHover = System.Drawing.Color.White;
-            this.btnSync.BorderWidth = 2F;
-            this.btnSync.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
-            this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(353, 8);
-            this.btnSync.Name = "btnSync";
-            this.btnSync.Size = new System.Drawing.Size(51, 35);
-            this.btnSync.TabIndex = 9;
-            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
-            // 
             // Page_TaskFile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tbFiles);
+            this.Controls.Add(this.panel1);
+
             this.Name = "Page_TaskFile";
             this.Size = new System.Drawing.Size(963, 588);
             this.panel1.ResumeLayout(false);

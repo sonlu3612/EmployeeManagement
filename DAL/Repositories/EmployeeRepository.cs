@@ -90,20 +90,59 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@EmployeeID", entity.EmployeeID),
-                    new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
-                    new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
-                    new SqlParameter("@Gender", entity.Gender ?? (object)DBNull.Value),
-                    new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
-                    new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
-                    new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
-                    new SqlParameter("@HireDate", entity.HireDate),
-                    new SqlParameter("@IsActive", entity.IsActive)
+            new SqlParameter("@EmployeeID", entity.EmployeeID),
+            new SqlParameter("@FullName", entity.FullName ?? (object)DBNull.Value),
+            new SqlParameter("@Position", entity.Position ?? (object)DBNull.Value),
+            new SqlParameter("@Gender", entity.Gender ?? (object)DBNull.Value),
+            new SqlParameter("@DepartmentID", entity.DepartmentID ?? (object)DBNull.Value),
+            new SqlParameter("@AvatarPath", entity.AvatarPath ?? (object)DBNull.Value),
+            new SqlParameter("@Address", entity.Address ?? (object)DBNull.Value),
+            new SqlParameter("@HireDate", entity.HireDate),
+            new SqlParameter("@IsActive", entity.IsActive)
                 };
-                string sql =
-                    @"INSERT INTO Employees (EmployeeID, FullName, Position, Gender, DepartmentID, AvatarPath, Address, HireDate, IsActive)
-                      VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
+
+                string sql = @"
+            INSERT INTO Employees (EmployeeID, FullName, Position, Gender, DepartmentID, AvatarPath, Address, HireDate, IsActive)
+            VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
+
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                // ===============================
+                // ✅ Thêm role "Nhân viên" vào UserRoles
+                // ===============================
+
+                // ⚠️ Giả định EmployeeID trùng với UserID (nếu không, cần map như bên dưới)
+                int userId = entity.EmployeeID;
+
+                // Nếu EmployeeID không trùng với UserID, dùng đoạn sau:
+                // string getUserSql = "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID";
+                // var dtUser = DatabaseHelper.ExecuteQuery(getUserSql, new SqlParameter("@EmpID", entity.EmployeeID));
+                // if (dtUser.Rows.Count > 0)
+                //     userId = Convert.ToInt32(dtUser.Rows[0]["UserID"]);
+
+                // Kiểm tra đã có role "Nhân viên" chưa
+                SqlParameter[] checkParams = new SqlParameter[]
+                {
+            new SqlParameter("@UserID", userId),
+            new SqlParameter("@Role", "Nhân viên")
+                };
+                string checkSql = @"SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                var checkDt = DatabaseHelper.ExecuteQuery(checkSql, checkParams);
+
+                bool exists = (checkDt != null && checkDt.Rows.Count > 0);
+
+                if (!exists)
+                {
+                    SqlParameter[] insertRoleParams = new SqlParameter[]
+                    {
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@Role", "Nhân viên")
+                    };
+                    string insertRoleSql = @"INSERT INTO UserRoles (UserID, Role, AssignedDate)
+                                     VALUES (@UserID, @Role, GETDATE())";
+                    DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -112,6 +151,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         /// <summary>
         /// Cập nhật thông tin nhân viên
         /// </summary>

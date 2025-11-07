@@ -36,17 +36,17 @@ namespace EmployeeManagement.Pages
             Console.WriteLine(_currentTaskId);
             _currentTaskName = taskName;
             this.Text = $"Quản lý Tập Tin Nhiệm Vụ - {taskName}";
-            tbFiles.Columns.Add(new Column("Title", "File Name") { Width = "22%" });
-            tbFiles.Columns.Add(new Column("FileType", "Attachment Type") { Width = "15%" });
+            tbFiles.Columns.Add(new Column("Title", "Tên file") { Width = "22%" });
+            tbFiles.Columns.Add(new Column("FileType", "Loại file") { Width = "15%" });
             var fileColumn = new Column("File", "Tập tin") { Width = "12%" };
             fileColumn.SetStyle(new AntdUI.Table.CellStyleInfo
             {
                 ForeColor = System.Drawing.Color.Blue
             });
             tbFiles.Columns.Add(fileColumn);
-            tbFiles.Columns.Add(new Column("CreatedAt", "Date Added") { Width = "15%" });
-            tbFiles.Columns.Add(new Column("CreatedByName", "Created By") { Width = "16%" });
-            tbFiles.Columns.Add(new Column("Actions", "Actions") { Width = "20%" });
+            tbFiles.Columns.Add(new Column("CreatedAt", "Ngày thêm") { Width = "15%" });
+            tbFiles.Columns.Add(new Column("CreatedByName", "Thêm bởi") { Width = "16%" });
+            tbFiles.Columns.Add(new Column("Actions", "Hành động") { Width = "20%" });
             tbFiles.CellButtonClick += tbFiles_CellButtonClick;
             ddSort.Items.Add("Tên A-Z");
             ddSort.Items.Add("Tên Z-A");

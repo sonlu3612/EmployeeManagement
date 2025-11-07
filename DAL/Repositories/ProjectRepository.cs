@@ -138,20 +138,52 @@ namespace EmployeeManagement.DAL.Repositories
                     Console.WriteLine("[ProjectRepository.Insert] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
+
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@ProjectName", entity.ProjectName ?? (object)DBNull.Value),
-                    new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@StartDate", entity.StartDate),
-                    new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
-                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@CreatedBy", entity.CreatedBy),
-                    new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
-                 };
+            new SqlParameter("@ProjectName", entity.ProjectName ?? (object)DBNull.Value),
+            new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
+            new SqlParameter("@StartDate", entity.StartDate),
+            new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
+            new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
+            new SqlParameter("@CreatedBy", entity.CreatedBy),
+            new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
+                };
+
                 string sql =
                     @"INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy)
-                    VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy, @ManagerBy)";
+              VALUES (@ProjectName, @Description, @StartDate, @EndDate, @Status, @CreatedBy, @ManagerBy)";
+
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                if (entity.ManagerBy.HasValue && entity.ManagerBy.Value > 0)
+                {
+                    int managerId = entity.ManagerBy.Value;
+
+                    SqlParameter[] checkParams = new SqlParameter[]
+                    {
+                new SqlParameter("@UserID", managerId),
+                new SqlParameter("@Role", "Quản lý dự án")
+                    };
+                    string checkSql = @"SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+
+                    var checkDt = DatabaseHelper.ExecuteQuery(checkSql, checkParams);
+                    bool exists = (checkDt != null && checkDt.Rows.Count > 0);
+
+                    if (!exists)
+                    {
+                        // Chèn role mới
+                        SqlParameter[] insertRoleParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", managerId),
+                    new SqlParameter("@Role", "Quản lý dự án")
+                        };
+                        string insertRoleSql = @"INSERT INTO UserRoles (UserID, Role, AssignedDate)
+                                         VALUES (@UserID, @Role, GETDATE())";
+                        DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -160,6 +192,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         /// <summary>
         /// Cập nhật thông tin dự án
         /// Kiểm tra StartDate <= EndDate trước khi cập nhật

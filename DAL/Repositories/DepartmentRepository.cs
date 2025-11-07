@@ -66,14 +66,53 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@DepartmentName", entity.DepartmentName ?? (object)DBNull.Value),
-                    new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
+            new SqlParameter("@DepartmentName", entity.DepartmentName ?? (object)DBNull.Value),
+            new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
+            new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
                 };
-                string sql =
-                    @"INSERT INTO Departments (DepartmentName, Description, ManagerID)
-                      VALUES (@DepartmentName, @Description, @ManagerID)";
+
+                string sql = @"
+            INSERT INTO Departments (DepartmentName, Description, ManagerID)
+            VALUES (@DepartmentName, @Description, @ManagerID)";
+
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                // Nếu có ManagerID, gán thêm role "Trưởng phòng"
+                if (entity.ManagerID.HasValue && entity.ManagerID.Value > 0)
+                {
+                    int managerId = entity.ManagerID.Value;
+
+                    // ⚠️ Giả định ManagerID là UserID.
+                    // Nếu ManagerID là EmployeeID, bạn cần map sang UserID:
+                    // string getUserSql = "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID";
+                    // var dt = DatabaseHelper.ExecuteQuery(getUserSql, new SqlParameter("@EmpID", managerId));
+                    // if (dt.Rows.Count > 0) managerId = Convert.ToInt32(dt.Rows[0]["UserID"]);
+
+                    // Kiểm tra đã có role "Trưởng phòng" hay chưa
+                    SqlParameter[] checkParams = new SqlParameter[]
+                    {
+                new SqlParameter("@UserID", managerId),
+                new SqlParameter("@Role", "Trưởng phòng")
+                    };
+                    string checkSql = @"SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+
+                    var checkDt = DatabaseHelper.ExecuteQuery(checkSql, checkParams);
+                    bool exists = (checkDt != null && checkDt.Rows.Count > 0);
+
+                    if (!exists)
+                    {
+                        SqlParameter[] insertRoleParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", managerId),
+                    new SqlParameter("@Role", "Quản lý phòng ban")
+                        };
+                        string insertRoleSql = @"INSERT INTO UserRoles (UserID, Role, AssignedDate)
+                                         VALUES (@UserID, @Role, GETDATE())";
+
+                        DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -82,6 +121,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         public bool Update(Department entity)
         {
             try

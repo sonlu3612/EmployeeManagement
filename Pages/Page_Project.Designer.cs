@@ -56,7 +56,6 @@
             this.tbProject.Size = new System.Drawing.Size(1023, 617);
             this.tbProject.TabIndex = 3;
             this.tbProject.Text = "table1";
-            //this.tbProject.CellClick += new AntdUI.Table.ClickEventHandler(this.tbProject_CellClick);
             this.tbProject.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbProject_MouseDown);
             // 
             // panel1
@@ -121,7 +120,7 @@
             this.cbQuanLy.Size = new System.Drawing.Size(156, 35);
             this.cbQuanLy.TabIndex = 4;
             this.cbQuanLy.Text = "Quản lý";
-            //this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
+            this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbQuanLy_SelectedValueChanged);
             // 
             // cbTrangThai
             // 
@@ -187,7 +186,7 @@
             // tasksToolStripMenuItem
             // 
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
-            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.tasksToolStripMenuItem.Text = "Nhiệm vụ";
             this.tasksToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
@@ -201,7 +200,7 @@
             // cậpNhậtToolStripMenuItem
             // 
             this.cậpNhậtToolStripMenuItem.Name = "cậpNhậtToolStripMenuItem";
-            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.cậpNhậtToolStripMenuItem.Text = "Cập nhật";
             this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
             // 

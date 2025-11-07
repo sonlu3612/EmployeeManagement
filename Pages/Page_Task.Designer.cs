@@ -139,7 +139,6 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
-            //this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // input1
             // 
@@ -162,16 +161,15 @@
             this.tableTask.Size = new System.Drawing.Size(798, 416);
             this.tableTask.TabIndex = 1;
             this.tableTask.Text = "table1";
-            //this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
             this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tàiLiệuToolStripMenuItem,
             this.xóaToolStripMenuItem,
             this.quảnLýToolStripMenuItem,
-            this.cậpNhậtTiếnĐộToolStripMenuItem,
-            this.tàiLiệuToolStripMenuItem});
+            this.cậpNhậtTiếnĐộToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(185, 114);
             this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
@@ -193,59 +191,6 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
             this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
-            //this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
-            // 
-            // input1
-            // 
-            this.input1.Location = new System.Drawing.Point(3, 3);
-            this.input1.Name = "input1";
-            this.input1.PlaceholderText = "Tìm kiếm ...";
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
-            // 
-            // tableTask
-            // 
-            this.tableTask.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
-            this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableTask.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableTask.Gap = 12;
-            this.tableTask.Location = new System.Drawing.Point(0, 41);
-            this.tableTask.Name = "tableTask";
-            this.tableTask.Size = new System.Drawing.Size(798, 416);
-            this.tableTask.TabIndex = 1;
-            this.tableTask.Text = "table1";
-            //this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
-            this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xóaToolStripMenuItem,
-            this.quảnLýToolStripMenuItem,
-            this.cậpNhậtTiếnĐộToolStripMenuItem});
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 70);
-            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
-            // 
-            // xóaToolStripMenuItem
-            // 
-            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.xóaToolStripMenuItem.Text = "Danh sách nhân viên";
-            // 
-            // quảnLýToolStripMenuItem
-            // 
-            this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
-            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.quảnLýToolStripMenuItem.Text = "Cập nhật";
-            // 
-            // cậpNhậtTiếnĐộToolStripMenuItem
-            // 
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
-            //this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
             // 
             // tàiLiệuToolStripMenuItem
             // 

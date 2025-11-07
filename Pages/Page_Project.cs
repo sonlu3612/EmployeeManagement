@@ -4,6 +4,7 @@ using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -402,5 +403,28 @@ namespace EmployeeManagement.Pages
                 btnXoa.Enabled = false;
         }
         #endregion
+
+        private void documentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbProject.SelectedIndex - 1;
+            if (tbProject.DataSource is IList projects && selectedIndex >= 0 && selectedIndex < projects.Count)
+            {
+                dynamic record = projects[selectedIndex];
+                if (!IsAdmin() && !(IsProjectManager() && record.ManagerBy == SessionManager.CurrentUser.UserID))
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho dự án này!");
+                    return;
+                }
+                if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
+                int id = record.ProjectID;
+                var frm = new frmProjectFile(id);
+                Console.WriteLine(id);
+                frm.ShowDialog();
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
+            }
+        }
     }
 }
