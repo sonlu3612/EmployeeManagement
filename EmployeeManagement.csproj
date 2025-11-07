@@ -342,6 +342,15 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Assets\Avatars\20251105193312_cute-hollow-knight-hornet-pack.png" />
+    <Content Include="Assets\Avatars\20251105193452_avt1.jpg" />
+    <Content Include="Assets\Avatars\20251105195006_avt1.jpg" />
+    <Content Include="Assets\Avatars\20251105200048_Không có tiêu đề.jpg" />
+    <Content Include="Assets\Avatars\20251105200201_Không có tiêu đề.jpg" />
+    <Content Include="Assets\Avatars\20251106113813_Không có tiêu đề.jpg" />
+    <Content Include="Assets\Avatars\20251106132414_cute-hollow-knight-hornet-pack.png" />
+    <Content Include="Assets\Avatars\20251106133428_avt1.jpg" />
+    <Content Include="Assets\Avatars\20251106134107_cute-hollow-knight-hornet-pack.png" />
     <Content Include="bin\Debug\EmployeeManagement.exe" />
     <Content Include="bin\Debug\EmployeeManagement.pdb" />
     <Content Include="Database\scripts.sql" />
@@ -375,7 +384,6 @@
     <Content Include="Assets\Images\back.jpeg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Avatars\" />
     <Folder Include="bin\Release\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
