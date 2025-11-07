@@ -19,9 +19,13 @@ namespace EmployeeManagement.Dialogs
         private readonly IRepository<Employee> _employeeRepository = new EmployeeRepository();
         private readonly IRepository<Department> _departmentRepository = new DepartmentRepository();
         private readonly UserRepository _userRepository = new UserRepository();
+
+        //private Employee _employee;
+        //private bool IsEdited => _employee != null;
         public frmEmployee()
         {
             InitializeComponent();
+            //_employee = employee;
         }
 
         public void frmEmployee_Load(string DepartmentName)
@@ -30,6 +34,38 @@ namespace EmployeeManagement.Dialogs
             ddownGT.Items.Add("Nữ");
             ddownDepartment.Text = DepartmentName;
             ddownDepartment.Enabled = false;
+
+            var departments = _departmentRepository.GetAll().ToList();
+            ddownDepartment.Items.Clear();
+            ddownDepartment.Items.AddRange(departments.Select(d => d.DepartmentName).ToArray());
+
+            if (IsEdited)
+            {
+                txtName.Text = _employee.FullName;
+                txtEmail.Text = _employee.Email;
+                txtDienThoai.Text = _employee.Phone;
+                txtPosition.Text = _employee.Position;
+                txtDiaChi.Text = _employee.Address;
+                ddownGT.Text =  _employee.Gender;
+                dateStart.Value = _employee.HireDate;
+
+            }
+            else
+            {
+               
+                dateStart.Value = DateTime.Today;
+            }
+            ddownDepartment.Enabled = false;
+
+            if (!string.IsNullOrEmpty(_employee.AvatarPath))
+            {
+                string fullPath = Path.Combine(Application.StartupPath, "..", "..", _employee.AvatarPath.Replace("/", "\\"));
+                if (File.Exists(fullPath))
+                {
+                    img.Image = Image.FromFile(fullPath);
+                    img.Tag = _employee.AvatarPath;
+                }
+            }
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
