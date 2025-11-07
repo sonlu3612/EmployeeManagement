@@ -193,7 +193,7 @@ namespace EmployeeManagement.Pages
                 var newProject = frm.Tag as Project;
                 if (newProject != null)
                 {
-                    _projectRepository.Insert(newProject);
+                    //_projectRepository.Insert(newProject);
                     LoadData();
                     Message.success(this.FindForm(), "Thêm dự án thành công!");
                 }

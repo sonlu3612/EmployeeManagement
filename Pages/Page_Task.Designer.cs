@@ -138,7 +138,7 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            //this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // input1
             // 
@@ -161,7 +161,7 @@
             this.tableTask.Size = new System.Drawing.Size(798, 416);
             this.tableTask.TabIndex = 1;
             this.tableTask.Text = "table1";
-            this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
+            //this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
             this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
             // 
             // menuStrip
@@ -191,7 +191,7 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
             this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
+            //this.cậpNhậtTiếnĐộToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtTiếnĐộToolStripMenuItem_Click);
             // 
             // input1
             // 

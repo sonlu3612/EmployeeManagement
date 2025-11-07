@@ -142,12 +142,14 @@ namespace EmployeeManagement.Dialogs
 
                 if (_isEdit)
                 {
+                 
                     newProject.ProjectID = _project.ProjectID;
                     _projectRepository.Update(newProject);
                     //Message.success(this.FindForm(), "Cập nhật dự án thành công!");
                 }
                 else
                 {
+                    Console.WriteLine("Tạo dự án mới");
                     _projectRepository.Insert(newProject);
                     //Message.success(this.FindForm(), "Thêm dự án thành công!");
                 }
