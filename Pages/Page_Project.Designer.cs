@@ -41,6 +41,7 @@
             this.ctm1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tasksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.documentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cậpNhậtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.ctm1.SuspendLayout();
             this.SuspendLayout();
@@ -177,22 +178,30 @@
             // 
             this.ctm1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tasksToolStripMenuItem,
-            this.documentsToolStripMenuItem});
+            this.documentsToolStripMenuItem,
+            this.cậpNhậtToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(127, 48);
+            this.ctm1.Size = new System.Drawing.Size(181, 92);
             // 
             // tasksToolStripMenuItem
             // 
             this.tasksToolStripMenuItem.Name = "tasksToolStripMenuItem";
-            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.tasksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.tasksToolStripMenuItem.Text = "Nhiệm vụ";
             this.tasksToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
             // documentsToolStripMenuItem
             // 
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
-            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.documentsToolStripMenuItem.Text = "Tài liệu";
+            // 
+            // cậpNhậtToolStripMenuItem
+            // 
+            this.cậpNhậtToolStripMenuItem.Name = "cậpNhậtToolStripMenuItem";
+            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cậpNhậtToolStripMenuItem.Text = "Cập nhật";
+            this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
             // 
             // Page_Project
             // 
@@ -223,5 +232,6 @@
         private System.Windows.Forms.ContextMenuStrip ctm1;
         private System.Windows.Forms.ToolStripMenuItem tasksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem documentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cậpNhậtToolStripMenuItem;
     }
 }

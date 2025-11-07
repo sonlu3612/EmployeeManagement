@@ -1,4 +1,4 @@
-﻿-- =============================================
+﻿﻿-- =============================================
 -- Script: Setup ProjectManagementDB (Sửa lỗi vòng FK & trigger)
 -- Mô tả: Tạo database, tables, indexes và sample data
 -- Lưu ý: Script sẽ XÓA database cũ nếu tồn tại
