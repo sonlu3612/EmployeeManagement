@@ -1,4 +1,5 @@
 ﻿using AntdUI;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
 using System;
@@ -21,6 +22,9 @@ namespace EmployeeManagement.Pages
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         private int employeeId;
         private string DepartmentName;
+
+        private bool IsAdmin() => SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
+        private bool IsManager() => SessionManager.CurrentUser?.Roles?.Contains("Quản lý phòng ban") ?? false;
         public Page_ManageEmployees()
         {
             InitializeComponent();
@@ -42,7 +46,7 @@ namespace EmployeeManagement.Pages
             this.DepartmentName = DepartmentName;
 
             tbNV.Columns.Add(new Column("EmployeeID", "ID"));
-            tbNV.Columns.Add(new Column("FullName", "Hợ tên"));
+            tbNV.Columns.Add(new Column("FullName", "Họ tên"));
             tbNV.Columns.Add(new Column("Position", "Chức vụ"));
             tbNV.Columns.Add(new Column("Gender", "Giới tính"));
             tbNV.Columns.Add(new Column("Address", "Địa chỉ"));
@@ -224,5 +228,50 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        //private void cậpNhậtToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+
+        //    int selectedIndex = tbNV.SelectedIndex - 1;
+        //    if (selectedIndex < 0)
+        //    {
+        //        Message.warn(this.FindForm(), "Vui lòng chọn nhân viên cần cập nhật!");
+        //        return;
+        //    }
+
+        //    if (tbNV.DataSource is IList<Employee> employees && selectedIndex < employees.Count)
+        //    {
+                
+        //        var record = employees[selectedIndex];
+
+        //        if (record == null)
+        //        {
+        //            Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên được chọn!");
+        //            return;
+        //        }
+        //        else
+        //        {
+        //            frmEmployee frmEmployee = new frmEmployee(record);
+        //        }
+
+               
+               
+        //    }
+        //    else
+        //    {
+        //        Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên được chọn!");
+        //    }
+        //}
+
+        //private void tbNV_MouseDown(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button == MouseButtons.Right)
+        //    {
+        //        int sel = tbNV.SelectedIndex;
+        //        if (sel >= 0)
+        //        {
+        //            menuStrip.Show(Cursor.Position);
+        //        }
+        //    }
+        //}
     }
 }

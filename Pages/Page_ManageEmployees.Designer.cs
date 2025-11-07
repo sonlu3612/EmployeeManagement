@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbNV = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
             this.btnAdd = new AntdUI.Button();
@@ -36,7 +37,10 @@
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
             this.txtTim = new AntdUI.Input();
+            this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cậpNhậtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbNV
@@ -49,6 +53,7 @@
             this.tbNV.Size = new System.Drawing.Size(836, 482);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
+            this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
             // 
             // panel1
             // 
@@ -152,6 +157,20 @@
             this.txtTim.Size = new System.Drawing.Size(216, 35);
             this.txtTim.TabIndex = 0;
             // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cậpNhậtToolStripMenuItem});
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(123, 26);
+            // 
+            // cậpNhậtToolStripMenuItem
+            // 
+            this.cậpNhậtToolStripMenuItem.Name = "cậpNhậtToolStripMenuItem";
+            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cậpNhậtToolStripMenuItem.Text = "Cập nhật";
+            this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
+            // 
             // Page_ManageEmployees
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -161,6 +180,7 @@
             this.Name = "Page_ManageEmployees";
             this.Size = new System.Drawing.Size(836, 523);
             this.panel1.ResumeLayout(false);
+            this.menuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -175,5 +195,7 @@
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
         private AntdUI.Input txtTim;
+        private System.Windows.Forms.ContextMenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem cậpNhậtToolStripMenuItem;
     }
 }
