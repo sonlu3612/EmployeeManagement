@@ -217,7 +217,7 @@ namespace EmployeeManagement.Pages
                     
                     if (record != null)
                     {
-                        var task = taskRepository.GetAll().FirstOrDefault(t => t.TaskID == record.TaskID);
+                        var task = taskRepository.GetById(record.TaskID);
                         if (task != null)
                         {
                             frmTask frmTask = new frmTask(task);
