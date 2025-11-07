@@ -46,6 +46,7 @@
             // tbNV
             // 
             this.tbNV.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbNV.EmptyText = "Không có nhân viên nào";
             this.tbNV.Gap = 12;
             this.tbNV.Location = new System.Drawing.Point(0, 41);
             this.tbNV.Name = "tbNV";

@@ -33,15 +33,16 @@
             this.btnDelete = new AntdUI.Button();
             this.btnAdd = new AntdUI.Button();
             this.ddownStatus = new AntdUI.Dropdown();
-            this.txtTim = new AntdUI.Input();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
+            this.txtTim = new AntdUI.Input();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbTask
             // 
             this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbTask.EmptyText = "Không có nhiệm vụ nào";
             this.tbTask.Gap = 12;
             this.tbTask.Location = new System.Drawing.Point(0, 41);
             this.tbTask.Name = "tbTask";
@@ -109,15 +110,6 @@
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
             // 
-            // txtTim
-            // 
-            this.txtTim.Location = new System.Drawing.Point(3, 3);
-            this.txtTim.Name = "txtTim";
-            this.txtTim.PlaceholderText = "Tìm kiếm ...";
-            this.txtTim.Radius = 10;
-            this.txtTim.Size = new System.Drawing.Size(216, 35);
-            this.txtTim.TabIndex = 0;
-            // 
             // btnSync
             // 
             this.btnSync.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
@@ -131,6 +123,7 @@
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
+            this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
             // btnSearch
             // 
@@ -145,6 +138,15 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            // 
+            // txtTim
+            // 
+            this.txtTim.Location = new System.Drawing.Point(3, 3);
+            this.txtTim.Name = "txtTim";
+            this.txtTim.PlaceholderText = "Tìm kiếm ...";
+            this.txtTim.Radius = 10;
+            this.txtTim.Size = new System.Drawing.Size(216, 35);
+            this.txtTim.TabIndex = 0;
             // 
             // Page_AssignTask
             // 

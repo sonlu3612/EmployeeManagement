@@ -135,6 +135,8 @@ namespace EmployeeManagement.Pages
 
         private void btnSync_Click(object sender, EventArgs e)
         {
+            txtTim.Text = string.Empty;
+            ddownGender.Text = "Giới tính";
             LoadData();
         }
 

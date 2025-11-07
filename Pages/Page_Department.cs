@@ -29,12 +29,41 @@ namespace EmployeeManagement.Pages
 
         private void ddownEmployee_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            ddownTP.Text = e.Value?.ToString() ?? "";
-            var filteredDep = repository.GetAll()
-                .Where(p => p.ManagerName.ToString().Contains(ddownTP.Text))
-                .ToList();
-            tbPB.DataSource = filteredDep;
+            try
+            {
+                string selected = e.Value?.ToString() ?? "";
+
+                if (string.IsNullOrWhiteSpace(selected) || selected.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+                {
+                    ddownTP.Text = "Tất cả";
+                    tbPB.DataSource = repository.GetAllWithEmployeeCount();
+                    return;
+                }
+
+                var parts = selected.Split(new[] { '-' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int employeeId))
+                {
+                    string fullName = parts[1].Trim();
+
+                    ddownTP.Text = fullName;
+
+                    var filteredDep = repository.GetAllWithEmployeeCount()
+                        .Where(d => d.ManagerName == fullName)
+                        .ToList();
+
+                    tbPB.DataSource = filteredDep;
+                }
+                else
+                {
+                    Message.warn(this.FindForm(), "Không nhận diện được nhân viên được chọn.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi lọc theo trưởng phòng: " + ex.Message);
+            }
         }
+
 
         private bool IsInDesignMode()
         {
@@ -93,16 +122,13 @@ namespace EmployeeManagement.Pages
             }
             else if (IsDepartmentManager())
             {
-                // Load only departments managed by current user
                 departments = repository.GetAllWithEmployeeCount()
                     .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
                     .ToList();
             }
             else if (IsEmployee())
             {
-                // Load only the department of the current employee
                 var currentEmployee = employeeRepository.GetById(SessionManager.CurrentUser.UserID);
-                Console.WriteLine("123");
                 if (currentEmployee?.DepartmentID != null)
                 {
                     departments = repository.GetAllWithEmployeeCount()
@@ -116,7 +142,6 @@ namespace EmployeeManagement.Pages
             }
             else
             {
-                // Default to empty for other roles (e.g., Quản lý dự án)
                 departments = new List<Department>();
             }
 
@@ -125,13 +150,16 @@ namespace EmployeeManagement.Pages
             if (ddownTP.Items.Count == 0)
             {
                 var employees = employeeRepository.GetAll();
+                ddownTP.Items.Clear();
+                ddownTP.Items.Add("Tất cả");
                 foreach (var em in employees)
                 {
-                    string display = $"{em.FullName}";
+                    string display = $"{em.EmployeeID} - {em.FullName}";
                     ddownTP.Items.Add(display);
                 }
             }
         }
+
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -203,6 +231,8 @@ namespace EmployeeManagement.Pages
 
         private void btnSync_Click(object sender, EventArgs e)
         {
+            txtTim.Text = string.Empty;
+            ddownTP.Text = "Trưởng phòng";
             LoadData();
         }
 

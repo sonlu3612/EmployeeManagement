@@ -45,7 +45,7 @@
             this.pageTasks.ShowIcon = true;
             this.pageTasks.Size = new System.Drawing.Size(808, 39);
             this.pageTasks.TabIndex = 0;
-            this.pageTasks.Text = "Manage Tasks";
+            this.pageTasks.Text = "Quản lý nhiệm vụ";
             this.pageTasks.UseForeColorDrawIcons = true;
             this.pageTasks.UseSystemStyleColor = true;
             // 

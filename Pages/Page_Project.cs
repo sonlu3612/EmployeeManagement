@@ -166,10 +166,16 @@ namespace EmployeeManagement.Pages
         }
         private void taskToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             int selectedIndex = tbProject.SelectedIndex - 1;
             if (tbProject.DataSource is IList<Project> projects && selectedIndex >= 0 && selectedIndex < projects.Count)
             {
                 var record = projects[selectedIndex];
+                if (!IsAdmin() && !(IsProjectManager() && record.ManagerBy == SessionManager.CurrentUser.UserID))
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền quản lý nhiệm vụ cho dự án này!");
+                    return;
+                }
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!"); return; }
                 int id = record.ProjectID;
                 frmManageTasks frm = new frmManageTasks();
@@ -273,27 +279,43 @@ namespace EmployeeManagement.Pages
         {
             try
             {
-                var selectedValue = e.Value?.ToString();
-                if (string.IsNullOrWhiteSpace(selectedValue))
+                var selectedValue = e.Value?.ToString()?.Trim();
+                if (string.IsNullOrEmpty(selectedValue))
                     return;
-                cbQuanLy.Text = selectedValue;
+
                 if (selectedValue.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
                 {
+                    cbQuanLy.Text = "Tất cả";
                     tbProject.DataSource = visibleProjects;
+                    Message.success(this.FindForm(), $"Hiển thị {visibleProjects.Count} dự án.");
                     return;
                 }
-                var token = selectedValue.Split(new[] { ' ', '-', ':' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                if (int.TryParse(token, out int employeeId))
+
+                var parts = selectedValue.Split(new[] { '-' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 2)
                 {
-                    var projects = visibleProjects
-                        .Where(p => p.ManagerBy == employeeId)
-                        .ToList();
-                    tbProject.DataSource = projects;
-                    Message.success(this.FindForm(), $"Tìm thấy {projects.Count} dự án.");
+                    if (int.TryParse(parts[0].Trim(), out int employeeId))
+                    {
+                        string fullName = parts[1].Trim();
+
+                        cbQuanLy.Text = fullName;
+
+                        var projects = visibleProjects
+                            .Where(p => p.ManagerBy == employeeId)
+                            .ToList();
+
+                        tbProject.DataSource = projects;
+
+                        Message.success(this.FindForm(), $"Tìm thấy {projects.Count} dự án.");
+                    }
+                    else
+                    {
+                        Message.warn(this.FindForm(), "Không nhận diện được mã nhân viên.");
+                    }
                 }
                 else
                 {
-                    Message.warn(this.FindForm(), $"Không tìm thấy.");
+                    Message.warn(this.FindForm(), "Dữ liệu nhân viên không hợp lệ.");
                 }
             }
             catch (Exception ex)
@@ -301,6 +323,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lọc theo nhân viên: " + ex.Message);
             }
         }
+
         private void cbQuanLy_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             try
@@ -338,6 +361,7 @@ namespace EmployeeManagement.Pages
             LoadData();
             cbQuanLy.Text = "Quản lý";
             cbTrangThai.Text = "Trạng thái";
+            txtTim.Text = string.Empty;
         }
         private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {

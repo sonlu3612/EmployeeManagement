@@ -41,5 +41,12 @@ namespace EmployeeManagement.Pages
         {
             tbTask.DataSource = repository.GetByEmployee(this.EmployeeID);
         }
+
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            txtTim.Text = string.Empty;
+            ddownStatus.Text = "Trạng thái";
+            LoadData();
+        }
     }
 }

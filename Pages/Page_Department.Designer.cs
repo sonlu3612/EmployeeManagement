@@ -47,6 +47,7 @@
             // tbPB
             // 
             this.tbPB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbPB.EmptyText = "Không có phòng ban nào";
             this.tbPB.Gap = 12;
             this.tbPB.Location = new System.Drawing.Point(0, 41);
             this.tbPB.Name = "tbPB";
@@ -164,19 +165,19 @@
             this.quảnLýToolStripMenuItem,
             this.chỉnhSửaToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(181, 70);
+            this.ctm1.Size = new System.Drawing.Size(128, 48);
             // 
             // quảnLýToolStripMenuItem
             // 
             this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
-            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.quảnLýToolStripMenuItem.Text = "Quản lý";
             this.quảnLýToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
             // chỉnhSửaToolStripMenuItem
             // 
             this.chỉnhSửaToolStripMenuItem.Name = "chỉnhSửaToolStripMenuItem";
-            this.chỉnhSửaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.chỉnhSửaToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.chỉnhSửaToolStripMenuItem.Text = "Chỉnh sửa";
             this.chỉnhSửaToolStripMenuItem.Click += new System.EventHandler(this.chỉnhSửaToolStripMenuItem_Click);
             // 

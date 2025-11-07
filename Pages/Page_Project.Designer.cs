@@ -48,6 +48,7 @@
             // tbProject
             // 
             this.tbProject.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbProject.EmptyText = "Không có dự án nào";
             this.tbProject.Gap = 12;
             this.tbProject.Location = new System.Drawing.Point(0, 41);
             this.tbProject.Name = "tbProject";
@@ -116,7 +117,7 @@
             this.cbQuanLy.Location = new System.Drawing.Point(471, 3);
             this.cbQuanLy.Name = "cbQuanLy";
             this.cbQuanLy.ShowArrow = true;
-            this.cbQuanLy.Size = new System.Drawing.Size(135, 35);
+            this.cbQuanLy.Size = new System.Drawing.Size(156, 35);
             this.cbQuanLy.TabIndex = 4;
             this.cbQuanLy.Text = "Quản lý";
             this.cbQuanLy.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.cbNhanVien_SelectedValueChanged);
