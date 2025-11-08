@@ -126,20 +126,135 @@ namespace EmployeeManagement.DAL.Repositories
         {
             try
             {
+                // Lấy manager cũ (EmployeeID) trước khi cập nhật
+                int? oldManagerEmpId = null;
+                try
+                {
+                    SqlParameter[] getOldParams = new SqlParameter[]
+                    {
+                new SqlParameter("@DepartmentID", entity.DepartmentID)
+                    };
+                    var dtOld = DatabaseHelper.ExecuteQuery(
+                        "SELECT ManagerID FROM Departments WHERE DepartmentID = @DepartmentID",
+                        getOldParams);
+                    if (dtOld != null && dtOld.Rows.Count > 0 && dtOld.Rows[0]["ManagerID"] != DBNull.Value)
+                    {
+                        oldManagerEmpId = Convert.ToInt32(dtOld.Rows[0]["ManagerID"]);
+                    }
+                }
+                catch
+                {
+                    // ignore, sẽ log trong catch tổng nếu cần
+                }
+
+                // Thực hiện update Departments
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@DepartmentID", entity.DepartmentID),
-                    new SqlParameter("@DepartmentName", entity.DepartmentName ?? (object)DBNull.Value),
-                    new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
+            new SqlParameter("@DepartmentID", entity.DepartmentID),
+            new SqlParameter("@DepartmentName", entity.DepartmentName ?? (object)DBNull.Value),
+            new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
+            new SqlParameter("@ManagerID", entity.ManagerID ?? (object)DBNull.Value)
                 };
                 string sql =
                     @"UPDATE Departments
-                      SET DepartmentName = @DepartmentName,
-                          Description = @Description,
-                          ManagerID = @ManagerID
-                      WHERE DepartmentID = @DepartmentID";
+              SET DepartmentName = @DepartmentName,
+                  Description = @Description,
+                  ManagerID = @ManagerID
+              WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                const string roleName = "Quản lý phòng ban";
+
+                // Nếu manager mới được gán -> đảm bảo họ có role
+                if (entity.ManagerID.HasValue)
+                {
+                    int newManagerEmpId = entity.ManagerID.Value;
+
+                    // Map EmployeeID -> UserID (nếu có)
+                    int? newManagerUserId = null;
+                    try
+                    {
+                        var dtMap = DatabaseHelper.ExecuteQuery(
+                            "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID",
+                            new SqlParameter[] { new SqlParameter("@EmpID", newManagerEmpId) });
+                        if (dtMap != null && dtMap.Rows.Count > 0 && dtMap.Rows[0]["UserID"] != DBNull.Value)
+                        {
+                            newManagerUserId = Convert.ToInt32(dtMap.Rows[0]["UserID"]);
+                        }
+                    }
+                    catch { /* ignore mapping failure */ }
+
+                    if (newManagerUserId.HasValue)
+                    {
+                        SqlParameter[] checkParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", newManagerUserId.Value),
+                    new SqlParameter("@Role", roleName)
+                        };
+                        var checkDt = DatabaseHelper.ExecuteQuery("SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role", checkParams);
+                        bool exists = (checkDt != null && checkDt.Rows.Count > 0);
+                        if (!exists)
+                        {
+                            SqlParameter[] insertRoleParams = new SqlParameter[]
+                            {
+                        new SqlParameter("@UserID", newManagerUserId.Value),
+                        new SqlParameter("@Role", roleName)
+                            };
+                            string insertRoleSql = @"INSERT INTO UserRoles (UserID, Role, AssignedDate) VALUES (@UserID, @Role, GETDATE())";
+                            DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
+                        }
+                    }
+                }
+
+                // Nếu có manager cũ và khác manager mới -> kiểm tra xem manager cũ còn quản lý dept nào không
+                if (oldManagerEmpId.HasValue)
+                {
+                    bool managerChanged = !entity.ManagerID.HasValue || (entity.ManagerID.HasValue && oldManagerEmpId.Value != entity.ManagerID.Value);
+
+                    if (managerChanged)
+                    {
+                        SqlParameter[] countParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@OldManagerID", oldManagerEmpId.Value),
+                    new SqlParameter("@ThisDepartmentID", entity.DepartmentID)
+                        };
+                        string countSql = @"SELECT COUNT(1) AS C FROM Departments WHERE ManagerID = @OldManagerID AND DepartmentID <> @ThisDepartmentID";
+                        var countDt = DatabaseHelper.ExecuteQuery(countSql, countParams);
+                        int remaining = 0;
+                        if (countDt != null && countDt.Rows.Count > 0 && countDt.Rows[0]["C"] != DBNull.Value)
+                            remaining = Convert.ToInt32(countDt.Rows[0]["C"]);
+
+                        if (remaining == 0)
+                        {
+                            // Nếu không còn dept nào do manager cũ quản lý -> xoá role (nếu có)
+                            // Map old EmployeeID -> UserID
+                            int? oldManagerUserId = null;
+                            try
+                            {
+                                var dtMapOld = DatabaseHelper.ExecuteQuery(
+                                    "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID",
+                                    new SqlParameter[] { new SqlParameter("@EmpID", oldManagerEmpId.Value) });
+                                if (dtMapOld != null && dtMapOld.Rows.Count > 0 && dtMapOld.Rows[0]["UserID"] != DBNull.Value)
+                                {
+                                    oldManagerUserId = Convert.ToInt32(dtMapOld.Rows[0]["UserID"]);
+                                }
+                            }
+                            catch { /* ignore */ }
+
+                            if (oldManagerUserId.HasValue)
+                            {
+                                SqlParameter[] deleteRoleParams = new SqlParameter[]
+                                {
+                            new SqlParameter("@UserID", oldManagerUserId.Value),
+                            new SqlParameter("@Role", roleName)
+                                };
+                                string deleteRoleSql = @"DELETE FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                                DatabaseHelper.ExecuteNonQuery(deleteRoleSql, deleteRoleParams);
+                            }
+                        }
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -148,16 +263,75 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         public bool Delete(int id)
         {
             try
             {
+                // Lấy manager (EmployeeID) trước khi xóa
+                int? managerEmpId = null;
+                try
+                {
+                    var dt = DatabaseHelper.ExecuteQuery(
+                        "SELECT ManagerID FROM Departments WHERE DepartmentID = @DepartmentID",
+                        new SqlParameter[] { new SqlParameter("@DepartmentID", id) });
+                    if (dt != null && dt.Rows.Count > 0 && dt.Rows[0]["ManagerID"] != DBNull.Value)
+                        managerEmpId = Convert.ToInt32(dt.Rows[0]["ManagerID"]);
+                }
+                catch
+                {
+                    // ignore mapping failure
+                }
+
+                // Xóa department
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@DepartmentID", id)
+            new SqlParameter("@DepartmentID", id)
                 };
                 string sql = "DELETE FROM Departments WHERE DepartmentID = @DepartmentID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                // Nếu có manager trước đó, kiểm tra họ còn quản lý dept nào không
+                if (managerEmpId.HasValue)
+                {
+                    SqlParameter[] countParams = new SqlParameter[]
+                    {
+                new SqlParameter("@ManagerID", managerEmpId.Value)
+                    };
+                    string countSql = @"SELECT COUNT(1) AS C FROM Departments WHERE ManagerID = @ManagerID";
+                    var countDt = DatabaseHelper.ExecuteQuery(countSql, countParams);
+                    int remaining = 0;
+                    if (countDt != null && countDt.Rows.Count > 0 && countDt.Rows[0]["C"] != DBNull.Value)
+                        remaining = Convert.ToInt32(countDt.Rows[0]["C"]);
+
+                    if (remaining == 0)
+                    {
+                        // Map EmployeeID -> UserID
+                        int? managerUserId = null;
+                        try
+                        {
+                            var dtMap = DatabaseHelper.ExecuteQuery(
+                                "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID",
+                                new SqlParameter[] { new SqlParameter("@EmpID", managerEmpId.Value) });
+                            if (dtMap != null && dtMap.Rows.Count > 0 && dtMap.Rows[0]["UserID"] != DBNull.Value)
+                                managerUserId = Convert.ToInt32(dtMap.Rows[0]["UserID"]);
+                        }
+                        catch { /* ignore */ }
+
+                        if (managerUserId.HasValue)
+                        {
+                            const string roleName = "Quản lý phòng ban";
+                            SqlParameter[] deleteRoleParams = new SqlParameter[]
+                            {
+                        new SqlParameter("@UserID", managerUserId.Value),
+                        new SqlParameter("@Role", roleName)
+                            };
+                            string deleteRoleSql = @"DELETE FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                            DatabaseHelper.ExecuteNonQuery(deleteRoleSql, deleteRoleParams);
+                        }
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -166,34 +340,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-        public List<Department> SearchByName(string keyword)
-        {
-            List<Department> departments = new List<Department>();
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                {
-                    new SqlParameter("@Keyword", $"%{keyword}%")
-                };
-                string sql =
-                    @"SELECT d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID,
-                      e.FullName AS ManagerName
-                      FROM Departments d
-                      LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
-                      WHERE d.DepartmentName LIKE @Keyword";
-                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-                foreach (DataRow row in dt.Rows)
-                {
-                    departments.Add(MapDataRowToDepartment(row));
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DepartmentRepository.SearchByName] Lỗi: {ex.Message}");
-                throw;
-            }
-            return departments;
-        }
+
         public int GetEmployeeCount(int departmentId)
         {
             try

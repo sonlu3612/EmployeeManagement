@@ -82,10 +82,18 @@ namespace EmployeeManagement.Pages
                         .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
                         .Select(d => d.DepartmentID)
                         .ToList();
+
                     visibleEmployees = allEmployees
                         .Where(e => myDepartmentIds.Contains(e.DepartmentID ?? 0))
                         .ToList();
+
+                    var manager = allEmployees.FirstOrDefault(e => e.EmployeeID == SessionManager.CurrentUser.UserID);
+                    if (manager != null && !visibleEmployees.Any(e => e.EmployeeID == manager.EmployeeID))
+                    {
+                        visibleEmployees.Add(manager);
+                    }
                 }
+
                 else
                 {
                     visibleEmployees = allEmployees

@@ -11,6 +11,8 @@ namespace EmployeeManagement.Pages
     public partial class Page_Account : UserControl
     {
         private EmployeeRepository employeeRepository = new EmployeeRepository();
+        public event EventHandler ProfileUpdated;
+
         public Page_Account()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace EmployeeManagement.Pages
                 if (employeeRepository.UpdateWithContact(employee))
                 {
                     Message.success(this.FindForm(), "Cập nhật thông tin nhân viên thành công!");
+                    ProfileUpdated?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
@@ -56,8 +59,8 @@ namespace EmployeeManagement.Pages
         }
         public void LoadProfile(Employee employee)
         {
-            lblTen.Text = employee.FullName ?? "Chưa cập nhật";
-            lblEmail.Text = employee.Email ?? "Chưa cập nhật";
+            label1.Text = employee.FullName ?? "Chưa cập nhật";
+            lbl2.Text = employee.Email ?? "Chưa cập nhật";
 
             string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
             string normalizedPath = employee.AvatarPath?.TrimStart('/', '\\') ?? "";

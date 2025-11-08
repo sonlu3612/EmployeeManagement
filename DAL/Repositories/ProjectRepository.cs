@@ -203,32 +203,105 @@ namespace EmployeeManagement.DAL.Repositories
         {
             try
             {
-                // Kiểm tra StartDate <= EndDate
+                // Validation: StartDate <= EndDate
                 if (entity.EndDate.HasValue && entity.StartDate > entity.EndDate.Value)
                 {
                     Console.WriteLine("[ProjectRepository.Update] Lỗi validation: StartDate phải <= EndDate");
                     return false;
                 }
+
+                // Lấy manager cũ trước khi cập nhật
+                int? oldManagerId = null;
+                try
+                {
+                    SqlParameter[] getOldParams = new SqlParameter[]
+                    {
+                new SqlParameter("@ProjectID", entity.ProjectID)
+                    };
+                    DataTable dtOld = DatabaseHelper.ExecuteQuery(
+                        "SELECT ManagerBy FROM Projects WHERE ProjectID = @ProjectID",
+                        getOldParams);
+                    if (dtOld.Rows.Count > 0 && dtOld.Rows[0]["ManagerBy"] != DBNull.Value)
+                        oldManagerId = Convert.ToInt32(dtOld.Rows[0]["ManagerBy"]);
+                }
+                catch
+                {
+                    // nếu không lấy được manager cũ thì vẫn tiếp tục (sẽ log trong catch tổng)
+                }
+
+                // Thực hiện update project
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@ProjectID", entity.ProjectID),
-                    new SqlParameter("@ProjectName", entity.ProjectName ?? (object)DBNull.Value),
-                    new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
-                    new SqlParameter("@StartDate", entity.StartDate),
-                    new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
-                    new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
-                    new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
+            new SqlParameter("@ProjectID", entity.ProjectID),
+            new SqlParameter("@ProjectName", entity.ProjectName ?? (object)DBNull.Value),
+            new SqlParameter("@Description", entity.Description ?? (object)DBNull.Value),
+            new SqlParameter("@StartDate", entity.StartDate),
+            new SqlParameter("@EndDate", entity.EndDate ?? (object)DBNull.Value),
+            new SqlParameter("@Status", entity.Status ?? (object)DBNull.Value),
+            new SqlParameter("@ManagerBy", entity.ManagerBy ?? (object)DBNull.Value)
                  };
                 string sql =
                     @"UPDATE Projects
-                    SET ProjectName = @ProjectName,
-                    Description = @Description,
-                    StartDate = @StartDate,
-                    EndDate = @EndDate,
-                    Status = @Status,
-                    ManagerBy = @ManagerBy
-                    WHERE ProjectID = @ProjectID";
+              SET ProjectName = @ProjectName,
+                  Description = @Description,
+                  StartDate = @StartDate,
+                  EndDate = @EndDate,
+                  Status = @Status,
+                  ManagerBy = @ManagerBy
+              WHERE ProjectID = @ProjectID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                // Nếu manager mới được gán (khác null) thì đảm bảo họ có role "Quản lý dự án"
+                if (entity.ManagerBy.HasValue && entity.ManagerBy.Value > 0)
+                {
+                    SqlParameter[] checkParams = new SqlParameter[]
+                    {
+                new SqlParameter("@UserID", entity.ManagerBy.Value),
+                new SqlParameter("@Role", "Quản lý dự án")
+                    };
+                    string checkSql = @"SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                    var checkDt = DatabaseHelper.ExecuteQuery(checkSql, checkParams);
+                    bool exists = (checkDt != null && checkDt.Rows.Count > 0);
+                    if (!exists)
+                    {
+                        SqlParameter[] insertRoleParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", entity.ManagerBy.Value),
+                    new SqlParameter("@Role", "Quản lý dự án")
+                        };
+                        string insertRoleSql = @"INSERT INTO UserRoles (UserID, Role, AssignedDate)
+                                         VALUES (@UserID, @Role, GETDATE())";
+                        DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
+                    }
+                }
+
+                // Nếu manager cũ tồn tại và khác manager mới => kiểm tra xem có còn project nào do họ quản lý không
+                if (oldManagerId.HasValue && (!entity.ManagerBy.HasValue || oldManagerId.Value != entity.ManagerBy.Value))
+                {
+                    SqlParameter[] countParams = new SqlParameter[]
+                    {
+                new SqlParameter("@OldManagerID", oldManagerId.Value),
+                new SqlParameter("@ThisProjectID", entity.ProjectID)
+                    };
+                    string countSql = @"SELECT COUNT(1) AS C FROM Projects WHERE ManagerBy = @OldManagerID AND ProjectID <> @ThisProjectID";
+                    var countDt = DatabaseHelper.ExecuteQuery(countSql, countParams);
+                    int remaining = 0;
+                    if (countDt != null && countDt.Rows.Count > 0 && countDt.Rows[0]["C"] != DBNull.Value)
+                        remaining = Convert.ToInt32(countDt.Rows[0]["C"]);
+
+                    if (remaining == 0)
+                    {
+                        // Xóa role "Quản lý dự án" của manager cũ (nếu có)
+                        SqlParameter[] deleteRoleParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", oldManagerId.Value),
+                    new SqlParameter("@Role", "Quản lý dự án")
+                        };
+                        string deleteRoleSql = @"DELETE FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                        DatabaseHelper.ExecuteNonQuery(deleteRoleSql, deleteRoleParams);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -237,21 +310,62 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-        /// <summary>
-        /// Xóa một dự án
-        /// </summary>
-        /// <param name="id">ID dự án cần xóa</param>
-        /// <returns>True nếu thành công, false nếu thất bại</returns>
+
         public bool Delete(int id)
         {
             try
             {
+                // Lấy manager của project trước khi xóa
+                int? managerId = null;
+                try
+                {
+                    SqlParameter[] getParams = new SqlParameter[]
+                    {
+                new SqlParameter("@ProjectID", id)
+                    };
+                    var dt = DatabaseHelper.ExecuteQuery("SELECT ManagerBy FROM Projects WHERE ProjectID = @ProjectID", getParams);
+                    if (dt.Rows.Count > 0 && dt.Rows[0]["ManagerBy"] != DBNull.Value)
+                        managerId = Convert.ToInt32(dt.Rows[0]["ManagerBy"]);
+                }
+                catch
+                {
+                    // nếu không lấy được manager thì vẫn tiếp tục xóa; sẽ log ở catch tổng
+                }
+
+                // Xóa project
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@ProjectID", id)
+            new SqlParameter("@ProjectID", id)
                 };
                 string sql = "DELETE FROM Projects WHERE ProjectID = @ProjectID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
+
+                // Nếu có manager, kiểm tra họ còn quản lý project nào nữa không
+                if (managerId.HasValue)
+                {
+                    SqlParameter[] countParams = new SqlParameter[]
+                    {
+                new SqlParameter("@ManagerID", managerId.Value)
+                    };
+                    string countSql = @"SELECT COUNT(1) AS C FROM Projects WHERE ManagerBy = @ManagerID";
+                    var countDt = DatabaseHelper.ExecuteQuery(countSql, countParams);
+                    int remaining = 0;
+                    if (countDt != null && countDt.Rows.Count > 0 && countDt.Rows[0]["C"] != DBNull.Value)
+                        remaining = Convert.ToInt32(countDt.Rows[0]["C"]);
+
+                    if (remaining == 0)
+                    {
+                        // Xóa role "Quản lý dự án" nếu họ không còn quản lý project nào
+                        SqlParameter[] deleteRoleParams = new SqlParameter[]
+                        {
+                    new SqlParameter("@UserID", managerId.Value),
+                    new SqlParameter("@Role", "Quản lý dự án")
+                        };
+                        string deleteRoleSql = @"DELETE FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
+                        DatabaseHelper.ExecuteNonQuery(deleteRoleSql, deleteRoleParams);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
@@ -260,32 +374,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-        public List<Project> GetByStatus(string status)
-        {
-            List<Project> projects = new List<Project>();
-            try
-            {
-                SqlParameter[] parameters = new SqlParameter[]
-                           {
-                    new SqlParameter("@Status", status ?? (object)DBNull.Value)
-                };
-                string sql =
-                    @"SELECT ProjectID, ProjectName, Description, StartDate, EndDate, Status, CreatedBy, ManagerBy, CreatedDate
-                    FROM Projects
-                    WHERE Status = @Status";
-                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
-                foreach (DataRow row in dt.Rows)
-                {
-                    projects.Add(MapDataRowToProject(row));
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[ProjectRepository.GetByStatus] Lỗi: {ex.Message}");
-                throw;
-            }
-            return projects;
-        }
+
         /// <summary>
         /// Lấy thống kê dự án bao gồm tiến độ hoàn thành task
         /// </summary>

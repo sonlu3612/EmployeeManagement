@@ -78,14 +78,14 @@ namespace EmployeeManagement
             this.label4 = new AntdUI.Label();
             this.divider3 = new AntdUI.Divider();
             this.panel4 = new AntdUI.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label = new System.Windows.Forms.TextBox();
             this.panel9 = new AntdUI.Panel();
             this.avatar4 = new AntdUI.Avatar();
             this.menu1 = new AntdUI.Menu();
             this.label5 = new System.Windows.Forms.Label();
             this.divider4 = new AntdUI.Divider();
             this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.label = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.tabs1.SuspendLayout();
@@ -100,8 +100,8 @@ namespace EmployeeManagement
             this.panel2.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel9.SuspendLayout();
             this.panel6.SuspendLayout();
+            this.panel9.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -524,6 +524,29 @@ namespace EmployeeManagement
             this.panel4.Text = "panel4";
             this.panel4.Click += new System.EventHandler(this.panel4_Click);
             // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel6.Controls.Add(this.label);
+            this.panel6.Location = new System.Drawing.Point(47, 124);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(173, 35);
+            this.panel6.TabIndex = 19;
+            // 
+            // label
+            // 
+            this.label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.label.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.label.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label.ForeColor = System.Drawing.SystemColors.Window;
+            this.label.Location = new System.Drawing.Point(0, 0);
+            this.label.Name = "label";
+            this.label.ReadOnly = true;
+            this.label.Size = new System.Drawing.Size(173, 26);
+            this.label.TabIndex = 21;
+            this.label.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // panel9
             // 
             this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
@@ -634,29 +657,6 @@ namespace EmployeeManagement
             this.page_Department2.Size = new System.Drawing.Size(1023, 658);
             this.page_Department2.TabIndex = 0;
             // 
-            // panel6
-            // 
-            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
-            this.panel6.Controls.Add(this.label);
-            this.panel6.Location = new System.Drawing.Point(47, 124);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(173, 35);
-            this.panel6.TabIndex = 19;
-            // 
-            // label
-            // 
-            this.label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
-            this.label.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.label.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label.ForeColor = System.Drawing.SystemColors.Window;
-            this.label.Location = new System.Drawing.Point(0, 0);
-            this.label.Name = "label";
-            this.label.ReadOnly = true;
-            this.label.Size = new System.Drawing.Size(173, 26);
-            this.label.TabIndex = 21;
-            this.label.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -682,9 +682,9 @@ namespace EmployeeManagement
             this.panel8.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.panel9.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
+            this.panel9.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

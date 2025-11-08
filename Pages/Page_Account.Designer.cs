@@ -52,9 +52,15 @@
             this.lblTen = new AntdUI.Label();
             this.avatar1 = new AntdUI.Avatar();
             this.label2 = new AntdUI.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.TextBox();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.lbl2 = new System.Windows.Forms.TextBox();
             this.panel2.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
@@ -274,6 +280,8 @@
             // panel1
             // 
             this.panel1.BorderWidth = 1F;
+            this.panel1.Controls.Add(this.panel4);
+            this.panel1.Controls.Add(this.panel6);
             this.panel1.Controls.Add(this.lblEmail);
             this.panel1.Controls.Add(this.lblTen);
             this.panel1.Controls.Add(this.avatar1);
@@ -325,6 +333,52 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Mã nhân viên ";
             // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel6.Controls.Add(this.label1);
+            this.panel6.Location = new System.Drawing.Point(74, 377);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(173, 35);
+            this.panel6.TabIndex = 20;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.MenuText;
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Name = "label1";
+            this.label1.ReadOnly = true;
+            this.label1.Size = new System.Drawing.Size(173, 26);
+            this.label1.TabIndex = 21;
+            this.label1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel4.Controls.Add(this.lbl2);
+            this.panel4.Location = new System.Drawing.Point(74, 424);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(173, 35);
+            this.panel4.TabIndex = 21;
+            // 
+            // lbl2
+            // 
+            this.lbl2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lbl2.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lbl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl2.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl2.ForeColor = System.Drawing.SystemColors.MenuText;
+            this.lbl2.Location = new System.Drawing.Point(0, 0);
+            this.lbl2.Name = "lbl2";
+            this.lbl2.ReadOnly = true;
+            this.lbl2.Size = new System.Drawing.Size(173, 26);
+            this.lbl2.TabIndex = 21;
+            this.lbl2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // Page_Account
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -336,6 +390,10 @@
             this.panel2.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -365,5 +423,9 @@
         private AntdUI.Input txtHoTen;
         private AntdUI.Input txtMaNhanVien;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.TextBox lbl2;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.TextBox label1;
     }
 }

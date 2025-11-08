@@ -306,7 +306,6 @@ namespace EmployeeManagement.Pages
             tableTask.Columns.Add(new Column("CreatedDateDisplay", "Ngày tạo"));
             tableTask.Columns.Add(new Column("DeadlineDisplay", "Hạn hoàn thành"));
             tableTask.Columns.Add(new Column("Status", "Trạng thái"));
-            tableTask.Columns.Add(new Column("Progress", "Tiến triển"));
             tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
 
             loadData();
