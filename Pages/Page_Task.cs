@@ -205,7 +205,7 @@ namespace EmployeeManagement.Pages
                     return;
                 }
                 var frm = new frmTask(task);
-                if (frm.ShowDialog() == DialogResult.OK) loadData();
+                frm.ShowDialog();
             }
             else if (e.ClickedItem.Text == "Danh sách nhân viên")
             {
@@ -245,6 +245,7 @@ namespace EmployeeManagement.Pages
                 var frmFile = new frmTaskFile(task.TaskID);
                 frmFile.ShowDialog();
             }
+            loadData();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

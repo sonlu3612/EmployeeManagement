@@ -221,6 +221,7 @@ namespace EmployeeManagement.Dialogs
             {
                 MessageBox.Show("Lỗi khi cập nhật nhiệm vụ: " + ex.Message);
             }
+            
         }
 
         private void ddownProjectID_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)

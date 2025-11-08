@@ -172,7 +172,7 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(185, 114);
-            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
+            //this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
             // 
@@ -224,7 +224,7 @@
             this.cậpNhậtTiếnĐộToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(185, 70);
-            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
+            //this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
             // 
