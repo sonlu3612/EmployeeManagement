@@ -45,6 +45,11 @@ namespace EmployeeManagement.Pages
         #region Display Item (chỉ ngày)
         private object CreateDisplayItem(Project p)
         {
+            var stats = _projectRepository.GetProjectStats(p.ProjectID);
+            var progressText = stats != null 
+                ? $"{stats.CompletedTasks}/{stats.TotalTasks} ({stats.CompletionPercentage:F0}%)"
+                : "0/0 (0%)";
+            
             return new
             {
                 p.ProjectName,
@@ -54,6 +59,8 @@ namespace EmployeeManagement.Pages
                 p.Status,
                 p.CreatedByName,
                 p.ManagerName,
+                Progress = progressText,
+                ProgressValue = stats?.CompletionPercentage ?? 0m,
                 p.ProjectID
             };
         }
@@ -393,6 +400,7 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Trạng thái"));
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
+            tbProject.Columns.Add(new Column("Progress", "Tiến độ"));
 
             LoadData();
 
