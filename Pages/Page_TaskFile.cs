@@ -47,7 +47,7 @@ namespace EmployeeManagement.Pages
             tbFiles.Columns.Add(new Column("CreatedAt", "Ngày thêm") { Width = "15%" });
             tbFiles.Columns.Add(new Column("CreatedByName", "Thêm bởi") { Width = "16%" });
             tbFiles.Columns.Add(new Column("Actions", "Hành động") { Width = "20%" });
-            tbFiles.CellButtonClick += tbFiles_CellButtonClick;
+            // tbFiles.CellButtonClick += tbFiles_CellButtonClick;
             ddSort.Items.Add("Tên A-Z");
             ddSort.Items.Add("Tên Z-A");
             ddSort.Items.Add("Ngày thêm mới nhất");
