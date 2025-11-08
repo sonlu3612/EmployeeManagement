@@ -22,6 +22,11 @@ namespace EmployeeManagement
             _currentUser = currentUser;
             tabs1.SelectedTab = tabProject;
             menu1.SelectIndex(0, true);
+            // Đăng ký lắng nghe sự kiện cập nhật profile
+            if (page_Account1 != null)
+            {
+                page_Account1.ProfileUpdated += Page_Account1_ProfileUpdated;
+            }
         }
 
         // Khi click vào dòng trong bảng
@@ -214,6 +219,35 @@ namespace EmployeeManagement
         private void panel4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Page_Account1_ProfileUpdated(object sender, EventArgs e)
+        {
+            // Reload lại thông tin cá nhân
+            var employee = employeeRepository.GetById(_currentUser.UserID);
+            _employee = employee;
+            var user = userRepository.GetById(_currentUser.UserID);
+            employee.Email = user.Email;
+            employee.Phone = user.Phone;
+            page_Account1.LoadProfile(employee);
+            // Reload lại danh sách nhân viên
+            page_Employee1.LoadData();
+            // Reload lại avatar, tên trên frmMain
+            label6.Text = _employee.FullName;
+            string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
+            string normalizedPath = _employee.AvatarPath?.TrimStart('/', '\\') ?? "";
+            if (!string.IsNullOrEmpty(normalizedPath))
+            {
+                string absolutePath = Path.Combine(projectRoot, normalizedPath);
+                try
+                {
+                    if (File.Exists(absolutePath))
+                    {
+                        avatar4.Image = Image.FromFile(absolutePath);
+                    }
+                }
+                catch { }
+            }
         }
     }
 }
