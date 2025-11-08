@@ -237,7 +237,7 @@ namespace EmployeeManagement
             // Reload lại danh sách nhân viên
             page_Employee1.LoadData();
             // Reload lại avatar, tên trên frmMain
-            label6.Text = _employee.FullName;
+            label.Text = _employee.FullName;
             string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
             string normalizedPath = _employee.AvatarPath?.TrimStart('/', '\\') ?? "";
             if (!string.IsNullOrEmpty(normalizedPath))
