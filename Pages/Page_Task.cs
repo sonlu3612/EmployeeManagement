@@ -60,7 +60,7 @@ namespace EmployeeManagement.Pages
             };
         }
 
-        private void loadData()
+        public void loadData()
         {
             tableTask.DataSource = null;
             try

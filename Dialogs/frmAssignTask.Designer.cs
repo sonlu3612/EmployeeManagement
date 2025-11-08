@@ -45,7 +45,7 @@
             this.pageTasks.ShowIcon = true;
             this.pageTasks.Size = new System.Drawing.Size(969, 39);
             this.pageTasks.TabIndex = 2;
-            this.pageTasks.Text = "Thêm nhiệm vụ";
+            this.pageTasks.Text = "Xem nhiệm vụ";
             this.pageTasks.UseForeColorDrawIcons = true;
             this.pageTasks.UseSystemStyleColor = true;
             // 

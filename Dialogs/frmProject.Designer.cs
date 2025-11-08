@@ -28,17 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance1 = new AntdUI.HyperlinkLabel.LinkAppearance();
-            AntdUI.HyperlinkLabel.LinkAppearance linkAppearance2 = new AntdUI.HyperlinkLabel.LinkAppearance();
             this.panel1 = new System.Windows.Forms.Panel();
             this.dtEndDate = new AntdUI.DatePicker();
             this.label7 = new AntdUI.Label();
-            this.hyperlinkLabel1 = new AntdUI.HyperlinkLabel();
             this.cboStatus = new AntdUI.Dropdown();
             this.label1 = new AntdUI.Label();
             this.txtDescription = new AntdUI.Input();
             this.label9 = new AntdUI.Label();
-            this.label2 = new AntdUI.Label();
             this.btnHuy = new AntdUI.Button();
             this.button1 = new AntdUI.Button();
             this.dtStartDate = new AntdUI.DatePicker();
@@ -56,12 +52,10 @@
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.dtEndDate);
             this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.hyperlinkLabel1);
             this.panel1.Controls.Add(this.cboStatus);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtDescription);
             this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.btnHuy);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.dtStartDate);
@@ -80,7 +74,7 @@
             // 
             this.dtEndDate.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.dtEndDate.BorderWidth = 2F;
-            this.dtEndDate.Location = new System.Drawing.Point(160, 393);
+            this.dtEndDate.Location = new System.Drawing.Point(160, 360);
             this.dtEndDate.Name = "dtEndDate";
             this.dtEndDate.Size = new System.Drawing.Size(321, 33);
             this.dtEndDate.TabIndex = 77;
@@ -88,21 +82,11 @@
             // label7
             // 
             this.label7.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(33, 393);
+            this.label7.Location = new System.Drawing.Point(33, 360);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(149, 27);
             this.label7.TabIndex = 76;
             this.label7.Text = "Ngày hoàn thành:";
-            // 
-            // hyperlinkLabel1
-            // 
-            this.hyperlinkLabel1.HoverStyle = linkAppearance1;
-            this.hyperlinkLabel1.Location = new System.Drawing.Point(188, 321);
-            this.hyperlinkLabel1.Name = "hyperlinkLabel1";
-            this.hyperlinkLabel1.NormalStyle = linkAppearance2;
-            this.hyperlinkLabel1.Size = new System.Drawing.Size(75, 23);
-            this.hyperlinkLabel1.TabIndex = 73;
-            this.hyperlinkLabel1.Text = "Đính kèm";
             // 
             // cboStatus
             // 
@@ -148,15 +132,6 @@
             this.label9.TabIndex = 69;
             this.label9.Text = "Mô tả:";
             // 
-            // label2
-            // 
-            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(33, 321);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 27);
-            this.label2.TabIndex = 68;
-            this.label2.Text = "Tài liệu:";
-            // 
             // btnHuy
             // 
             this.btnHuy.BackColor = System.Drawing.Color.White;
@@ -167,7 +142,7 @@
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(225)))));
             this.btnHuy.ForeHover = System.Drawing.Color.White;
-            this.btnHuy.Location = new System.Drawing.Point(299, 432);
+            this.btnHuy.Location = new System.Drawing.Point(299, 399);
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(76, 41);
             this.btnHuy.TabIndex = 67;
@@ -181,7 +156,7 @@
             this.button1.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.button1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.button1.Location = new System.Drawing.Point(396, 432);
+            this.button1.Location = new System.Drawing.Point(396, 399);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(85, 41);
             this.button1.TabIndex = 66;
@@ -193,7 +168,7 @@
             // 
             this.dtStartDate.BorderActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.dtStartDate.BorderWidth = 2F;
-            this.dtStartDate.Location = new System.Drawing.Point(160, 354);
+            this.dtStartDate.Location = new System.Drawing.Point(160, 321);
             this.dtStartDate.Name = "dtStartDate";
             this.dtStartDate.Size = new System.Drawing.Size(321, 33);
             this.dtStartDate.TabIndex = 65;
@@ -231,7 +206,7 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(33, 354);
+            this.label3.Location = new System.Drawing.Point(33, 321);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 27);
             this.label3.TabIndex = 61;
@@ -285,12 +260,10 @@
         private System.Windows.Forms.Panel panel1;
         private AntdUI.DatePicker dtEndDate;
         private AntdUI.Label label7;
-        private AntdUI.HyperlinkLabel hyperlinkLabel1;
         private AntdUI.Dropdown cboStatus;
         private AntdUI.Label label1;
         private AntdUI.Input txtDescription;
         private AntdUI.Label label9;
-        private AntdUI.Label label2;
         private AntdUI.Button btnHuy;
         private AntdUI.Button button1;
         private AntdUI.DatePicker dtStartDate;

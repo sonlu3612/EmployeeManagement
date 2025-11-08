@@ -231,7 +231,10 @@ namespace EmployeeManagement.DAL.Repositories
                     d.Description,
                     d.ManagerID,
                     e.FullName AS ManagerName,
-                    COUNT(emp.EmployeeID) AS EmployeeCount
+                    COUNT(emp.EmployeeID) 
+                    + CASE WHEN d.ManagerID IS NOT NULL AND d.ManagerID IN (
+                        SELECT EmployeeID FROM Employees WHERE IsActive = 1
+                      ) THEN 1 ELSE 0 END AS EmployeeCount
                 FROM Departments d
                 LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
                 LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1

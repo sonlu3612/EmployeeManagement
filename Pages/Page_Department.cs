@@ -64,7 +64,6 @@ namespace EmployeeManagement.Pages
             }
         }
 
-
         private bool IsInDesignMode()
         {
             return LicenseManager.UsageMode == LicenseUsageMode.Designtime
@@ -82,19 +81,18 @@ namespace EmployeeManagement.Pages
 
             LoadData();
 
-            if (IsEmployee())
-            {
-                btnAdd.Enabled = false;
-                btnDelete.Enabled = false;
-                chỉnhSửaToolStripMenuItem.Enabled = false;
-            }
+            // Thiết lập quyền UI: (gọn, tránh duplicate)
+            bool isAdmin = IsAdmin();
+            bool isDeptMgr = IsDepartmentManager();
 
-            if (IsEmployee())
-            {
-                btnAdd.Enabled = false;
-                btnDelete.Enabled = false;
-                chỉnhSửaToolStripMenuItem.Enabled = false;
-            }
+            btnAdd.Enabled = isAdmin; // chỉ admin được thêm
+            btnDelete.Enabled = isAdmin; // chỉ admin được xóa
+
+            // Chỉnh sửa: admin hoặc quản lý phòng ban (chỉ phòng mình quản lý) => checked tại thời điểm chọn record
+            chỉnhSửaToolStripMenuItem.Enabled = isAdmin || isDeptMgr;
+
+            // Quản lý nhân viên (ManageEmployee): admin hoặc quản lý phòng ban
+            quảnLýToolStripMenuItem.Enabled = isAdmin || isDeptMgr;
         }
 
         private bool IsAdmin()
@@ -112,54 +110,45 @@ namespace EmployeeManagement.Pages
             return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
         }
 
-        private void LoadData()
-        {
-            List<Department> departments;
-
-            if (IsAdmin())
-            {
-                departments = repository.GetAllWithEmployeeCount();
-            }
-            else if (IsDepartmentManager())
-            {
-                departments = repository.GetAllWithEmployeeCount()
-                    .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
-                    .ToList();
-            }
-            else if (IsEmployee())
-            {
-                var currentEmployee = employeeRepository.GetById(SessionManager.CurrentUser.UserID);
-                if (currentEmployee?.DepartmentID != null)
-                {
-                    departments = repository.GetAllWithEmployeeCount()
-                        .Where(d => d.DepartmentID == currentEmployee.DepartmentID)
-                        .ToList();
-                }
-                else
-                {
-                    departments = new List<Department>();
-                }
-            }
-            else
-            {
-                departments = new List<Department>();
-            }
-
-            tbPB.DataSource = departments;
-
-            if (ddownTP.Items.Count == 0)
-            {
-                var employees = employeeRepository.GetAll();
-                ddownTP.Items.Clear();
-                ddownTP.Items.Add("Tất cả");
-                foreach (var em in employees)
-                {
-                    string display = $"{em.EmployeeID} - {em.FullName}";
-                    ddownTP.Items.Add(display);
-                }
-            }
+        public void LoadData() 
+        { 
+            List<Department> departments; 
+            if (IsAdmin()) 
+            { 
+                departments = repository.GetAllWithEmployeeCount(); 
+            } 
+            else if (IsDepartmentManager()) 
+            { 
+                departments = repository.GetAllWithEmployeeCount().Where(d => d.ManagerID == SessionManager.CurrentUser.UserID).ToList(); 
+            } 
+            else if (IsEmployee()) 
+            { 
+                var currentEmployee = employeeRepository.GetById(SessionManager.CurrentUser.UserID); 
+                if (currentEmployee?.DepartmentID != null) 
+                { 
+                    departments = repository.GetAllWithEmployeeCount().Where(d => d.DepartmentID == currentEmployee.DepartmentID).ToList(); 
+                } 
+                else 
+                { 
+                    departments = new List<Department>(); 
+                } 
+            } 
+            else 
+            { 
+                departments = new List<Department>(); 
+            } 
+            tbPB.DataSource = departments; 
+            if (ddownTP.Items.Count == 0) 
+            { 
+                var employees = employeeRepository.GetAll(); 
+                ddownTP.Items.Clear(); 
+                ddownTP.Items.Add("Tất cả"); 
+                foreach (var em in employees) 
+                { 
+                    string display = $"{em.EmployeeID} - {em.FullName}"; ddownTP.Items.Add(display); 
+                } 
+            } 
         }
-
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -272,6 +261,7 @@ namespace EmployeeManagement.Pages
 
         private void tbPB_CellClick(object sender, TableClickEventArgs e)
         {
+            // (Không cần thay đổi; reserved for future)
         }
 
         private void tbPB_MouseDown(object sender, MouseEventArgs e)
@@ -281,7 +271,33 @@ namespace EmployeeManagement.Pages
                 int sel = tbPB.SelectedIndex;
                 if (sel >= 0)
                 {
-                    ctm1.Show(Cursor.Position);
+                    // Lấy record đang chọn để bật/tắt menu theo quyền
+                    if (tbPB.DataSource is IList<Department> departments)
+                    {
+                        int index = sel - 1;
+                        if (index >= 0 && index < departments.Count)
+                        {
+                            var record = departments[index];
+
+                            // Ai được mở context menu?
+                            bool canOpenContext = IsAdmin() || IsDepartmentManager() || IsEmployee();
+                            if (!canOpenContext)
+                            {
+                                // Không show menu nếu không có quyền cơ bản
+                                return;
+                            }
+
+                            // chỉnhSửa chỉ cho Admin hoặc Quản lý phòng ban của phòng đó
+                            chỉnhSửaToolStripMenuItem.Enabled = IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID);
+
+                            // task (ManageEmployee) cho Admin hoặc Quản lý phòng ban
+                            quảnLýToolStripMenuItem.Enabled = IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID);
+
+                            // Nếu có các menu khác (ví dụ xoá trong context), có thể set tương tự ở đây
+
+                            ctm1.Show(Cursor.Position);
+                        }
+                    }
                 }
             }
         }
@@ -293,6 +309,14 @@ namespace EmployeeManagement.Pages
             {
                 var record = departments[selectedIndex];
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!"); return; }
+
+                // Phân quyền: chỉ Admin hoặc Quản lý phòng ban của phòng đó
+                if (!(IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID)))
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền quản lý nhân viên của phòng này.");
+                    return;
+                }
+
                 int id = record.DepartmentID;
                 string DepartmentName = record.DepartmentName;
                 ManageEmployee frm = new ManageEmployee();
@@ -307,8 +331,6 @@ namespace EmployeeManagement.Pages
 
         private void chỉnhSửaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!IsAdmin()) return; // Extra check
-
             int selectedIndex = tbPB.SelectedIndex - 1;
             if (tbPB.DataSource is IList<Department> departments && selectedIndex >= 0 && selectedIndex < departments.Count)
             {
@@ -318,6 +340,14 @@ namespace EmployeeManagement.Pages
                     Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!");
                     return;
                 }
+
+                // Phân quyền: Admin hoặc Quản lý phòng ban của chính phòng này mới được sửa
+                if (!(IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID)))
+                {
+                    Message.warn(this.FindForm(), "Bạn không có quyền chỉnh sửa phòng ban này.");
+                    return;
+                }
+
                 // Mở form ở chế độ chỉnh sửa bằng cách truyền department hiện tại
                 frmDepartment frm = new frmDepartment(record);
                 if (frm.ShowDialog() == DialogResult.OK)

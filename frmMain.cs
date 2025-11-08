@@ -22,6 +22,8 @@ namespace EmployeeManagement
             _currentUser = currentUser;
             tabs1.SelectedTab = tabProject;
             menu1.SelectIndex(0, true);
+            label.GotFocus += (s, e) => label.Parent.Focus();
+
         }
 
         // Khi click vào dòng trong bảng
@@ -45,12 +47,12 @@ namespace EmployeeManagement
             {
                 tabChangePassword.Visible = true;
                 tabs1.SelectedTab = tabChangePassword;
-
             }
             if (select == "Dự án")
             {
                 tabs1.SelectedTab = tabProject;
                 phTrangChu.Text = "Dự án";
+                page_Project1.LoadData();
                 //tabs1.SelectedTab = tabProject;
                 //frmManageTasks frmManageTasks = new frmManageTasks();
                 //frmManageTasks.Show();
@@ -65,6 +67,7 @@ namespace EmployeeManagement
                 tabs1.SelectedTab = tabTask;
                 phTrangChu.Text = "Nhiệm vụ";
                 phTrangChu.Icon = Properties.Resources.note;
+                page_Task1.loadData();
             }
             if (select == "Đăng xuất")
             {
@@ -76,8 +79,8 @@ namespace EmployeeManagement
             if (select == "Cá nhân")
             {
                 tabs1.SelectedTab = tabMyProfile;
-                
                 phTrangChu.Text = "Thông tin cá nhân";
+                page_Project1.LoadData();
             }
             if (select == "Nhân viên")
             {
@@ -90,6 +93,7 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tpPhongBan;
                 phTrangChu.Text = "Phòng Ban";
+                page_Department1.LoadData();
             }
 
 
@@ -207,11 +211,16 @@ namespace EmployeeManagement
                 Console.WriteLine($"Lỗi load avatar cho EmployeeID {_employee.EmployeeID}: {ex.Message}");
                 // avatar1.Image = Properties.Resources.default_avatar;
             }
-            label6.Text = _employee.FullName;
+            label.Text = _employee.FullName;
             label5.Text = _currentUser.Roles[0];
         }
 
         private void panel4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
         {
 
         }

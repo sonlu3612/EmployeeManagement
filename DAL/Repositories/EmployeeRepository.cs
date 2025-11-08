@@ -345,7 +345,7 @@ namespace EmployeeManagement.DAL.Repositories
                            LEFT JOIN Tasks t ON t.ProjectID = p.ProjectID
                            LEFT JOIN TaskAssignments ta ON ta.TaskID = t.TaskID
                            WHERE (p.CreatedBy = e.EmployeeID OR ta.EmployeeID = e.EmployeeID)
-                             AND p.Status = 'Completed'
+                             AND p.Status = N'Hoàn thành'
                        ), 0) AS CompletedProjects,
                        ISNULL((
                            SELECT COUNT(*)
@@ -357,7 +357,7 @@ namespace EmployeeManagement.DAL.Repositories
                            SELECT COUNT(*)
                            FROM Tasks t3
                            INNER JOIN TaskAssignments ta3 ON ta3.TaskID = t3.TaskID
-                           WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = 'Done'
+                           WHERE ta3.EmployeeID = e.EmployeeID AND t3.Status = N'Hoàn thành'
                        ), 0) AS CompletedTasks
                 FROM Employees e
                 LEFT JOIN Users u ON u.UserID = e.EmployeeID
@@ -412,26 +412,50 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@DepartmentID", id)
+            new SqlParameter("@DepartmentID", id)
                 };
+
                 string sql = @"
-                SELECT
-                    e.EmployeeID,
-                    e.FullName,
-                    e.Position,
-                    e.Gender,
-                    e.Address,
-                    e.HireDate,
-                    e.AvatarPath,
-                    u.Email,
-                    u.Phone,
-                    STRING_AGG(ur.Role, ', ') AS Roles
-                FROM Employees e
-                INNER JOIN Users u ON u.UserID = e.EmployeeID
-                LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
-                WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
-                GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
-                ORDER BY e.FullName";
+        SELECT
+            e.EmployeeID,
+            e.FullName,
+            e.Position,
+            e.Gender,
+            e.Address,
+            e.HireDate,
+            e.AvatarPath,
+            u.Email,
+            u.Phone,
+            STRING_AGG(ur.Role, ', ') AS Roles
+        FROM Employees e
+        INNER JOIN Users u ON u.UserID = e.EmployeeID
+        LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
+        WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
+        GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
+
+        UNION
+
+        SELECT
+            e.EmployeeID,
+            e.FullName,
+            e.Position,
+            e.Gender,
+            e.Address,
+            e.HireDate,
+            e.AvatarPath,
+            u.Email,
+            u.Phone,
+            STRING_AGG(ur.Role, ', ') AS Roles
+        FROM Departments d
+        INNER JOIN Employees e ON d.ManagerID = e.EmployeeID
+        INNER JOIN Users u ON u.UserID = e.EmployeeID
+        LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
+        WHERE d.DepartmentID = @DepartmentID AND e.IsActive = 1
+        GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
+
+        ORDER BY FullName;
+        ";
+
                 DataTable table = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in table.Rows)
                 {
@@ -457,6 +481,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
+
         public List<Employee> GetByTask(int taskId)
         {
             List<Employee> list = new List<Employee>();

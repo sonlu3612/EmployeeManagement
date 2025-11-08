@@ -30,8 +30,6 @@
         {
             this.tbTask = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
-            this.btnDelete = new AntdUI.Button();
-            this.btnAdd = new AntdUI.Button();
             this.ddownStatus = new AntdUI.Dropdown();
             this.btnSync = new AntdUI.Button();
             this.btnSearch = new AntdUI.Button();
@@ -53,8 +51,6 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.btnDelete);
-            this.panel1.Controls.Add(this.btnAdd);
             this.panel1.Controls.Add(this.ddownStatus);
             this.panel1.Controls.Add(this.btnSync);
             this.panel1.Controls.Add(this.btnSearch);
@@ -65,38 +61,6 @@
             this.panel1.Size = new System.Drawing.Size(841, 41);
             this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackHover = System.Drawing.Color.White;
-            this.btnDelete.BorderWidth = 2F;
-            this.btnDelete.DefaultBack = System.Drawing.Color.Red;
-            this.btnDelete.DefaultBorderColor = System.Drawing.Color.Red;
-            this.btnDelete.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnDelete.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.ForeActive = System.Drawing.Color.Red;
-            this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(693, 0);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(74, 41);
-            this.btnDelete.TabIndex = 5;
-            this.btnDelete.Text = "Xóa";
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.BackHover = System.Drawing.Color.White;
-            this.btnAdd.BorderWidth = 2F;
-            this.btnAdd.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnAdd.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdd.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
-            this.btnAdd.ForeColor = System.Drawing.Color.White;
-            this.btnAdd.Location = new System.Drawing.Point(767, 0);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(74, 41);
-            this.btnAdd.TabIndex = 6;
-            this.btnAdd.Text = "Thêm";
             // 
             // ddownStatus
             // 
@@ -109,6 +73,7 @@
             this.ddownStatus.Size = new System.Drawing.Size(135, 35);
             this.ddownStatus.TabIndex = 3;
             this.ddownStatus.Text = "Trạng thái";
+            this.ddownStatus.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownStatus_SelectedValueChanged);
             // 
             // btnSync
             // 
@@ -138,6 +103,7 @@
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(51, 35);
             this.btnSearch.TabIndex = 1;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // txtTim
             // 
@@ -165,8 +131,6 @@
 
         private AntdUI.Table tbTask;
         private AntdUI.Panel panel1;
-        private AntdUI.Button btnAdd;
-        private AntdUI.Button btnDelete;
         private AntdUI.Dropdown ddownStatus;
         private AntdUI.Button btnSync;
         private AntdUI.Button btnSearch;
