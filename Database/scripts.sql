@@ -1,5 +1,28 @@
-﻿USE [ProjectManagementDB]
+﻿USE master;
 GO
+
+-- Xóa database nếu đã tồn tại (ngắt kết nối an toàn)
+IF DB_ID(N'ProjectManagementDB') IS NOT NULL
+BEGIN
+    PRINT 'Closing all connections to ProjectManagementDB...';
+    ALTER DATABASE ProjectManagementDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE ProjectManagementDB;
+    PRINT 'Database "ProjectManagementDB" has been dropped.';
+END
+GO
+
+-- Tạo database mới
+IF DB_ID(N'ProjectManagementDB') IS NULL
+BEGIN
+    CREATE DATABASE ProjectManagementDB;
+    PRINT 'Database "ProjectManagementDB" created successfully!';
+END
+GO
+
+-- Chuyển sang database mới tạo
+USE [ProjectManagementDB];
+GO
+
 /****** Object:  Table [dbo].[Departments]    Script Date: 11/7/2025 4:56:46 PM ******/
 SET ANSI_NULLS ON
 GO

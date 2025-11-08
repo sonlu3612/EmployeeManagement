@@ -10,6 +10,7 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_Account : UserControl
     {
+        public event EventHandler ProfileUpdated;
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         public Page_Account()
         {
@@ -39,6 +40,7 @@ namespace EmployeeManagement.Pages
                 if (employeeRepository.UpdateWithContact(employee))
                 {
                     Message.success(this.FindForm(), "Cập nhật thông tin nhân viên thành công!");
+                    ProfileUpdated?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
