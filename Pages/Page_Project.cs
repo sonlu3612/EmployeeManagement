@@ -46,9 +46,23 @@ namespace EmployeeManagement.Pages
         private object CreateDisplayItem(Project p)
         {
             var stats = _projectRepository.GetProjectStats(p.ProjectID);
-            var progressText = stats != null 
-                ? $"{stats.CompletedTasks}/{stats.TotalTasks} ({stats.CompletionPercentage:F0}%)"
-                : "0/0 (0%)";
+            string progressText;
+            string progressBar = "";
+            
+            if (stats != null)
+            {
+                int percentage = (int)stats.CompletionPercentage;
+                int filledBars = percentage / 10;
+                int emptyBars = 10 - filledBars;
+                
+                progressBar = new string('█', filledBars) + new string('░', emptyBars);
+                progressText = $"{progressBar} {stats.CompletedTasks}/{stats.TotalTasks} ({percentage}%)";
+            }
+            else
+            {
+                progressBar = new string('░', 10);
+                progressText = $"{progressBar} 0/0 (0%)";
+            }
             
             return new
             {
@@ -400,7 +414,13 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Trạng thái"));
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
-            tbProject.Columns.Add(new Column("Progress", "Tiến độ"));
+            
+            var progressColumn = new Column("Progress", "Tiến độ");
+            progressColumn.SetStyle(new AntdUI.Table.CellStyleInfo
+            {
+                ForeColor = System.Drawing.Color.FromArgb(31, 79, 190)
+            });
+            tbProject.Columns.Add(progressColumn);
 
             LoadData();
 
