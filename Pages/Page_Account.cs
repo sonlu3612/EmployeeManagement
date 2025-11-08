@@ -10,6 +10,7 @@ namespace EmployeeManagement.Pages
 {
     public partial class Page_Account : UserControl
     {
+        public event EventHandler ProfileUpdated;
         private EmployeeRepository employeeRepository = new EmployeeRepository();
         public event EventHandler ProfileUpdated;
 
