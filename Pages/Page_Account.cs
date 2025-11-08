@@ -12,7 +12,6 @@ namespace EmployeeManagement.Pages
     {
         public event EventHandler ProfileUpdated;
         private EmployeeRepository employeeRepository = new EmployeeRepository();
-        public event EventHandler ProfileUpdated;
 
         public Page_Account()
         {
