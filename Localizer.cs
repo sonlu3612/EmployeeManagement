@@ -8,7 +8,7 @@ public class Localizer : ILocalization
         {
             // ========== BASIC ==========
             case "ID":
-                return "vi-VN";
+                return "en-VN";
 
             case "Cancel":
                 return "Hủy";
@@ -38,85 +38,104 @@ public class Localizer : ILocalization
                 return "Ngày kết thúc";
 
             // ========== NGÀY TRONG TUẦN (Weekdays) ==========
-            // Đây là các key QUAN TRỌNG cho Calendar!
-
+            // Các key này KHÔNG được AntdUI gọi trực tiếp
+            // Nhưng giữ lại cho tương lai nếu library cập nhật
             case "Calendar.Monday":
             case "MondayButton":
+            case "Mon":
                 return "Th2";
 
             case "Calendar.Tuesday":
             case "TuesdayButton":
+            case "Tue":
                 return "Th3";
 
             case "Calendar.Wednesday":
             case "WednesdayButton":
+            case "Wed":
                 return "Th4";
 
             case "Calendar.Thursday":
             case "ThursdayButton":
+            case "Thu":
                 return "Th5";
 
             case "Calendar.Friday":
             case "FridayButton":
+            case "Fri":
                 return "Th6";
 
             case "Calendar.Saturday":
             case "SaturdayButton":
+            case "Sat":
                 return "Th7";
 
             case "Calendar.Sunday":
             case "SundayButton":
+            case "Sun":
                 return "CN";
 
             // ========== THÁNG (Months) ==========
 
             case "Calendar.January":
             case "Month.1":
-                return "Tháng1";
+            case "Jan":
+                return "Th1";
 
             case "Calendar.February":
             case "Month.2":
-                return "Tháng2";
+            case "Feb":
+                return "Th2";
 
             case "Calendar.March":
             case "Month.3":
-                return "Tháng3";
+            case "Mar":
+                return "Th3";
 
             case "Calendar.April":
             case "Month.4":
-                return "Tháng4";
+            case "Apr":
+                return "Th4";
 
             case "Calendar.May":
             case "Month.5":
-                return "Tháng5";
+            case "May":
+                return "Th5";
 
             case "Calendar.June":
             case "Month.6":
-                return "Tháng6";
+            case "Jun":
+                return "Th6";
 
             case "Calendar.July":
             case "Month.7":
-                return "Tháng7";
+            case "Jul":
+                return "Th7";
 
             case "Calendar.August":
             case "Month.8":
-                return "Tháng8";
+            case "Aug":
+                return "Th8";
 
             case "Calendar.September":
             case "Month.9":
-                return "Tháng9";
+            case "Sep":
+                return "Th9";
 
             case "Calendar.October":
             case "Month.10":
-                return "Tháng10";
+            case "Oct":
+                return "Th10";
 
             case "Calendar.November":
             case "Month.11":
-                return "Tháng11";
+            case "Nov":
+                return "Th11";
 
             case "Calendar.December":
             case "Month.12":
-                return "Tháng12";
+            case "Dec":
+                return "Th12";
 
             // Tháng viết tắt (3 chữ)
             case "Month.Short.1":
