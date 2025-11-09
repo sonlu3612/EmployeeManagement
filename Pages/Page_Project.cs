@@ -53,14 +53,10 @@ namespace EmployeeManagement.Pages
             int progressValue = stats != null ? (int)stats.CompletionPercentage : 0;
             string progressText = stats != null ? $"{stats.CompletedTasks}/{stats.TotalTasks}" : "0/0";
 
-            //var cellProgress = new AntdUI.CellProgress
-            //{
-            //    Value = progressValue,
-            //    Text = progressText,
-            //    BackColor = System.Drawing.Color.Transparent
-            //}.SetSize(150, 24);
-
-            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100);
+            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100)
+            {
+                Size = new Size(60, 10),
+            };
 
             return new
             {

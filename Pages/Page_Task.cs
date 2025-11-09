@@ -48,7 +48,10 @@ namespace EmployeeManagement.Pages
             int progressValue = stats.Item3 > 0 ? (int)stats.Item3 : 0;
             string progressText = $"{stats.Item2}/{stats.Item1}";
 
-            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100);
+            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100)
+            {
+                Size = new Size(60, 10),
+            };
 
             return new
             {
