@@ -51,12 +51,16 @@ namespace EmployeeManagement.Dialogs
                 }
                 if (!string.IsNullOrEmpty(_employee.AvatarPath))
                 {
-                    string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"...."));
+                    string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\.."));
                     string fullPath = Path.Combine(projectRoot, _employee.AvatarPath.Replace("/", "\\"));
                     if (File.Exists(fullPath))
                     {
                         img.Image = Image.FromFile(fullPath);
                         img.Tag = _employee.AvatarPath;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[frmEmployee] Avatar không tìm thấy: {fullPath}");
                     }
                 }
             }
@@ -233,21 +237,25 @@ namespace EmployeeManagement.Dialogs
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
                     openFileDialog.Title = "Chọn ảnh đại diện";
-                    openFileDialog.Filter = "Ảnh (.jpg;.jpeg;.png)|.jpg;.jpeg;.png";
+                    openFileDialog.Filter = "Ảnh (.jpg;.jpeg;.png)|*.jpg;*.jpeg;*.png";
                     openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
                         string selectedFile = openFileDialog.FileName;
-                        string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"...."));
+                        string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\.."));
                         string avatarFolder = Path.Combine(projectRoot, "Assets", "Avatars");
-                        Console.WriteLine(projectRoot);
+                        
                         if (!Directory.Exists(avatarFolder))
                             Directory.CreateDirectory(avatarFolder);
-                        string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}{Path.GetFileName(selectedFile)}";
+                        
+                        string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileNameWithoutExtension(selectedFile)}{Path.GetExtension(selectedFile)}";
                         string destPath = Path.Combine(avatarFolder, newFileName);
+                        
                         File.Copy(selectedFile, destPath, true);
                         img.Image = Image.FromFile(destPath);
                         img.Tag = $"Assets/Avatars/{newFileName}";
+                        
+                        AntdUI.Message.success(this.FindForm(), "Ảnh đã được chọn!");
                     }
                 }
             }
