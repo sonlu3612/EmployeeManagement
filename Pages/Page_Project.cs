@@ -48,6 +48,7 @@ namespace EmployeeManagement.Pages
             var stats = _projectRepository.GetProjectStats(p.ProjectID);
             string progressText;
             string progressBar = "";
+            string statusIndicator = "";
             
             if (stats != null)
             {
@@ -55,13 +56,33 @@ namespace EmployeeManagement.Pages
                 int filledBars = percentage / 10;
                 int emptyBars = 10 - filledBars;
                 
+                // Color-coded status indicator
+                if (percentage >= 0 && percentage <= 30)
+                {
+                    statusIndicator = "🔴"; // Red - Behind schedule
+                }
+                else if (percentage > 30 && percentage <= 70)
+                {
+                    statusIndicator = "🟡"; // Yellow - In progress
+                }
+                else if (percentage > 70 && percentage < 100)
+                {
+                    statusIndicator = "🟢"; // Green - On track
+                }
+                else if (percentage == 100)
+                {
+                    statusIndicator = "✅"; // Checkmark - Complete
+                }
+                
+                // Enhanced visual progress bar
                 progressBar = new string('█', filledBars) + new string('░', emptyBars);
-                progressText = $"{progressBar} {stats.CompletedTasks}/{stats.TotalTasks} ({percentage}%)";
+                progressText = $"{statusIndicator} {progressBar} {stats.CompletedTasks}/{stats.TotalTasks} ({percentage}%)";
             }
             else
             {
+                statusIndicator = "⚪"; // Gray - No data
                 progressBar = new string('░', 10);
-                progressText = $"{progressBar} 0/0 (0%)";
+                progressText = $"{statusIndicator} {progressBar} 0/0 (0%)";
             }
             
             return new
@@ -415,10 +436,11 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
             
-            var progressColumn = new Column("Progress", "Tiến độ");
+            var progressColumn = new Column("Progress", "Tiến độ") { Width = "200" };
             progressColumn.SetStyle(new AntdUI.Table.CellStyleInfo
             {
-                ForeColor = System.Drawing.Color.FromArgb(31, 79, 190)
+                ForeColor = System.Drawing.Color.FromArgb(31, 79, 190),
+                Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular)
             });
             tbProject.Columns.Add(progressColumn);
 
