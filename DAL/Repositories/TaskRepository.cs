@@ -484,6 +484,49 @@ namespace EmployeeManagement.DAL.Repositories
         }
 
         /// <summary>
+        /// Lấy thống kê assignment của task bao gồm số người completed / tổng số người assigned
+        /// </summary>
+        /// <param name="taskId">ID của task</param>
+        /// <returns>Tuple(TotalAssignments, CompletedAssignments, PercentageCompleted)</returns>
+        public Tuple<int, int, decimal> GetTaskAssignmentStats(int taskId)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@TaskID", taskId)
+                };
+                string sql =
+                    @"SELECT
+                    COUNT(*) AS TotalAssignments,
+                    SUM(CASE WHEN CompletionStatus = N'Completed' THEN 1 ELSE 0 END) AS CompletedAssignments
+                    FROM TaskAssignments
+                    WHERE TaskID = @TaskID";
+                DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
+                
+                if (dt.Rows.Count == 0 || dt.Rows[0]["TotalAssignments"] == DBNull.Value)
+                {
+                    return new Tuple<int, int, decimal>(0, 0, 0m);
+                }
+
+                int totalAssignments = Convert.ToInt32(dt.Rows[0]["TotalAssignments"]);
+                int completedAssignments = dt.Rows[0]["CompletedAssignments"] != DBNull.Value 
+                    ? Convert.ToInt32(dt.Rows[0]["CompletedAssignments"]) 
+                    : 0;
+                decimal percentage = totalAssignments > 0 
+                    ? (decimal)completedAssignments / totalAssignments * 100 
+                    : 0m;
+
+                return new Tuple<int, int, decimal>(totalAssignments, completedAssignments, percentage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TaskRepository.GetTaskAssignmentStats] Lỗi: {ex.Message}");
+                return new Tuple<int, int, decimal>(0, 0, 0m);
+            }
+        }
+
+        /// <summary>
         /// Kiểm tra user có được phân công vào task này hay không
         /// </summary>
         public bool IsUserAssignedToTask(int taskId, int userId)

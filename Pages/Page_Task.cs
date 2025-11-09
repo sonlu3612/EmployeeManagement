@@ -44,6 +44,12 @@ namespace EmployeeManagement.Pages
         // Hàm tạo danh sách hiển thị (chỉ ngày)
         private object CreateDisplayItem(MyTask t)
         {
+            var stats = taskRepository.GetTaskAssignmentStats(t.TaskID);
+            int progressValue = stats.Item3 > 0 ? (int)stats.Item3 : 0;
+            string progressText = $"{stats.Item2}/{stats.Item1}";
+
+            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100);
+
             return new
             {
                 t.ProjectName,
@@ -54,8 +60,8 @@ namespace EmployeeManagement.Pages
                     ? t.Deadline.Value.ToString("dd/MM/yyyy")
                     : "N/A",
                 t.Status,
-                //t.Progress,
                 t.Priority,
+                Progress = cellProgress,
                 t.TaskID,
                 t.ProjectID
             };
@@ -320,6 +326,7 @@ namespace EmployeeManagement.Pages
             tableTask.Columns.Add(new Column("DeadlineDisplay", "Hạn hoàn thành"));
             tableTask.Columns.Add(new Column("Status", "Trạng thái"));
             tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
+            tableTask.Columns.Add(new Column("Progress", "Tiến độ"));
 
             loadData();
             loadEmployeesName();
