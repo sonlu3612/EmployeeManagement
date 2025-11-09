@@ -450,7 +450,7 @@ namespace EmployeeManagement
             // 
             // panel2
             // 
-            this.panel2.Back = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel2.Back = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel2.Controls.Add(this.panel8);
             this.panel2.Controls.Add(this.panel4);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
@@ -463,7 +463,7 @@ namespace EmployeeManagement
             // 
             // panel8
             // 
-            this.panel8.Back = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel8.Back = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel8.Controls.Add(this.avatar3);
             this.panel8.Controls.Add(this.label4);
             this.panel8.Controls.Add(this.divider3);
@@ -486,7 +486,7 @@ namespace EmployeeManagement
             // 
             // label4
             // 
-            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.label4.Location = new System.Drawing.Point(108, 49);
@@ -497,7 +497,7 @@ namespace EmployeeManagement
             // 
             // divider3
             // 
-            this.divider3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.divider3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.divider3.ColorSplit = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(174)))), ((int)(((byte)(228)))));
             this.divider3.Location = new System.Drawing.Point(23, 7);
             this.divider3.Name = "divider3";
@@ -509,7 +509,7 @@ namespace EmployeeManagement
             // 
             // panel4
             // 
-            this.panel4.Back = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel4.Back = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel4.Controls.Add(this.panel6);
             this.panel4.Controls.Add(this.panel9);
             this.panel4.Controls.Add(this.menu1);
@@ -526,7 +526,7 @@ namespace EmployeeManagement
             // 
             // panel6
             // 
-            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel6.Controls.Add(this.label);
             this.panel6.Location = new System.Drawing.Point(47, 124);
             this.panel6.Name = "panel6";
@@ -535,7 +535,7 @@ namespace EmployeeManagement
             // 
             // label
             // 
-            this.label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.label.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.label.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -549,7 +549,7 @@ namespace EmployeeManagement
             // 
             // panel9
             // 
-            this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.panel9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel9.Controls.Add(this.avatar4);
             this.panel9.Location = new System.Drawing.Point(88, 27);
             this.panel9.Name = "panel9";
@@ -569,7 +569,7 @@ namespace EmployeeManagement
             // 
             // menu1
             // 
-            this.menu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.menu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.menu1.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(145)))), ((int)(((byte)(159)))), ((int)(((byte)(180)))));
             this.menu1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menu1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(254)))), ((int)(((byte)(255)))));
@@ -627,7 +627,7 @@ namespace EmployeeManagement
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.label5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.MediumTurquoise;
             this.label5.Location = new System.Drawing.Point(105, 162);
@@ -639,7 +639,7 @@ namespace EmployeeManagement
             // 
             // divider4
             // 
-            this.divider4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(97)))), ((int)(((byte)(190)))));
+            this.divider4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.divider4.ColorSplit = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(174)))), ((int)(((byte)(228)))));
             this.divider4.Location = new System.Drawing.Point(23, 205);
             this.divider4.Name = "divider4";

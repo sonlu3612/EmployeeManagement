@@ -372,22 +372,22 @@ namespace EmployeeManagement.DAL.Repositories
             try
             {
                 string sql = @"
-                SELECT
-                    d.DepartmentID,
-                    d.DepartmentName,
-                    d.Description,
-                    d.ManagerID,
-                    e.FullName AS ManagerName,
-                    COUNT(emp.EmployeeID) 
-                    + CASE WHEN d.ManagerID IS NOT NULL AND d.ManagerID IN (
-                        SELECT EmployeeID FROM Employees WHERE IsActive = 1
-                      ) THEN 1 ELSE 0 END AS EmployeeCount
-                FROM Departments d
-                LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
-                LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1
-                GROUP BY
-                    d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID, e.FullName
-                ORDER BY d.DepartmentID";
+                            SELECT
+                            d.DepartmentID,
+                            d.DepartmentName,
+                            d.Description,
+                            d.ManagerID,
+                            e.FullName AS ManagerName,
+                            (
+                                COUNT(CASE WHEN emp.EmployeeID <> d.ManagerID THEN emp.EmployeeID END)
+                                + CASE WHEN e.IsActive = 1 THEN 1 ELSE 0 END
+                            ) AS EmployeeCount
+                        FROM Departments d
+                        LEFT JOIN Employees e ON d.ManagerID = e.EmployeeID
+                        LEFT JOIN Employees emp ON emp.DepartmentID = d.DepartmentID AND emp.IsActive = 1
+                        GROUP BY
+                            d.DepartmentID, d.DepartmentName, d.Description, d.ManagerID, e.FullName, e.IsActive
+                        ORDER BY d.DepartmentID";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
                 {

@@ -5,6 +5,7 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
@@ -240,6 +241,18 @@ namespace EmployeeManagement.Pages
                     menuStrip.Show(Cursor.Position);
                 }
             }
+        }
+
+        private Table.CellStyleInfo tbNV_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
         }
 
         // eUpdate

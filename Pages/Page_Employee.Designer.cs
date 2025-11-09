@@ -45,14 +45,19 @@
             // 
             // tbNV
             // 
+            this.tbNV.CellFocusedStyle = AntdUI.TableCellFocusedStyle.None;
+            this.tbNV.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbNV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbNV.EmptyText = "Không có nhân viên nào";
             this.tbNV.Gap = 12;
             this.tbNV.Location = new System.Drawing.Point(0, 41);
             this.tbNV.Name = "tbNV";
+            this.tbNV.RowHeight = 30;
+            this.tbNV.ScrollBarAvoidHeader = true;
             this.tbNV.Size = new System.Drawing.Size(918, 507);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
+            this.tbNV.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbNV_SetRowStyle);
             this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
             // 
             // panel1
@@ -145,20 +150,21 @@
             this.nhiệmVụToolStripMenuItem,
             this.xemToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(127, 48);
+            this.ctm1.Size = new System.Drawing.Size(181, 70);
             // 
             // nhiệmVụToolStripMenuItem
             // 
             this.nhiệmVụToolStripMenuItem.Name = "nhiệmVụToolStripMenuItem";
-            this.nhiệmVụToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.nhiệmVụToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.nhiệmVụToolStripMenuItem.Text = "Nhiệm vụ";
             this.nhiệmVụToolStripMenuItem.Click += new System.EventHandler(this.taskToolStripMenuItem_Click);
             // 
             // xemToolStripMenuItem
             // 
             this.xemToolStripMenuItem.Name = "xemToolStripMenuItem";
-            this.xemToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.xemToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.xemToolStripMenuItem.Text = "Xem";
+            this.xemToolStripMenuItem.Click += new System.EventHandler(this.xemToolStripMenuItem_Click);
             // 
             // Page_Employee
             // 

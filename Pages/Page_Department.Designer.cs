@@ -46,6 +46,7 @@
             // 
             // tbPB
             // 
+            this.tbPB.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbPB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbPB.EmptyText = "Không có phòng ban nào";
             this.tbPB.Gap = 12;
@@ -55,6 +56,7 @@
             this.tbPB.TabIndex = 5;
             this.tbPB.Text = "table1";
             this.tbPB.CellClick += new AntdUI.Table.ClickEventHandler(this.tbPB_CellClick);
+            this.tbPB.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbPB_SetRowStyle);
             this.tbPB.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbPB_MouseDown);
             // 
             // panel1

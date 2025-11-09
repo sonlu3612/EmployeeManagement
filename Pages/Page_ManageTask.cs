@@ -4,6 +4,7 @@ using EmployeeManagement.Dialogs;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
@@ -322,6 +323,18 @@ namespace EmployeeManagement.Pages
                     menuStrip.Show(Cursor.Position);
                 }
             }
+        }
+
+        private Table.CellStyleInfo tbTask_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
         }
     }
 }

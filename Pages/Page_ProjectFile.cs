@@ -1,11 +1,12 @@
 ﻿using AntdUI;
+using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.DAL.Services;
-using EmployeeManagement.DAL.Helpers;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -473,6 +474,18 @@ namespace EmployeeManagement.Pages
             {
                 Message.error(this.FindForm(), "Lỗi khi tải lên file: " + ex.Message);
             }
+        }
+
+        private Table.CellStyleInfo tbFiles_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
         }
     }
 }

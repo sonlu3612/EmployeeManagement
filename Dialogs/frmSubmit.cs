@@ -1,11 +1,13 @@
 ﻿using AntdUI;
 using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.DAL.Services;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -135,13 +137,60 @@ namespace EmployeeManagement.Dialogs
         {
             ddownStatus.Text = ddownStatus.SelectedValue.ToString();
         }
-        private void label2_Click(object sender, EventArgs e)
-        {
-        }
 
-        private void uploadDragger1_Click(object sender, EventArgs e)
+        private void uploadDragger1_DragChanged(object sender, StringsEventArgs e)
         {
+            try
+            {
+                if (e.Value == null || e.Value.Length == 0)
+                {
+                    return;
+                }
 
+                if (_task == null || _task.TaskID <= 0)
+                {
+                    Message.error(this.FindForm(), "Invalid Task ID. Cannot upload file.");
+                    return;
+                }
+
+                FileService fileService = new FileService();
+                int successCount = 0;
+                int failCount = 0;
+
+                foreach (string filePath in e.Value)
+                {
+                    if (!File.Exists(filePath))
+                    {
+                        failCount++;
+                        continue;
+                    }
+
+                    string title = Path.GetFileNameWithoutExtension(filePath);
+                    bool success = fileService.UploadTaskFile(_task.TaskID, title, filePath, _currentEmployeeID);
+
+                    if (success)
+                    {
+                        successCount++;
+                    }
+                    else
+                    {
+                        failCount++;
+                    }
+                }
+
+                if (failCount == 0)
+                {
+                    Message.success(this.FindForm(), $"Đã tải lên thành công {successCount} file!");
+                }
+                else
+                {
+                    Message.warn(this.FindForm(), $"Tải lên thành công {successCount} file, thất bại {failCount} file!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi tải lên file: " + ex.Message);
+            }
         }
     }
 }

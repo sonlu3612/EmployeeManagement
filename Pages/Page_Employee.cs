@@ -59,7 +59,10 @@ namespace EmployeeManagement.Pages
                 tbNV.Columns.Add(new AntdUI.Column("TaskSummary", "Nhiệm vụ"));
             }
             tbNV.RowHeight = 100;
-            tbNV.RowHeightHeader = 30;
+            //tbNV.ColumnFont = new Font("Segoe UI", 12F);
+            //tbNV.Font = new Font("Segoe UI", 12F);
+            tbNV.RowHeightHeader = 50;
+            tbNV.Padding = new Padding(0);
             LoadData();
             if (!IsAdmin() && !IsDepartmentManager())
             {
@@ -313,6 +316,65 @@ namespace EmployeeManagement.Pages
                 frmAssignTask frm = new frmAssignTask();
                 frm.frmAssignTask_Load(id);
                 frm.ShowDialog();
+            }
+            else
+            {
+                Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên được chọn!");
+            }
+        }
+
+        private Table.CellStyleInfo tbNV_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
+        }
+
+        private void xemToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = tbNV.SelectedIndex - 1;
+            if (tbNV.DataSource is IList<Employee> employees && selectedIndex >= 0 && selectedIndex < employees.Count)
+            {
+                var employee = employees[selectedIndex];
+                var record = employeeRepository.GetById(employee.EmployeeID);
+                Console.WriteLine(record);
+                if (record == null)
+                {
+                    Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên được chọn!");
+                    return;
+                }
+                bool canEdit = IsAdmin();
+                if (!canEdit && IsDepartmentManager())
+                {
+                    var myDepartmentIds = departmentRepository.GetAll()
+                    .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
+                    .Select(d => d.DepartmentID)
+                    .ToList();
+                    if (myDepartmentIds.Contains(record.DepartmentID ?? 0))
+                    {
+                        canEdit = true;
+                    }
+                }
+                if (!canEdit)
+                {
+                    Message.error(this.FindForm(), "Bạn không có quyền xem hoặc sửa thông tin nhân viên này!");
+                    return;
+                }
+                EmployeeManagement.Dialogs.frmEmployee frm = new EmployeeManagement.Dialogs.frmEmployee(record, canEdit);
+                frm.frmEmployee_Load();
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    if (canEdit)
+                    {
+                        LoadData();
+                        Message.success(this.FindForm(), "Cập nhật thông tin nhân viên thành công!");
+                    }
+                }
             }
             else
             {

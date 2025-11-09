@@ -288,5 +288,16 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        private Table.CellStyleInfo tbEmployee_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
+        }
     }
 }

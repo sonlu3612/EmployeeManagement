@@ -48,6 +48,7 @@
             // 
             // tbProject
             // 
+            this.tbProject.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbProject.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbProject.EmptyText = "Không có dự án nào";
             this.tbProject.Gap = 12;
@@ -56,6 +57,7 @@
             this.tbProject.Size = new System.Drawing.Size(1023, 617);
             this.tbProject.TabIndex = 3;
             this.tbProject.Text = "table1";
+            this.tbProject.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbProject_SetRowStyle);
             this.tbProject.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbProject_MouseDown);
             // 
             // panel1
@@ -181,7 +183,7 @@
             this.documentsToolStripMenuItem,
             this.cậpNhậtToolStripMenuItem});
             this.ctm1.Name = "ctm1";
-            this.ctm1.Size = new System.Drawing.Size(181, 92);
+            this.ctm1.Size = new System.Drawing.Size(127, 70);
             // 
             // tasksToolStripMenuItem
             // 
@@ -193,7 +195,7 @@
             // documentsToolStripMenuItem
             // 
             this.documentsToolStripMenuItem.Name = "documentsToolStripMenuItem";
-            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.documentsToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.documentsToolStripMenuItem.Text = "Tài liệu";
             this.documentsToolStripMenuItem.Click += new System.EventHandler(this.documentsToolStripMenuItem_Click);
             // 

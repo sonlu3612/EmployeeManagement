@@ -373,5 +373,17 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Vui lòng chọn phòng ban cần chỉnh sửa!");
             }
         }
+
+        private Table.CellStyleInfo tbPB_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
+        }
     }
 }

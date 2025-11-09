@@ -38,10 +38,10 @@
             this.input1 = new AntdUI.Input();
             this.tableTask = new AntdUI.Table();
             this.menuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tàiLiệuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quảnLýToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cậpNhậtTiếnĐộToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tàiLiệuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -120,7 +120,7 @@
             this.btnSync.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
             this.btnSync.Icon = global::EmployeeManagement.Properties.Resources.rotate_right_white;
             this.btnSync.IconHover = global::EmployeeManagement.Properties.Resources.rotate_right_blue;
-            this.btnSync.Location = new System.Drawing.Point(273, 4);
+            this.btnSync.Location = new System.Drawing.Point(273, 3);
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(51, 35);
             this.btnSync.TabIndex = 2;
@@ -152,6 +152,7 @@
             // tableTask
             // 
             this.tableTask.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
+            this.tableTask.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableTask.EmptyText = "Không có nhiệm vụ nào";
             this.tableTask.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -161,6 +162,7 @@
             this.tableTask.Size = new System.Drawing.Size(798, 416);
             this.tableTask.TabIndex = 1;
             this.tableTask.Text = "table1";
+            this.tableTask.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tableTask_SetRowStyle);
             this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
             // 
             // menuStrip
@@ -171,60 +173,14 @@
             this.quảnLýToolStripMenuItem,
             this.cậpNhậtTiếnĐộToolStripMenuItem});
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 114);
-            //this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
-            // 
-            // xóaToolStripMenuItem
-            // 
-            this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.xóaToolStripMenuItem.Text = "Danh sách nhân viên";
-            // 
-            // quảnLýToolStripMenuItem
-            // 
-            this.quảnLýToolStripMenuItem.Name = "quảnLýToolStripMenuItem";
-            this.quảnLýToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.quảnLýToolStripMenuItem.Text = "Cập nhật";
-            // 
-            // cậpNhậtTiếnĐộToolStripMenuItem
-            // 
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Name = "cậpNhậtTiếnĐộToolStripMenuItem";
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.cậpNhậtTiếnĐộToolStripMenuItem.Text = "Cập nhật tiến độ";
+            this.menuStrip.Size = new System.Drawing.Size(185, 92);
+            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // tàiLiệuToolStripMenuItem
             // 
             this.tàiLiệuToolStripMenuItem.Name = "tàiLiệuToolStripMenuItem";
             this.tàiLiệuToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.tàiLiệuToolStripMenuItem.Text = "Tài liệu";
-            // 
-            this.input1.Radius = 10;
-            this.input1.Size = new System.Drawing.Size(216, 35);
-            this.input1.TabIndex = 0;
-            // 
-            // tableTask
-            // 
-            this.tableTask.AutoSizeColumnsMode = AntdUI.ColumnsMode.Fill;
-            this.tableTask.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableTask.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tableTask.Gap = 12;
-            this.tableTask.Location = new System.Drawing.Point(0, 41);
-            this.tableTask.Name = "tableTask";
-            this.tableTask.Size = new System.Drawing.Size(798, 416);
-            this.tableTask.TabIndex = 1;
-            this.tableTask.Text = "table1";
-            //this.tableTask.CellClick += new AntdUI.Table.ClickEventHandler(this.tableTask_CellClick);
-            this.tableTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip_MouseDown);
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.xóaToolStripMenuItem,
-            this.quảnLýToolStripMenuItem,
-            this.cậpNhậtTiếnĐộToolStripMenuItem});
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(185, 70);
-            this.menuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip_ItemClicked);
             // 
             // xóaToolStripMenuItem
             // 

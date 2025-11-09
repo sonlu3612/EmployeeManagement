@@ -271,6 +271,7 @@
             this.ddownDepartment.Size = new System.Drawing.Size(217, 32);
             this.ddownDepartment.TabIndex = 37;
             this.ddownDepartment.Text = "                                    ";
+            this.ddownDepartment.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownDepartment_SelectedValueChanged);
             // 
             // txtPosition
             // 

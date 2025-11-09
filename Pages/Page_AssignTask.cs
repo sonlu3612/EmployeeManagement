@@ -6,6 +6,7 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -118,6 +119,18 @@ namespace EmployeeManagement.Pages
             {
                 Message.error(this.FindForm(), "Lỗi khi tìm kiếm: " + ex.Message);
             }
+        }
+
+        private Table.CellStyleInfo tbTask_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
         }
     }
 }

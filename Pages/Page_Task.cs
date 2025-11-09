@@ -6,6 +6,7 @@ using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
@@ -118,24 +119,37 @@ namespace EmployeeManagement.Pages
 
             try
             {
-                if (selected == "Tất cả" || string.IsNullOrEmpty(selected))
+                if (string.IsNullOrWhiteSpace(selected) ||
+                    selected.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
                 {
                     var displayList = visibleTasks.Select(t => CreateDisplayItem(t)).ToList();
                     tableTask.DataSource = displayList;
-                    return;
                     Message.success(this.FindForm(), $"Tìm thấy {visibleTasks.Count} nhiệm vụ.");
+                    return;
                 }
 
-                int employeeId = int.Parse(selected.Split('-')[0].Trim());
-                var tasks = taskRepository.GetByEmployee(employeeId);
-                var display = tasks.Select(t => CreateDisplayItem(t)).ToList();
-                tableTask.DataSource = display;
+                var parts = selected.Split(new[] { '-' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                
+                string fullName = parts[1].Trim();
+                ddownEmployee.Text = fullName;
+                
+                if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int employeeId))
+                {
+                    var tasks = taskRepository.GetByEmployee(employeeId);
+                    var display = tasks.Select(t => CreateDisplayItem(t)).ToList();
+                    tableTask.DataSource = display;
+                }
+                else
+                {
+                    Message.warn(this.FindForm(), "Không thể nhận diện nhân viên được chọn.");
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải nhiệm vụ: " + ex.Message);
             }
         }
+
 
         private void ddownStatus_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
@@ -226,7 +240,6 @@ namespace EmployeeManagement.Pages
                 }
                 if (task.Deadline.HasValue && DateTime.Now.Date > task.Deadline.Value.Date)
                 {
-                    // Cho phép Admin hoặc Quản lý dự án vẫn chỉnh sửa
                     if (!IsAdmin() && !IsProjectManager())
                     {
                         Message.warn(this.FindForm(), "Nhiệm vụ đã hết hạn, bạn chỉ có thể xem!");
@@ -313,6 +326,18 @@ namespace EmployeeManagement.Pages
 
             if (!IsAdmin() && !IsProjectManager())
                 btnDelete.Enabled = false;
+        }
+
+        private Table.CellStyleInfo tableTask_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
         }
     }
 }

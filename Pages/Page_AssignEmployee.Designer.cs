@@ -40,6 +40,7 @@
             // 
             // tbEmployee
             // 
+            this.tbEmployee.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbEmployee.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbEmployee.EmptyText = "Không có nhân viên nào";
             this.tbEmployee.Gap = 12;
@@ -48,6 +49,7 @@
             this.tbEmployee.Size = new System.Drawing.Size(841, 515);
             this.tbEmployee.TabIndex = 3;
             this.tbEmployee.Text = "table1";
+            this.tbEmployee.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbEmployee_SetRowStyle);
             // 
             // panel1
             // 

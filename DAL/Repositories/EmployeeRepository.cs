@@ -59,9 +59,10 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string sql =
                     @"SELECT e.EmployeeID, e.FullName, e.Position, e.Gender, e.DepartmentID,
-                      e.AvatarPath, e.Address, e.HireDate, e.IsActive,
+                      e.AvatarPath, e.Address, e.HireDate, e.IsActive, u.Email, u.Phone,
                       d.DepartmentName
                       FROM Employees e
+                      JOIN Users u ON u.UserID = e.EmployeeID
                       LEFT JOIN Departments d ON e.DepartmentID = d.DepartmentID
                       WHERE e.EmployeeID = @EmployeeID AND e.IsActive = 1";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, parameters);
@@ -320,7 +321,13 @@ namespace EmployeeManagement.DAL.Repositories
                 // Mapping HireDate (DateTime bắt buộc)
                 HireDate = row["HireDate"] != DBNull.Value ? Convert.ToDateTime(row["HireDate"]) : DateTime.MinValue,
                 // Mapping IsActive (bool bắt buộc)
-                IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false
+                IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
+                Email = row.Table.Columns.Contains("Email") && row["Email"] != DBNull.Value
+            ? row["Email"].ToString()
+            : null,
+                Phone = row.Table.Columns.Contains("Phone") && row["Phone"] != DBNull.Value
+            ? row["Phone"].ToString()
+            : null
             };
         }
         public List<Employee> GetForGrid()

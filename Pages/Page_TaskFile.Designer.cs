@@ -123,16 +123,18 @@
             // 
             // tbFiles
             // 
+            this.tbFiles.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbFiles.EmptyText = "Không có tài liệu";
             this.tbFiles.Gap = 12;
-            this.tbFiles.Location = new System.Drawing.Point(0, 0);
+            this.tbFiles.Location = new System.Drawing.Point(0, 44);
             this.tbFiles.Name = "tbFiles";
-            this.tbFiles.Size = new System.Drawing.Size(963, 588);
+            this.tbFiles.Size = new System.Drawing.Size(963, 544);
             this.tbFiles.TabIndex = 3;
             this.tbFiles.CellClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellClick);
             this.tbFiles.CellButtonClick += new AntdUI.Table.ClickButtonEventHandler(this.tbFiles_CellButtonClick);
             this.tbFiles.CellDoubleClick += new AntdUI.Table.ClickEventHandler(this.tbFiles_CellDoubleClick);
+            this.tbFiles.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbFiles_SetRowStyle);
             // 
             // Page_TaskFile
             // 
@@ -140,7 +142,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tbFiles);
             this.Controls.Add(this.panel1);
-
             this.Name = "Page_TaskFile";
             this.Size = new System.Drawing.Size(963, 588);
             this.panel1.ResumeLayout(false);

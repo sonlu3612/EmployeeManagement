@@ -45,6 +45,7 @@
             // 
             // tbNV
             // 
+            this.tbNV.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbNV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbNV.EmptyText = "Không có nhân viên nào";
             this.tbNV.Gap = 12;
@@ -53,7 +54,7 @@
             this.tbNV.Size = new System.Drawing.Size(836, 482);
             this.tbNV.TabIndex = 3;
             this.tbNV.Text = "table1";
-            //this.tbNV.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbNV_MouseDown);
+            this.tbNV.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbNV_SetRowStyle);
             // 
             // panel1
             // 
@@ -167,9 +168,8 @@
             // cậpNhậtToolStripMenuItem
             // 
             this.cậpNhậtToolStripMenuItem.Name = "cậpNhậtToolStripMenuItem";
-            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cậpNhậtToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.cậpNhậtToolStripMenuItem.Text = "Cập nhật";
-            //this.cậpNhậtToolStripMenuItem.Click += new System.EventHandler(this.cậpNhậtToolStripMenuItem_Click);
             // 
             // Page_ManageEmployees
             // 

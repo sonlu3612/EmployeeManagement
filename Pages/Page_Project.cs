@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
@@ -99,12 +100,9 @@ namespace EmployeeManagement.Pages
                 // Load dropdown trạng thái
                 if (cbTrangThai.Items.Count == 0)
                 {
-                    var statuses = projects
-                        .Select(p => p.Status)
-                        .Where(s => !string.IsNullOrEmpty(s))
-                        .Distinct()
-                        .ToArray();
-                    cbTrangThai.Items.AddRange(statuses);
+                    cbTrangThai.Items.Add("Lên kế hoạch");
+                    cbTrangThai.Items.Add("Đang thực hiện");
+                    cbTrangThai.Items.Add("Hoàn thành");
                 }
             }
             catch (Exception ex)
@@ -356,18 +354,28 @@ namespace EmployeeManagement.Pages
                 tbProject.DataSource = display;
                 return;
             }
+            var parts = selected.Split(new[] { '-' }, 2, StringSplitOptions.RemoveEmptyEntries);
 
-            if (int.TryParse(selected.Split(new[] { ' ', '-', ':' }, StringSplitOptions.RemoveEmptyEntries)[0], out int managerId))
+            string fullName = parts[1].Trim();
+            cbQuanLy.Text = fullName;
+
+            if (parts.Length == 2 && int.TryParse(parts[0].Trim(), out int managerId))
             {
                 var filtered = visibleProjects.Where(p => p.ManagerBy == managerId).ToList();
                 var display = filtered.Select(p => CreateDisplayItem(p)).ToList();
                 tbProject.DataSource = display;
                 Message.success(this.FindForm(), $"Tìm thấy {filtered.Count} dự án.");
             }
+            else
+            {
+                Message.warn(this.FindForm(), "Không nhận diện được quản lý được chọn.");
+            }
         }
+
 
         private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
+            cbTrangThai.Text = cbTrangThai.SelectedValue.ToString();
             string status = e.Value?.ToString() ?? "";
             var filtered = string.IsNullOrEmpty(status)
                 ? visibleProjects
@@ -425,5 +433,16 @@ namespace EmployeeManagement.Pages
             frm.ShowDialog();
         }
 
+        private Table.CellStyleInfo tbProject_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
+        {
+            if (e.Index % 2 == 0)
+            {
+                return new AntdUI.Table.CellStyleInfo
+                {
+                    BackColor = Color.FromArgb(208, 231, 252)
+                };
+            }
+            return null;
+        }
     }
 }

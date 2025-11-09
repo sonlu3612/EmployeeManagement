@@ -169,6 +169,7 @@
             // 
             // tbTask
             // 
+            this.tbTask.ColumnBack = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(138)))), ((int)(((byte)(243)))));
             this.tbTask.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbTask.EmptyText = "Không có nhiệm vụ nào";
             this.tbTask.Gap = 12;
@@ -177,6 +178,7 @@
             this.tbTask.Size = new System.Drawing.Size(798, 416);
             this.tbTask.TabIndex = 1;
             this.tbTask.Text = "table1";
+            this.tbTask.SetRowStyle += new AntdUI.Table.SetRowStyleEventHandler(this.tbTask_SetRowStyle);
             this.tbTask.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tbTask_MouseDown);
             // 
             // menuStrip
