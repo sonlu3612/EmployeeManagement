@@ -393,10 +393,10 @@ namespace EmployeeManagement.DAL.Repositories
                     p.ProjectID,
                     p.ProjectName,
                     COUNT(t.TaskID) AS TotalTasks,
-                    SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS CompletedTasks,
+                    SUM(CASE WHEN t.Status = N'Hoàn thành' THEN 1 ELSE 0 END) AS CompletedTasks,
                     CASE
                     WHEN COUNT(t.TaskID) > 0 THEN
-                    CAST(SUM(CASE WHEN t.Status = 'Done' THEN 1 ELSE 0 END) AS DECIMAL(10,2)) / COUNT(t.TaskID) * 100
+                    CAST(SUM(CASE WHEN t.Status = N'Hoàn thành' THEN 1 ELSE 0 END) AS DECIMAL(10,2)) / COUNT(t.TaskID) * 100
                     ELSE 0
                     END AS CompletionPercentage
                     FROM Projects p

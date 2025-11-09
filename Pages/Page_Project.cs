@@ -29,6 +29,7 @@ namespace EmployeeManagement.Pages
         }
 
         #region Helpers
+
         private bool IsInDesignMode() =>
             LicenseManager.UsageMode == LicenseUsageMode.Designtime ||
             (Site != null && Site.DesignMode);
@@ -41,11 +42,26 @@ namespace EmployeeManagement.Pages
 
         private bool IsEmployee() =>
             SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
-        #endregion
+
+        #endregion Helpers
 
         #region Display Item (chỉ ngày)
+
         private object CreateDisplayItem(Project p)
         {
+            ProjectStats stats = _projectRepository.GetProjectStats(p.ProjectID);
+            int progressValue = stats != null ? (int)stats.CompletionPercentage : 0;
+            string progressText = stats != null ? $"{stats.CompletedTasks}/{stats.TotalTasks}" : "0/0";
+
+            //var cellProgress = new AntdUI.CellProgress
+            //{
+            //    Value = progressValue,
+            //    Text = progressText,
+            //    BackColor = System.Drawing.Color.Transparent
+            //}.SetSize(150, 24);
+
+            var cellProgress = new AntdUI.CellProgress((float)progressValue / 100);
+
             return new
             {
                 p.ProjectName,
@@ -55,12 +71,15 @@ namespace EmployeeManagement.Pages
                 p.Status,
                 p.CreatedByName,
                 p.ManagerName,
+                Progress = cellProgress,
                 p.ProjectID
             };
         }
-        #endregion
+
+        #endregion Display Item (chỉ ngày)
 
         #region Load Data
+
         public void LoadData()
         {
             try
@@ -110,9 +129,11 @@ namespace EmployeeManagement.Pages
                 MessageBox.Show("Lỗi tải dự án: " + ex.Message);
             }
         }
-        #endregion
+
+        #endregion Load Data
 
         #region Dropdown Employees
+
         private void loadEmployeesName(AntdUI.Dropdown dropdown, string filterType)
         {
             var employees = employeeRepository.GetAll();
@@ -124,12 +145,14 @@ namespace EmployeeManagement.Pages
                 dropdown.Items.Add(displayText);
             }
         }
-        #endregion
+
+        #endregion Dropdown Employees
 
         #region Get Selected Project
+
         private Project GetSelectedProject()
         {
-            int index = tbProject.SelectedIndex-1;
+            int index = tbProject.SelectedIndex - 1;
             if (index < 0) return null;
 
             if (tbProject.DataSource is System.Collections.IList list && index < list.Count)
@@ -140,9 +163,11 @@ namespace EmployeeManagement.Pages
             }
             return null;
         }
-        #endregion
+
+        #endregion Get Selected Project
 
         #region Buttons & Events
+
         private void btnXoa_Click(object sender, EventArgs e)
         {
             var project = GetSelectedProject();
@@ -205,9 +230,11 @@ namespace EmployeeManagement.Pages
             cbQuanLy.Text = "Quản lý";
             cbTrangThai.Text = "Trạng thái";
         }
-        #endregion
+
+        #endregion Buttons & Events
 
         #region Context Menu
+
         private void tbProject_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && tbProject.SelectedIndex >= 0)
@@ -287,9 +314,11 @@ namespace EmployeeManagement.Pages
                 LoadData();
             }
         }
-        #endregion
+
+        #endregion Context Menu
 
         #region Search & Filter
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
@@ -372,7 +401,6 @@ namespace EmployeeManagement.Pages
             }
         }
 
-
         private void cbTrangThai_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             cbTrangThai.Text = cbTrangThai.SelectedValue.ToString();
@@ -386,9 +414,11 @@ namespace EmployeeManagement.Pages
             var display = filtered.Select(p => CreateDisplayItem(p)).ToList();
             tbProject.DataSource = display;
         }
-        #endregion
+
+        #endregion Search & Filter
 
         #region Load Form
+
         private void Page_Project_Load(object sender, EventArgs e)
         {
             if (IsInDesignMode()) return;
@@ -401,6 +431,7 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("Status", "Trạng thái"));
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
+            tbProject.Columns.Add(new Column("Progress", "Tiến độ"));
 
             LoadData();
 
@@ -410,7 +441,8 @@ namespace EmployeeManagement.Pages
             if (!IsAdmin() && !IsProjectManager())
                 btnXoa.Enabled = false;
         }
-        #endregion
+
+        #endregion Load Form
 
         private void documentsToolStripMenuItem_Click(object sender, EventArgs e)
         {
