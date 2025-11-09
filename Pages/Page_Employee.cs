@@ -52,6 +52,7 @@ namespace EmployeeManagement.Pages
                 //avatarCol.SetWidth("80");
                 tbNV.Columns.Add(avatarCol);
                 tbNV.Columns.Add(new AntdUI.Column("FullName", "Họ và tên"));
+                tbNV.Columns.Add(new AntdUI.Column("Position", "Vị trí"));
                 tbNV.Columns.Add(new AntdUI.Column("Gender", "Giới tính"));
                 tbNV.Columns.Add(new AntdUI.Column("Email", "Email"));
                 tbNV.Columns.Add(new AntdUI.Column("Phone", "SĐT"));

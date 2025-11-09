@@ -44,6 +44,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
+
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
         /// </summary>
@@ -80,6 +81,7 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
+
         /// <summary>
         /// Thêm mới một nhân viên
         /// </summary>
@@ -186,7 +188,7 @@ namespace EmployeeManagement.DAL.Repositories
                     DepartmentID = @DepartmentID,
                     AvatarPath = @AvatarPath,
                     Address = @Address,
-                   
+
                     IsActive = @IsActive
                     WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -198,6 +200,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         /// <summary>
         /// Xóa nhân viên khỏi database (xóa cứng)
         /// </summary>
@@ -221,6 +224,7 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
+
         /// <summary>
         /// Lấy danh sách nhân viên theo phòng ban
         /// </summary>
@@ -256,6 +260,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
+
         /// <summary>
         /// Tìm kiếm nhân viên theo tên (khớp một phần)
         /// </summary>
@@ -291,6 +296,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
+
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Employee
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
@@ -330,6 +336,7 @@ namespace EmployeeManagement.DAL.Repositories
             : null
             };
         }
+
         public List<Employee> GetForGrid()
         {
             List<Employee> list = new List<Employee>();
@@ -337,7 +344,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql = @"
                 SELECT e.EmployeeID, e.FullName, e.Gender, e.AvatarPath,
-                       u.Email, u.Phone,
+                       u.Email, u.Phone, e.Position,
                        STRING_AGG(ur.Role, ', ') AS Roles,
                        ISNULL((
                            SELECT COUNT(DISTINCT p.ProjectID)
@@ -370,7 +377,7 @@ namespace EmployeeManagement.DAL.Repositories
                 LEFT JOIN Users u ON u.UserID = e.EmployeeID
                 LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
                 WHERE e.IsActive = 1
-                GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone;
+                GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone, e.Position;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
@@ -379,6 +386,7 @@ namespace EmployeeManagement.DAL.Repositories
                     {
                         EmployeeID = row["EmployeeID"] != DBNull.Value ? Convert.ToInt32(row["EmployeeID"]) : 0,
                         FullName = row["FullName"]?.ToString(),
+                        Position = row["Position"]?.ToString(),
                         Gender = row["Gender"]?.ToString(),
                         Email = row["Email"]?.ToString(),
                         Phone = row["Phone"]?.ToString(),
@@ -412,6 +420,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
+
         public List<Employee> GetForGrid2(int id)
         {
             List<Employee> employees = new List<Employee>();
@@ -558,6 +567,7 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
+
         public Employee GetFromIdUser(int id)
         {
             try
@@ -640,6 +650,7 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
+
         /// <summary>
         /// Cập nhật thông tin nhân viên bao gồm email và số điện thoại từ bảng Users
         /// </summary>
