@@ -68,6 +68,7 @@ namespace EmployeeManagement.Pages
                 p.CreatedByName,
                 p.ManagerName,
                 Progress = cellProgress,
+                ProgressText = progressText,
                 p.ProjectID
             };
         }
@@ -428,6 +429,7 @@ namespace EmployeeManagement.Pages
             tbProject.Columns.Add(new Column("CreatedByName", "Người tạo"));
             tbProject.Columns.Add(new Column("ManagerName", "Người quản lý"));
             tbProject.Columns.Add(new Column("Progress", "Tiến độ"));
+            tbProject.Columns.Add(new Column("ProgressText", "Tiến độ (Chữ)"));
 
             LoadData();
 

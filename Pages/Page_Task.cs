@@ -65,6 +65,7 @@ namespace EmployeeManagement.Pages
                 t.Status,
                 t.Priority,
                 Progress = cellProgress,
+                ProgressText = progressText,
                 t.TaskID,
                 t.ProjectID
             };
@@ -330,6 +331,7 @@ namespace EmployeeManagement.Pages
             tableTask.Columns.Add(new Column("Status", "Trạng thái"));
             tableTask.Columns.Add(new Column("Priority", "Độ ưu tiên"));
             tableTask.Columns.Add(new Column("Progress", "Tiến độ"));
+            tableTask.Columns.Add(new Column("ProgressText", "Tiến độ (Chữ)"));
 
             loadData();
             loadEmployeesName();
