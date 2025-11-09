@@ -21,9 +21,10 @@ namespace EmployeeManagement
         [STAThread]
         private static void Main()
         {
-            // Set language
-            "vi-VN".SetLanguage();
+            // Set localization provider first, then set language
+            // This ensures the localization provider is available when components initialize
             AntdUI.Localization.Provider = new Localizer();
+            "vi-VN".SetLanguage();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
