@@ -30,6 +30,7 @@
         {
             this.pageHeader1 = new AntdUI.PageHeader();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnXoaAnh = new AntdUI.Button();
             this.txtDiaChi = new AntdUI.Input();
             this.label10 = new AntdUI.Label();
             this.ddownGT = new AntdUI.Dropdown();
@@ -76,6 +77,7 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.btnXoaAnh);
             this.panel1.Controls.Add(this.txtDiaChi);
             this.panel1.Controls.Add(this.label10);
             this.panel1.Controls.Add(this.ddownGT);
@@ -103,6 +105,23 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(587, 633);
             this.panel1.TabIndex = 1;
+            // 
+            // btnXoaAnh
+            // 
+            this.btnXoaAnh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnXoaAnh.BackHover = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnXoaAnh.BorderWidth = 2F;
+            this.btnXoaAnh.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnXoaAnh.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXoaAnh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnXoaAnh.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.btnXoaAnh.Location = new System.Drawing.Point(145, 135);
+            this.btnXoaAnh.Name = "btnXoaAnh";
+            this.btnXoaAnh.Size = new System.Drawing.Size(77, 29);
+            this.btnXoaAnh.TabIndex = 53;
+            this.btnXoaAnh.Text = "Xóa Ảnh";
+            this.btnXoaAnh.Type = AntdUI.TTypeMini.Primary;
+            this.btnXoaAnh.Click += new System.EventHandler(this.btnXoaAnh_Click);
             // 
             // txtDiaChi
             // 
@@ -222,9 +241,9 @@
             this.btnXem.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnXem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(225)))));
             this.btnXem.ForeHover = System.Drawing.Color.White;
-            this.btnXem.Location = new System.Drawing.Point(156, 100);
+            this.btnXem.Location = new System.Drawing.Point(145, 100);
             this.btnXem.Name = "btnXem";
-            this.btnXem.Size = new System.Drawing.Size(54, 29);
+            this.btnXem.Size = new System.Drawing.Size(77, 29);
             this.btnXem.TabIndex = 42;
             this.btnXem.Text = "Xem";
             // 
@@ -235,9 +254,9 @@
             this.btnAnh.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
             this.btnAnh.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAnh.ForeHover = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(119)))), ((int)(((byte)(255)))));
-            this.btnAnh.Location = new System.Drawing.Point(156, 65);
+            this.btnAnh.Location = new System.Drawing.Point(145, 65);
             this.btnAnh.Name = "btnAnh";
-            this.btnAnh.Size = new System.Drawing.Size(54, 29);
+            this.btnAnh.Size = new System.Drawing.Size(77, 29);
             this.btnAnh.TabIndex = 41;
             this.btnAnh.Text = "Ảnh";
             this.btnAnh.Type = AntdUI.TTypeMini.Primary;
@@ -380,5 +399,6 @@
         private AntdUI.Label label1;
         private AntdUI.Input txtDiaChi;
         private AntdUI.Label label10;
+        private AntdUI.Button btnXoaAnh;
     }
 }

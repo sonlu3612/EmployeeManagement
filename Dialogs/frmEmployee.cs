@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.DAL.Services;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 namespace EmployeeManagement.Dialogs
 {
     public partial class frmEmployee : Form
@@ -18,9 +20,11 @@ namespace EmployeeManagement.Dialogs
         private readonly IRepository<Employee> _employeeRepository = new EmployeeRepository();
         private readonly IRepository<Department> _departmentRepository = new DepartmentRepository();
         private readonly UserRepository _userRepository = new UserRepository();
+        private readonly AvatarService _avatarService = new AvatarService();
         private Employee _employee;
         private bool _canEdit;
         private string _fixedDepartment;
+
         public frmEmployee(Employee employee = null, bool canEdit = true, string fixedDepartment = null)
         {
             InitializeComponent();
@@ -28,10 +32,15 @@ namespace EmployeeManagement.Dialogs
             _canEdit = canEdit;
             _fixedDepartment = fixedDepartment;
         }
+
         public void frmEmployee_Load()
         {
             ddownGT.Items.Add("Nam");
             ddownGT.Items.Add("Nữ");
+
+            btnXem.Click += btnXem_Click;
+            btnAnh.Click += btnAnh_Click;
+
             var departments = _departmentRepository.GetAll().ToList();
             ddownDepartment.Items.Clear();
             ddownDepartment.Items.AddRange(departments.Select(d => d.DepartmentName).ToArray());
@@ -61,7 +70,14 @@ namespace EmployeeManagement.Dialogs
                     else
                     {
                         Console.WriteLine($"[frmEmployee] Avatar không tìm thấy: {fullPath}");
+                        img.Image = _avatarService.CreateDefaultAvatar(_employee.FullName);
+                        img.Tag = null;
                     }
+                }
+                else
+                {
+                    img.Image = _avatarService.CreateDefaultAvatar(_employee.FullName);
+                    img.Tag = null;
                 }
             }
             else
@@ -83,6 +99,7 @@ namespace EmployeeManagement.Dialogs
                 }
             }
         }
+
         public void frmEmployee_Load(string DepartmentName)
         {
             ddownGT.Items.Add("Nam");
@@ -117,10 +134,12 @@ namespace EmployeeManagement.Dialogs
             // }
             //}
         }
+
         private void btnHuy_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (!_canEdit)
@@ -226,10 +245,12 @@ namespace EmployeeManagement.Dialogs
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
         private void ddownGT_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             ddownGT.Text = e.Value?.ToString();
         }
+
         private void btnAnh_Click(object sender, EventArgs e)
         {
             try
@@ -244,17 +265,17 @@ namespace EmployeeManagement.Dialogs
                         string selectedFile = openFileDialog.FileName;
                         string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\.."));
                         string avatarFolder = Path.Combine(projectRoot, "Assets", "Avatars");
-                        
+
                         if (!Directory.Exists(avatarFolder))
                             Directory.CreateDirectory(avatarFolder);
-                        
+
                         string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileNameWithoutExtension(selectedFile)}{Path.GetExtension(selectedFile)}";
                         string destPath = Path.Combine(avatarFolder, newFileName);
-                        
+
                         File.Copy(selectedFile, destPath, true);
                         img.Image = Image.FromFile(destPath);
                         img.Tag = $"Assets/Avatars/{newFileName}";
-                        
+
                         AntdUI.Message.success(this.FindForm(), "Ảnh đã được chọn!");
                     }
                 }
@@ -264,6 +285,77 @@ namespace EmployeeManagement.Dialogs
                 AntdUI.Message.error(this.FindForm(), "Lỗi khi chọn ảnh: " + ex.Message);
             }
         }
+
+        private void btnXem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (img.Image == null)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Không có ảnh để xem!");
+                    return;
+                }
+
+                using (Form imageForm = new Form())
+                {
+                    imageForm.Text = _employee?.FullName ?? "Ảnh đại diện";
+                    imageForm.Width = 600;
+                    imageForm.Height = 600;
+                    imageForm.StartPosition = FormStartPosition.CenterParent;
+                    imageForm.BackColor = System.Drawing.Color.Black;
+
+                    PictureBox pictureBox = new PictureBox
+                    {
+                        Image = img.Image,
+                        Dock = DockStyle.Fill,
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        BackColor = System.Drawing.Color.Black
+                    };
+
+                    imageForm.Controls.Add(pictureBox);
+                    imageForm.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                AntdUI.Message.error(this.FindForm(), "Lỗi khi mở ảnh: " + ex.Message);
+            }
+        }
+
+        private void btnXoaAnh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (img.Tag == null)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Không có ảnh tùy chọn để xóa!");
+                    return;
+                }
+
+                string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\.."));
+                string avatarFolder = Path.Combine(projectRoot, "Assets", "Avatars");
+
+                if (!Directory.Exists(avatarFolder))
+                    Directory.CreateDirectory(avatarFolder);
+
+                string fullName = _employee?.FullName ?? "?";
+                Image defaultAvatar = _avatarService.CreateDefaultAvatar(fullName);
+                
+                string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}_default_{Path.GetRandomFileName().Replace(".", "")}.png";
+                string destPath = Path.Combine(avatarFolder, newFileName);
+
+                defaultAvatar.Save(destPath);
+                img.Image = defaultAvatar;
+                img.Tag = $"Assets/Avatars/{newFileName}";
+
+                AntdUI.Message.success(this.FindForm(), "Đã sử dụng ảnh mặc định!");
+            }
+            catch (Exception ex)
+            {
+                AntdUI.Message.error(this.FindForm(), "Lỗi khi xóa ảnh: " + ex.Message);
+            }
+        }
+
         private void ddownDepartment_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
             ddownDepartment.Text = ddownDepartment.SelectedValue.ToString();

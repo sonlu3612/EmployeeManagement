@@ -84,6 +84,7 @@
     <Compile Include="DAL\Repositories\TaskRepository.cs" />
     <Compile Include="DAL\Repositories\UserRepository.cs" />
     <Compile Include="DAL\Services\FileService.cs" />
+    <Compile Include="DAL\Services\AvatarService.cs" />
     <Compile Include="Dialogs\frmAssignEmployee.cs">
       <SubType>Form</SubType>
     </Compile>
