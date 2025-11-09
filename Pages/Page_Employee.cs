@@ -109,6 +109,7 @@ namespace EmployeeManagement.Pages
                 if (avatarCol != null)
                 {
                     var items = new List<AntdUI.SelectItem>();
+                    var avatarService = new EmployeeManagement.DAL.Services.AvatarService();
                     foreach (var emp in visibleEmployees)
                     {
                         Image icon = null;
@@ -123,13 +124,19 @@ namespace EmployeeManagement.Pages
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"File không tồn tại: {fullPath}");
+                                    Console.WriteLine($"File không tồn tại: {fullPath}, sử dụng avatar default");
+                                    icon = avatarService.CreateDefaultAvatar(emp.FullName);
                                 }
+                            }
+                            else
+                            {
+                                icon = avatarService.CreateDefaultAvatar(emp.FullName);
                             }
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Lỗi load avatar cho {emp.FullName}: {ex.Message}");
+                            icon = avatarService.CreateDefaultAvatar(emp.FullName);
                         }
                         items.Add(new AntdUI.SelectItem(0, icon, emp.FullName ?? "", emp.EmployeeID));
                     }
