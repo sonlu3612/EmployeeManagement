@@ -4,10 +4,9 @@ using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.Models;
 using System;
 using System.ComponentModel;
-using System.Net;
+using System.Linq;
 using System.Windows.Forms;
 using Message = AntdUI.Message;
-
 namespace EmployeeManagement.Dialogs
 {
     public partial class frmProject : Form
@@ -23,7 +22,6 @@ namespace EmployeeManagement.Dialogs
             _project = project;
             _isEdit = project != null;
         }
-
         private bool IsInDesignMode()
         {
             return LicenseManager.UsageMode == LicenseUsageMode.Designtime
@@ -52,25 +50,18 @@ namespace EmployeeManagement.Dialogs
             {
                 loadData();
                 cbManager.Enabled = false;
-
             }
-            else 
+            else
             {
                 loadData();
                 txtProjectName.Enabled = false;
-
                 txtDescription.Enabled = false;
                 dtStartDate.Enabled = false;
                 dtEndDate.Enabled = false;
-                cbManager.Enabled = false ;
+                cbManager.Enabled = false;
                 cboStatus.Enabled = false;
-
             }
-
-            
         }
-
-
         private void loadData()
         {
             if (_isEdit)
@@ -80,7 +71,7 @@ namespace EmployeeManagement.Dialogs
                 dtStartDate.Value = _project.StartDate;
                 dtEndDate.Value = _project.EndDate;
                 cbManager.Text = _project.CreatedBy.ToString();
-                cbManager.Text = _project.ManagerBy.ToString() + " - "+_project.ManagerName;
+                cbManager.Text = _project.ManagerBy.ToString() + " - " + _project.ManagerName;
                 cbManager.SelectedValue = _project.ManagerBy;
                 cboStatus.Text = _project.Status;
             }
@@ -97,7 +88,7 @@ namespace EmployeeManagement.Dialogs
         }
         private void loadEmployeesName()
         {
-            var employees = _employeeRepository.GetAll();
+            var employees = _employee_repository_getall();
             cbManager.Items.Clear();
             cbManager.Items.Insert(0, "Tất cả");
             foreach (var emp in employees)
@@ -110,75 +101,108 @@ namespace EmployeeManagement.Dialogs
         {
             try
             {
-                if (cbManager.SelectedValue == null)
+                string projectName = txtProjectName?.Text?.Trim() ?? string.Empty;
+                string description = txtDescription?.Text?.Trim() ?? string.Empty;
+                DateTime startDate = dtStartDate?.Value ?? DateTime.Now;
+                DateTime endDate = dtEndDate?.Value ?? DateTime.Now;
+                string status = cboStatus?.Text?.Trim() ?? string.Empty;
+                string managerText = cbManager?.Text?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(projectName))
                 {
-                    MessageBox.Show("Vui lòng chọn người quản lý dự án!");
+                    Message.error(this.FindForm(), "Vui lòng nhập tên dự án!");
                     return;
                 }
-
-                // Lấy giá trị ID và tên từ cbManager.Text (dạng: "1 - Nguyễn Văn A")
-                string selectedText = cbManager.Text.Trim();
-                string[] parts = selectedText.Split('-');
+                if (projectName.Length > 200)
+                {
+                    Message.error(this.FindForm(), "Tên dự án quá dài (tối đa 200 ký tự).");
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(status))
+                {
+                    Message.error(this.FindForm(), "Vui lòng chọn trạng thái dự án!");
+                    return;
+                }
+                if (endDate < startDate)
+                {
+                    Message.error(this.FindForm(), "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!");
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(managerText) || managerText.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+                {
+                    Message.error(this.FindForm(), "Vui lòng chọn người quản lý dự án hợp lệ!");
+                    return;
+                }
+                string[] parts = managerText.Split('-');
                 if (parts.Length < 2)
                 {
-                    MessageBox.Show("Dữ liệu người quản lý không hợp lệ!");
+                    Message.error(this.FindForm(), "Dữ liệu người quản lý không hợp lệ!");
                     return;
                 }
-
-                int managerId = int.Parse(parts[0].Trim());
-                string managerName = parts[1].Trim();
-
+                if (!int.TryParse(parts[0].Trim(), out int managerId))
+                {
+                    Message.error(this.FindForm(), "ID người quản lý không hợp lệ!");
+                    return;
+                }
+                var manager = _employeeRepository.GetAll().FirstOrDefault(emp => emp.EmployeeID == managerId);
+                if (manager == null)
+                {
+                    Message.error(this.FindForm(), "Không tìm thấy người quản lý trong danh sách nhân sự!");
+                    return;
+                }
                 var newProject = new Project
                 {
-                    ProjectName = txtProjectName.Text.Trim(),
-                    Description = txtDescription.Text.Trim(),
-                    StartDate = (DateTime)dtStartDate.Value,
-                    EndDate = dtEndDate.Value,
-                    Status = cboStatus.Text,
+                    ProjectName = projectName,
+                    Description = description,
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    Status = status,
                     ManagerBy = managerId,
-                    ManagerName = managerName,
+                    ManagerName = manager.FullName,
                     CreatedBy = SessionManager.CurrentUser.UserID
                 };
-
                 if (_isEdit)
                 {
-                 
                     newProject.ProjectID = _project.ProjectID;
                     _projectRepository.Update(newProject);
-                    //Message.success(this.FindForm(), "Cập nhật dự án thành công!");
                 }
                 else
                 {
-                    Console.WriteLine("Tạo dự án mới");
                     _projectRepository.Insert(newProject);
-                    //Message.success(this.FindForm(), "Thêm dự án thành công!");
                 }
-
                 DialogResult = DialogResult.OK;
                 Tag = newProject;
                 Close();
-                
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi lưu dự án: " + ex.Message);
+                Message.error(this.FindForm(), "Lỗi khi lưu dự án: " + ex.Message);
             }
         }
-
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
         private void cbManager_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            cbManager.Text = cbManager.SelectedValue.ToString();
+            if (cbManager.SelectedValue != null)
+                cbManager.Text = cbManager.SelectedValue.ToString();
         }
-
         private void cboStatus_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            cboStatus.Text = cboStatus.SelectedValue.ToString();
+            if (cboStatus.SelectedValue != null)
+                cboStatus.Text = cboStatus.SelectedValue.ToString();
+        }
+        private System.Collections.Generic.IEnumerable<Employee> _employee_repository_getall()
+        {
+            try
+            {
+                return _employeeRepository.GetAll();
+            }
+            catch
+            {
+                return Enumerable.Empty<Employee>();
+            }
         }
     }
 }

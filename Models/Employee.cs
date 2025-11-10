@@ -23,5 +23,6 @@ namespace EmployeeManagement.Models
         public byte[] AvatarData { get; set; }     // dữ liệu ảnh thực tế
 
         public bool IsSelected { get; set; }
+        public string CompletionStatus { get; internal set; }
     }
 }

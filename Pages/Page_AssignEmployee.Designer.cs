@@ -30,6 +30,7 @@
         {
             this.tbEmployee = new AntdUI.Table();
             this.panel1 = new AntdUI.Panel();
+            this.ddownSelect = new AntdUI.Dropdown();
             this.ddownPB = new AntdUI.Dropdown();
             this.btnLuu = new AntdUI.Button();
             this.btnSync = new AntdUI.Button();
@@ -54,6 +55,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.Controls.Add(this.ddownSelect);
             this.panel1.Controls.Add(this.ddownPB);
             this.panel1.Controls.Add(this.btnLuu);
             this.panel1.Controls.Add(this.btnSync);
@@ -65,6 +67,19 @@
             this.panel1.Size = new System.Drawing.Size(841, 41);
             this.panel1.TabIndex = 2;
             this.panel1.Text = "panel1";
+            // 
+            // ddownSelect
+            // 
+            this.ddownSelect.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(79)))), ((int)(((byte)(190)))));
+            this.ddownSelect.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ddownSelect.ForeColor = System.Drawing.Color.White;
+            this.ddownSelect.Location = new System.Drawing.Point(462, 3);
+            this.ddownSelect.Name = "ddownSelect";
+            this.ddownSelect.ShowArrow = true;
+            this.ddownSelect.Size = new System.Drawing.Size(135, 35);
+            this.ddownSelect.TabIndex = 8;
+            this.ddownSelect.Text = "Trạng thái";
+            this.ddownSelect.SelectedValueChanged += new AntdUI.ObjectNEventHandler(this.ddownSelect_SelectedValueChanged);
             // 
             // ddownPB
             // 
@@ -157,5 +172,6 @@
         private AntdUI.Button btnSearch;
         private AntdUI.Input txtTim;
         private AntdUI.Dropdown ddownPB;
+        private AntdUI.Dropdown ddownSelect;
     }
 }

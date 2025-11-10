@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-
 namespace EmployeeManagement.DAL.Repositories
 {
     /// <summary>
@@ -44,7 +43,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         /// <summary>
         /// Lấy thông tin một nhân viên theo ID
         /// </summary>
@@ -81,7 +79,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         /// <summary>
         /// Thêm mới một nhân viên
         /// </summary>
@@ -103,26 +100,20 @@ namespace EmployeeManagement.DAL.Repositories
             new SqlParameter("@HireDate", entity.HireDate),
             new SqlParameter("@IsActive", entity.IsActive)
                 };
-
                 string sql = @"
             INSERT INTO Employees (EmployeeID, FullName, Position, Gender, DepartmentID, AvatarPath, Address, HireDate, IsActive)
             VALUES (@EmployeeID, @FullName, @Position, @Gender, @DepartmentID, @AvatarPath, @Address, @HireDate, @IsActive)";
-
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
-
                 // ===============================
                 // ✅ Thêm role "Nhân viên" vào UserRoles
                 // ===============================
-
                 // ⚠️ Giả định EmployeeID trùng với UserID (nếu không, cần map như bên dưới)
                 int userId = entity.EmployeeID;
-
                 // Nếu EmployeeID không trùng với UserID, dùng đoạn sau:
                 // string getUserSql = "SELECT TOP 1 UserID FROM Users WHERE EmployeeID = @EmpID";
                 // var dtUser = DatabaseHelper.ExecuteQuery(getUserSql, new SqlParameter("@EmpID", entity.EmployeeID));
                 // if (dtUser.Rows.Count > 0)
-                //     userId = Convert.ToInt32(dtUser.Rows[0]["UserID"]);
-
+                // userId = Convert.ToInt32(dtUser.Rows[0]["UserID"]);
                 // Kiểm tra đã có role "Nhân viên" chưa
                 SqlParameter[] checkParams = new SqlParameter[]
                 {
@@ -131,9 +122,7 @@ namespace EmployeeManagement.DAL.Repositories
                 };
                 string checkSql = @"SELECT 1 FROM UserRoles WHERE UserID = @UserID AND Role = @Role";
                 var checkDt = DatabaseHelper.ExecuteQuery(checkSql, checkParams);
-
                 bool exists = (checkDt != null && checkDt.Rows.Count > 0);
-
                 if (!exists)
                 {
                     SqlParameter[] insertRoleParams = new SqlParameter[]
@@ -145,7 +134,6 @@ namespace EmployeeManagement.DAL.Repositories
                                      VALUES (@UserID, @Role, GETDATE())";
                     DatabaseHelper.ExecuteNonQuery(insertRoleSql, insertRoleParams);
                 }
-
                 return true;
             }
             catch (Exception ex)
@@ -154,7 +142,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Cập nhật thông tin nhân viên
         /// </summary>
@@ -188,7 +175,6 @@ namespace EmployeeManagement.DAL.Repositories
                     DepartmentID = @DepartmentID,
                     AvatarPath = @AvatarPath,
                     Address = @Address,
-
                     IsActive = @IsActive
                     WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(sql, parameters);
@@ -200,7 +186,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Xóa nhân viên khỏi database (xóa cứng)
         /// </summary>
@@ -224,7 +209,6 @@ namespace EmployeeManagement.DAL.Repositories
                 return false;
             }
         }
-
         /// <summary>
         /// Lấy danh sách nhân viên theo phòng ban
         /// </summary>
@@ -260,7 +244,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         /// <summary>
         /// Tìm kiếm nhân viên theo tên (khớp một phần)
         /// </summary>
@@ -296,7 +279,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         /// <summary>
         /// Chuyển đổi một DataRow thành đối tượng Employee
         /// Xử lý các giá trị NULL và chuyển đổi kiểu dữ liệu
@@ -336,7 +318,6 @@ namespace EmployeeManagement.DAL.Repositories
             : null
             };
         }
-
         public List<Employee> GetForGrid()
         {
             List<Employee> list = new List<Employee>();
@@ -420,7 +401,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
-
         public List<Employee> GetForGrid2(int id)
         {
             List<Employee> employees = new List<Employee>();
@@ -430,7 +410,6 @@ namespace EmployeeManagement.DAL.Repositories
                 {
             new SqlParameter("@DepartmentID", id)
                 };
-
                 string sql = @"
         SELECT
             e.EmployeeID,
@@ -448,9 +427,7 @@ namespace EmployeeManagement.DAL.Repositories
         LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
         WHERE e.DepartmentID = @DepartmentID AND e.IsActive = 1
         GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
-
         UNION
-
         SELECT
             e.EmployeeID,
             e.FullName,
@@ -468,10 +445,8 @@ namespace EmployeeManagement.DAL.Repositories
         LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
         WHERE d.DepartmentID = @DepartmentID AND e.IsActive = 1
         GROUP BY e.EmployeeID, e.FullName, e.Position, e.Gender, e.Address, e.HireDate, e.AvatarPath, u.Email, u.Phone
-
         ORDER BY FullName;
         ";
-
                 DataTable table = DatabaseHelper.ExecuteQuery(sql, parameters);
                 foreach (DataRow row in table.Rows)
                 {
@@ -497,7 +472,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return employees;
         }
-
         public List<Employee> GetByTask(int taskId)
         {
             List<Employee> list = new List<Employee>();
@@ -520,7 +494,8 @@ namespace EmployeeManagement.DAL.Repositories
                 e.IsActive,
                 u.Email,
                 u.Phone,
-                d.DepartmentName
+                d.DepartmentName,
+                ta.CompletionStatus
             FROM Employees e
             INNER JOIN TaskAssignments ta ON ta.EmployeeID = e.EmployeeID
             LEFT JOIN Users u ON u.UserID = e.EmployeeID
@@ -544,6 +519,7 @@ namespace EmployeeManagement.DAL.Repositories
                         IsActive = row["IsActive"] != DBNull.Value ? Convert.ToBoolean(row["IsActive"]) : false,
                         Email = row["Email"]?.ToString(),
                         Phone = row["Phone"]?.ToString(),
+                        CompletionStatus = row["CompletionStatus"] != DBNull.Value ? row["CompletionStatus"].ToString() : null
                     };
                     // Đọc ảnh từ đường dẫn (nếu có)
                     try
@@ -567,7 +543,6 @@ namespace EmployeeManagement.DAL.Repositories
             }
             return list;
         }
-
         public Employee GetFromIdUser(int id)
         {
             try
@@ -650,7 +625,6 @@ namespace EmployeeManagement.DAL.Repositories
                 throw;
             }
         }
-
         /// <summary>
         /// Cập nhật thông tin nhân viên bao gồm email và số điện thoại từ bảng Users
         /// </summary>
@@ -683,7 +657,6 @@ namespace EmployeeManagement.DAL.Repositories
                           IsActive = @IsActive
                       WHERE EmployeeID = @EmployeeID";
                 DatabaseHelper.ExecuteNonQuery(employeeSql, employeeParams);
-
                 // Update Users table for Phone and Email (assuming UserID = EmployeeID)
                 SqlParameter[] userParams = new SqlParameter[]
                 {
@@ -697,7 +670,6 @@ namespace EmployeeManagement.DAL.Repositories
                           Email = @Email
                       WHERE UserID = @UserID";
                 DatabaseHelper.ExecuteNonQuery(userSql, userParams);
-
                 return true;
             }
             catch (Exception ex)

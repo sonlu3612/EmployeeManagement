@@ -410,28 +410,59 @@ namespace EmployeeManagement.DAL.Repositories
         {
             try
             {
-                // Xóa assignments cũ trước (nếu update)
-                string deleteSql = "DELETE FROM TaskAssignments WHERE TaskID = @TaskID";
-                DatabaseHelper.ExecuteNonQuery(deleteSql, new SqlParameter("@TaskID", taskId));
-                // Insert mới
-                foreach (int empId in employeeIds)
+                var newList = (employeeIds ?? new List<int>()).Distinct().ToList();
+
+                string selectSql = "SELECT EmployeeID FROM TaskAssignments WHERE TaskID = @TaskID";
+
+                var dt = DatabaseHelper.ExecuteQuery(selectSql,
+                    new SqlParameter[] { new SqlParameter("@TaskID", taskId) });
+
+                var oldList = new HashSet<int>();
+                foreach (DataRow row in dt.Rows)
+                    oldList.Add(Convert.ToInt32(row["EmployeeID"]));
+
+                var toAdd = newList.Except(oldList).ToList();
+                var toDelete = oldList.Except(newList).ToList();
+
+                if (toDelete.Count > 0)
                 {
-                    SqlParameter[] paramsAssign = new SqlParameter[]
+                    string deleteSql = "DELETE FROM TaskAssignments WHERE TaskID = @TaskID AND EmployeeID = @EmployeeID";
+
+                    foreach (int empId in toDelete)
                     {
-                        new SqlParameter("@TaskID", taskId),
-                        new SqlParameter("@EmployeeID", empId),
-                        new SqlParameter("@AssignedBy", assignedBy)
-                    };
-                    string insertSql =
-                        @"INSERT INTO TaskAssignments (TaskID, EmployeeID, AssignedBy)
-                        VALUES (@TASKID, @EMPLOYEEID, @ASSIGNEDBY)".Replace("@TASKID", "@TaskID").Replace("@EMPLOYEEID", "@EmployeeID").Replace("@ASSIGNEDBY", "@AssignedBy");
-                    DatabaseHelper.ExecuteNonQuery(insertSql, paramsAssign);
+                        SqlParameter[] prms =
+                        {
+                    new SqlParameter("@TaskID", taskId),
+                    new SqlParameter("@EmployeeID", empId)
+                };
+
+                        DatabaseHelper.ExecuteNonQuery(deleteSql, prms);
+                    }
                 }
+
+                if (toAdd.Count > 0)
+                {
+                    string insertSql = @"INSERT INTO TaskAssignments (TaskID, EmployeeID, AssignedBy)
+                                 VALUES (@TaskID, @EmployeeID, @AssignedBy)";
+
+                    foreach (int empId in toAdd)
+                    {
+                        SqlParameter[] prms =
+                        {
+                    new SqlParameter("@TaskID", taskId),
+                    new SqlParameter("@EmployeeID", empId),
+                    new SqlParameter("@AssignedBy", assignedBy)
+                };
+
+                        DatabaseHelper.ExecuteNonQuery(insertSql, prms);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[TaskRepository.AssignEmployees] Lỗi: {ex.Message}");
+                Console.WriteLine("[AssignEmployeesSync] " + ex.Message);
                 return false;
             }
         }

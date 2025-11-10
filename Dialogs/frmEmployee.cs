@@ -4,13 +4,10 @@ using EmployeeManagement.DAL.Services;
 using EmployeeManagement.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace EmployeeManagement.Dialogs
@@ -44,6 +41,7 @@ namespace EmployeeManagement.Dialogs
             var departments = _departmentRepository.GetAll().ToList();
             ddownDepartment.Items.Clear();
             ddownDepartment.Items.AddRange(departments.Select(d => d.DepartmentName).ToArray());
+
             if (_employee != null)
             {
                 txtName.Text = _employee.FullName;
@@ -106,33 +104,6 @@ namespace EmployeeManagement.Dialogs
             ddownGT.Items.Add("Nữ");
             ddownDepartment.Text = DepartmentName;
             ddownDepartment.Enabled = false;
-            //var departments = _departmentRepository.GetAll().ToList();
-            //ddownDepartment.Items.Clear();
-            //ddownDepartment.Items.AddRange(departments.Select(d => d.DepartmentName).ToArray());
-            //if (IsEdited)
-            //{
-            // txtName.Text = _employee.FullName;
-            // txtEmail.Text = _employee.Email;
-            // txtDienThoai.Text = _employee.Phone;
-            // txtPosition.Text = _employee.Position;
-            // txtDiaChi.Text = _employee.Address;
-            // ddownGT.Text = _employee.Gender;
-            // dateStart.Value = _employee.HireDate;
-            //}
-            //else
-            //{
-            // dateStart.Value = DateTime.Today;
-            //}
-            //ddownDepartment.Enabled = false;
-            //if (!string.IsNullOrEmpty(_employee.AvatarPath))
-            //{
-            // string fullPath = Path.Combine(Application.StartupPath, "..", "..", _employee.AvatarPath.Replace("/", "\\"));
-            // if (File.Exists(fullPath))
-            // {
-            // img.Image = Image.FromFile(fullPath);
-            // img.Tag = _employee.AvatarPath;
-            // }
-            //}
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
@@ -147,54 +118,103 @@ namespace EmployeeManagement.Dialogs
                 this.Close();
                 return;
             }
-            if (txtName == null || string.IsNullOrWhiteSpace(txtName.Text))
+
+            string name = txtName?.Text?.Trim() ?? string.Empty;
+            string email = txtEmail?.Text?.Trim() ?? string.Empty;
+            string phone = txtDienThoai?.Text?.Trim() ?? string.Empty;
+            string position = txtPosition?.Text?.Trim() ?? string.Empty;
+            string departmentText = ddownDepartment?.Text?.Trim() ?? string.Empty;
+            DateTime hireDate = dateStart?.Value ?? DateTime.Today;
+
+            if (string.IsNullOrWhiteSpace(name))
             {
                 AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập họ và tên!");
                 return;
             }
-            if (txtEmail == null || string.IsNullOrWhiteSpace(txtEmail.Text))
+            if (name.Length > 200)
+            {
+                AntdUI.Message.warn(this.FindForm(), "Họ và tên quá dài (tối đa 200 ký tự).");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
             {
                 AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập email!");
                 return;
             }
-            if (ddownGT == null || string.IsNullOrWhiteSpace(ddownGT.Text))
+            if (!IsValidEmail(email))
             {
-                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn giới tính!");
+                AntdUI.Message.warn(this.FindForm(), "Email không hợp lệ!");
                 return;
             }
-            if (txtPosition == null || string.IsNullOrWhiteSpace(txtPosition.Text))
-            {
-                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập chức vụ!");
-                return;
-            }
-            if (ddownDepartment == null || string.IsNullOrWhiteSpace(ddownDepartment.Text))
-            {
-                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn phòng ban!");
-                return;
-            }
-            if (txtDienThoai == null || string.IsNullOrWhiteSpace(txtDienThoai.Text))
+
+            if (string.IsNullOrWhiteSpace(phone))
             {
                 AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập điện thoại!");
                 return;
             }
-            if (dateStart == null)
+            if (!IsValidPhone(phone))
             {
-                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn ngày bắt đầu!");
+                AntdUI.Message.warn(this.FindForm(), "Số điện thoại không hợp lệ (chỉ gồm chữ số, 7-15 ký tự).");
                 return;
             }
-            var department = _departmentRepository.GetAll()
-            .FirstOrDefault(d => d.DepartmentName == ddownDepartment.Text);
+
+            if (string.IsNullOrWhiteSpace(position))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng nhập chức vụ!");
+                return;
+            }
+            if (position.Length > 100)
+            {
+                AntdUI.Message.warn(this.FindForm(), "Chức vụ quá dài (tối đa 100 ký tự).");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(departmentText))
+            {
+                AntdUI.Message.warn(this.FindForm(), "Vui lòng chọn phòng ban!");
+                return;
+            }
+
+            if (hireDate > DateTime.Today)
+            {
+                AntdUI.Message.warn(this.FindForm(), "Ngày bắt đầu không thể lớn hơn ngày hôm nay!");
+                return;
+            }
+
+            var department = _department_repository_fallback();
+
             if (department == null)
             {
                 AntdUI.Message.error(this.FindForm(), "Phòng ban không tồn tại!");
                 return;
             }
+
+            var allUsers = _userRepository.GetAll().ToList();
+            string normalizedPhone = NormalizePhone(phone);
+
             if (_employee == null)
             {
+                var emailExists = allUsers.Any(u => !string.IsNullOrWhiteSpace(u.Email) &&
+                    string.Equals(u.Email.Trim(), email, StringComparison.OrdinalIgnoreCase));
+                if (emailExists)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Email đã được sử dụng bởi tài khoản khác!");
+                    return;
+                }
+
+                var phoneExists = allUsers.Any(u => !string.IsNullOrWhiteSpace(u.Phone) &&
+                    NormalizePhone(u.Phone) == normalizedPhone);
+                if (phoneExists)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Số điện thoại đã được sử dụng bởi tài khoản khác!");
+                    return;
+                }
+
                 var newUser = new User
                 {
-                    Email = txtEmail.Text.Trim(),
-                    Phone = txtDienThoai.Text.Trim(),
+                    Email = email,
+                    Phone = phone,
                     PasswordHash = "123456",
                     CreatedDate = DateTime.Now,
                     IsActive = true,
@@ -209,41 +229,71 @@ namespace EmployeeManagement.Dialogs
                 {
                     AvatarPath = img.Tag?.ToString() ?? string.Empty,
                     EmployeeID = userID,
-                    FullName = txtName.Text.Trim(),
-                    Email = txtEmail.Text.Trim(),
-                    Phone = txtDienThoai.Text.Trim(),
-                    Address = txtDiaChi.Text.Trim(),
-                    Position = txtPosition.Text.Trim(),
+                    FullName = name,
+                    Email = email,
+                    Phone = phone,
+                    Address = txtDiaChi?.Text?.Trim() ?? string.Empty,
+                    Position = position,
                     Gender = string.IsNullOrWhiteSpace(ddownGT.Text) ? "NotSpecified" : ddownGT.Text.Trim(),
                     DepartmentID = department.DepartmentID,
-                    HireDate = (DateTime)dateStart.Value,
+                    HireDate = hireDate,
                     IsActive = true
                 };
                 this.Tag = newEmployee;
             }
             else
             {
+                var emailExistsForOther = allUsers.Any(u =>
+                    !string.IsNullOrWhiteSpace(u.Email) &&
+                    string.Equals(u.Email.Trim(), email, StringComparison.OrdinalIgnoreCase) &&
+                    u.UserID != _employee.EmployeeID);
+
+                if (emailExistsForOther)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Email đã được sử dụng bởi tài khoản khác!");
+                    return;
+                }
+
+                var phoneExistsForOther = allUsers.Any(u =>
+                    !string.IsNullOrWhiteSpace(u.Phone) &&
+                    NormalizePhone(u.Phone) == normalizedPhone &&
+                    u.UserID != _employee.EmployeeID);
+
+                if (phoneExistsForOther)
+                {
+                    AntdUI.Message.warn(this.FindForm(), "Số điện thoại đã được sử dụng bởi tài khoản khác!");
+                    return;
+                }
+
                 var user = _userRepository.GetById(_employee.EmployeeID);
                 if (user != null)
                 {
-                    user.Email = txtEmail.Text.Trim();
-                    user.Phone = txtDienThoai.Text.Trim();
+                    user.Email = email;
+                    user.Phone = phone;
                     _userRepository.Update(user);
                 }
                 _employee.AvatarPath = img.Tag?.ToString() ?? _employee.AvatarPath;
-                _employee.FullName = txtName.Text.Trim();
-                _employee.Email = txtEmail.Text.Trim();
-                _employee.Phone = txtDienThoai.Text.Trim();
-                _employee.Address = txtDiaChi.Text.Trim();
-                _employee.Position = txtPosition.Text.Trim();
+                _employee.FullName = name;
+                _employee.Email = email;
+                _employee.Phone = phone;
+                _employee.Address = txtDiaChi?.Text?.Trim() ?? string.Empty;
+                _employee.Position = position;
                 _employee.Gender = string.IsNullOrWhiteSpace(ddownGT.Text) ? "NotSpecified" : ddownGT.Text.Trim();
                 _employee.DepartmentID = department.DepartmentID;
-                _employee.HireDate = (DateTime)dateStart.Value;
+                _employee.HireDate = hireDate;
                 _employeeRepository.Update(_employee);
                 this.Tag = _employee;
             }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private Department _department_repository_fallback()
+        {
+            var department = _departmentRepository.GetAll()
+                .FirstOrDefault(d => d.DepartmentName == ddownDepartment?.Text?.Trim());
+            return department;
         }
 
         private void ddownGT_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
@@ -340,7 +390,7 @@ namespace EmployeeManagement.Dialogs
 
                 string fullName = _employee?.FullName ?? "?";
                 Image defaultAvatar = _avatarService.CreateDefaultAvatar(fullName);
-                
+
                 string newFileName = $"{DateTime.Now:yyyyMMddHHmmss}_default_{Path.GetRandomFileName().Replace(".", "")}.png";
                 string destPath = Path.Combine(avatarFolder, newFileName);
 
@@ -358,7 +408,36 @@ namespace EmployeeManagement.Dialogs
 
         private void ddownDepartment_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            ddownDepartment.Text = ddownDepartment.SelectedValue.ToString();
+            if (ddownDepartment.SelectedValue != null)
+                ddownDepartment.Text = ddownDepartment.SelectedValue.ToString();
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+            try
+            {
+                string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+                return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsValidPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return false;
+            string digitsOnly = Regex.Replace(phone, @"\D", "");
+            if (!Regex.IsMatch(digitsOnly, @"^\d{7,15}$")) return false;
+            return true;
+        }
+
+        private string NormalizePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return string.Empty;
+            return Regex.Replace(phone, @"\D", "");
         }
     }
 }

@@ -17,13 +17,11 @@ namespace EmployeeManagement.Dialogs
         private bool _isEdit = false;
         private Department _editingDepartment = null;
 
-        // Constructor cho thêm mới
         public frmDepartment()
         {
             InitializeComponent();
         }
 
-        // Constructor cho chỉnh sửa: truyền department cần sửa
         public frmDepartment(Department departmentToEdit) : this()
         {
             _isEdit = true;
@@ -32,7 +30,6 @@ namespace EmployeeManagement.Dialogs
 
         private void frmDepartment_Load(object sender, EventArgs e)
         {
-            // Load danh sách nhân viên vào combobox (FullName)
             var employees = employeeRepository.GetAll().ToList();
             cbTP.Items.Clear();
             foreach (var em in employees)
@@ -40,13 +37,11 @@ namespace EmployeeManagement.Dialogs
                 cbTP.Items.Add(em.FullName);
             }
 
-            // Nếu là chế độ chỉnh sửa thì prefill giá trị
             if (_isEdit && _editingDepartment != null)
             {
                 txtTenPB.Text = _editingDepartment.DepartmentName;
                 txtDescription.Text = _editingDepartment.Description;
 
-                // ưu tiên chọn theo ManagerID nếu có
                 if (_editingDepartment.ManagerID > 0)
                 {
                     var emp = employees.FirstOrDefault(x => x.EmployeeID == _editingDepartment.ManagerID);
@@ -56,7 +51,6 @@ namespace EmployeeManagement.Dialogs
                     }
                     else
                     {
-                        // fallback: dùng ManagerName
                         cbTP.Text = _editingDepartment.ManagerName;
                     }
                 }
@@ -65,7 +59,6 @@ namespace EmployeeManagement.Dialogs
                     cbTP.Text = _editingDepartment.ManagerName;
                 }
 
-                // thay đổi text nút nếu muốn
                 try
                 {
                     button1.Text = "Cập nhật";
@@ -84,44 +77,69 @@ namespace EmployeeManagement.Dialogs
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // Validate tên phòng ban
-            if (string.IsNullOrWhiteSpace(txtTenPB?.Text))
+            var name = txtTenPB?.Text?.Trim() ?? string.Empty;
+            var desc = txtDescription?.Text?.Trim() ?? string.Empty;
+            var managerName = cbTP?.Text?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(name))
             {
                 Message.warn(this.FindForm(), "Vui lòng nhập tên phòng ban!");
                 return;
             }
 
-            // Validate trưởng phòng
-            if (string.IsNullOrWhiteSpace(cbTP?.Text))
+            if (name.Length > 100)
+            {
+                Message.warn(this.FindForm(), "Tên phòng ban không được vượt quá 100 ký tự.");
+                return;
+            }
+
+            if (desc.Length > 500)
+            {
+                Message.warn(this.FindForm(), "Mô tả không được vượt quá 500 ký tự.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(managerName))
             {
                 Message.warn(this.FindForm(), "Vui lòng chọn trưởng phòng!");
                 return;
             }
 
-            // Tìm employee theo FullName (lưu ý trùng tên)
-            var employee = employeeRepository.GetAll()
-                .FirstOrDefault(d => d.FullName == cbTP.Text);
+            var employees = employeeRepository.GetAll().ToList();
+            var employee = employees.FirstOrDefault(d => d.FullName == managerName);
+            if (employee == null)
+            {
+                Message.warn(this.FindForm(), "Trưởng phòng không hợp lệ. Vui lòng chọn một nhân viên hợp lệ từ danh sách.");
+                return;
+            }
+
+            var existing = repository.GetAll()
+                .FirstOrDefault(d => d.DepartmentName.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    && (!_isEdit || d.DepartmentID != (_editingDepartment?.DepartmentID ?? 0)));
+
+            if (existing != null)
+            {
+                Message.warn(this.FindForm(), "Tên phòng ban đã tồn tại. Vui lòng chọn tên khác.");
+                return;
+            }
 
             if (_isEdit && _editingDepartment != null)
             {
-                // Cập nhật đối tượng hiện có
-                _editingDepartment.DepartmentName = txtTenPB.Text.Trim();
-                _editingDepartment.Description = txtDescription.Text?.Trim();
-                _editingDepartment.ManagerName = cbTP.Text;
-                _editingDepartment.ManagerID = employee != null ? employee.EmployeeID : 0; // nếu model dùng int? => có thể gán null
+                _editingDepartment.DepartmentName = name;
+                _editingDepartment.Description = desc;
+                _editingDepartment.ManagerName = employee.FullName;
+                _editingDepartment.ManagerID = employee.EmployeeID;
 
-                // Trả đối tượng đã sửa về caller
                 this.Tag = _editingDepartment;
             }
             else
             {
-                // Thêm mới
                 var newDepartment = new Department()
                 {
-                    DepartmentName = txtTenPB.Text.Trim(),
-                    Description = txtDescription.Text?.Trim(),
-                    ManagerName = cbTP.Text,
-                    ManagerID = employee != null ? employee.EmployeeID : 0
+                    DepartmentName = name,
+                    Description = desc,
+                    ManagerName = employee.FullName,
+                    ManagerID = employee.EmployeeID
                 };
 
                 this.Tag = newDepartment;

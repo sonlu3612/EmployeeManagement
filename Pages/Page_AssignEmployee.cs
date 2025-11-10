@@ -17,12 +17,15 @@ namespace EmployeeManagement.Pages
     {
         private int _taskID;
         private TaskRepository _taskRepository = new TaskRepository();
+        private EmployeeRepository employeeRepository = new EmployeeRepository();
+        private List<AssignItem> _fullData;
+        private string _currentDepartment = "Tất cả";
+        private string _currentSelect = "Tất cả";
+        private string _currentKeyword = "";
         public Page_AssignEmployee()
         {
             InitializeComponent();
-
         }
-        private EmployeeRepository employeeRepository = new EmployeeRepository();
         private void LoadData()
         {
             try
@@ -30,8 +33,8 @@ namespace EmployeeManagement.Pages
                 var employees = employeeRepository.GetAll();
                 var assignedEmployees = employeeRepository.GetByTask(_taskID);
                 var assignedIDs = assignedEmployees.Select(e => e.EmployeeID).ToHashSet();
-
-                var dataSource = employees.Select(e => new AssignItem
+                var assignedStatusDict = assignedEmployees.ToDictionary(e => e.EmployeeID, e => e.CompletionStatus ?? "Pending");
+                _fullData = employees.Select(e => new AssignItem
                 {
                     Key = e.EmployeeID,
                     EmployeeID = e.EmployeeID,
@@ -39,32 +42,38 @@ namespace EmployeeManagement.Pages
                     Position = e.Position ?? "Chưa có",
                     Gender = e.Gender,
                     DepartmentName = e.DepartmentName ?? "Chưa có",
+                    CompletionStatus = assignedStatusDict.TryGetValue(e.EmployeeID, out string dbStatus)
+                        ? (dbStatus == "Pending" ? "Chưa làm" : dbStatus == "Completed" ? "Đã làm" : dbStatus)
+                        : "Không",
                     IsSelected = assignedIDs.Contains(e.EmployeeID)
                 }).ToList();
-
-                tbEmployee.DataSource = dataSource;
-
                 ddownPB.Items.Clear();
                 ddownPB.Items.Add("Tất cả");
-
                 var departmentNames = employees
                     .Select(e => e.DepartmentName)
                     .Where(name => !string.IsNullOrWhiteSpace(name))
                     .Distinct()
                     .OrderBy(name => name)
                     .ToList();
-
                 foreach (var dep in departmentNames)
                 {
                     ddownPB.Items.Add(dep);
                 }
+                ddownSelect.Items.Clear();
+                ddownSelect.Items.Add("Tất cả");
+                ddownSelect.Items.Add("Đã chọn");
+                ddownSelect.Items.Add("Chưa chọn");
+                _currentDepartment = "Tất cả";
+                _currentSelect = "Tất cả";
+                _currentKeyword = "";
+                txtTim.Text = "";
+                ApplyFilters();
             }
             catch (Exception ex)
             {
                 Message.error(this.FindForm(), "Lỗi load dữ liệu: " + ex.Message);
             }
         }
-
         public void Page_AssignEmployee_Load(int taskID)
         {
             _taskID = taskID;
@@ -73,13 +82,13 @@ namespace EmployeeManagement.Pages
             tbEmployee.Columns.Add(new Column("Position", "Vị trí"));
             tbEmployee.Columns.Add(new Column("Gender", "Giới tính"));
             tbEmployee.Columns.Add(new Column("DepartmentName", "Phòng ban"));
-            tbEmployee.Columns.Add(new AntdUI.ColumnCheck("IsSelected")
+            tbEmployee.Columns.Add(new Column("CompletionStatus", "Trạng thái"));
+            tbEmployee.Columns.Add(new AntdUI.ColumnCheck("IsSelected", "Phân công")
             {
                 Title = "Chọn"
             });
             LoadData();
         }
-        // CLASS TẠM ĐỂ LƯU DỮ LIỆU + IsSelected
         private class AssignItem
         {
             public int Key { get; set; }
@@ -88,7 +97,41 @@ namespace EmployeeManagement.Pages
             public string Position { get; set; }
             public string Gender { get; set; }
             public string DepartmentName { get; set; }
+            public string CompletionStatus { get; set; }
             public bool IsSelected { get; set; }
+        }
+        private void ApplyFilters()
+        {
+            if (_fullData == null) return;
+            var filtered = _fullData.ToList();
+            // Apply department filter
+            if (!_currentDepartment.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
+            {
+                filtered = filtered.Where(item => item.DepartmentName?.Equals(_currentDepartment, StringComparison.OrdinalIgnoreCase) ?? false).ToList();
+            }
+            // Apply select filter
+            if (_currentSelect.Equals("Đã chọn", StringComparison.OrdinalIgnoreCase))
+            {
+                filtered = filtered.Where(item => item.IsSelected).ToList();
+            }
+            else if (_currentSelect.Equals("Chưa chọn", StringComparison.OrdinalIgnoreCase))
+            {
+                filtered = filtered.Where(item => !item.IsSelected).ToList();
+            }
+            // Apply keyword filter
+            if (!string.IsNullOrWhiteSpace(_currentKeyword))
+            {
+                filtered = filtered.Where(item => item.FullName != null && item.FullName.IndexOf(_currentKeyword, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            }
+            tbEmployee.DataSource = filtered;
+            if (filtered.Count == 0)
+            {
+                Message.warn(this.FindForm(), "Không tìm thấy nhân viên phù hợp.");
+            }
+            else
+            {
+                Message.success(this.FindForm(), $"Tìm thấy {filtered.Count} nhân viên phù hợp!");
+            }
         }
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -100,10 +143,8 @@ namespace EmployeeManagement.Pages
                     Message.warn(this.FindForm(), "Không có dữ liệu nhân viên để xử lý.");
                     return;
                 }
-
                 // Hỗ trợ nhiều kiểu DataSource: IEnumerable<T>, DataTable, IList, v.v.
                 var selectedIDs = new List<int>();
-
                 // 1) Nếu là DataTable
                 if (ds is DataTable dt)
                 {
@@ -125,17 +166,13 @@ namespace EmployeeManagement.Pages
                     foreach (var item in enumerable)
                     {
                         if (item == null) continue;
-
                         var t = item.GetType();
-
                         // tìm property IsSelected (bool)
                         var pIsSelected = t.GetProperty("IsSelected");
                         // tìm property EmployeeID hoặc Key
                         var pEmpId = t.GetProperty("EmployeeID") ?? t.GetProperty("Key") ?? t.GetProperty("Id") ?? t.GetProperty("ID");
-
                         bool isSel = false;
                         int empId = 0;
-
                         if (pIsSelected != null)
                         {
                             var val = pIsSelected.GetValue(item);
@@ -145,7 +182,6 @@ namespace EmployeeManagement.Pages
                                 bool.TryParse(val.ToString(), out isSel);
                             }
                         }
-
                         if (pEmpId != null)
                         {
                             var val = pEmpId.GetValue(item);
@@ -154,30 +190,25 @@ namespace EmployeeManagement.Pages
                                 empId = tmpId;
                             }
                         }
-
                         if (isSel && empId > 0)
                         {
                             selectedIDs.Add(empId);
                         }
                     }
                 }
-
                 if (!selectedIDs.Any())
                 {
                     Message.warn(this.FindForm(), "Chưa chọn nhân viên!");
                     return;
                 }
-
                 var task = _taskRepository.GetById(_taskID);
                 if (task == null)
                 {
                     Message.error(this.FindForm(), "Không tìm thấy nhiệm vụ.");
                     return;
                 }
-
-                int assignedBy = task.CreatedBy; // đã kiểm tra task != null
+                int assignedBy = task.CreatedBy;
                 bool success = _taskRepository.AssignEmployees(_taskID, selectedIDs, assignedBy);
-
                 if (success)
                 {
                     Message.success(this.FindForm(), $"Đã thêm {selectedIDs.Count} nhân viên vào nhiệm vụ!");
@@ -194,50 +225,24 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi: " + ex.Message);
             }
         }
-
         private void btnSearch_Click(object sender, EventArgs e)
         {
             try
             {
-                string keyword = txtTim.Text?.Trim() ?? "";
-                var ds = tbEmployee.DataSource as List<AssignItem>;
-
-                if (ds == null || ds.Count == 0)
-                {
-                    Message.warn(this.FindForm(), "Không có dữ liệu để tìm kiếm.");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(keyword))
-                {
-                    LoadData();
-                    return;
-                }
-
-                var filtered = ds
-                    .Where(e1 => e1.FullName != null && e1.FullName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
-
-                tbEmployee.DataSource = filtered;
-
-                if (filtered.Count == 0)
-                    Message.warn(this.FindForm(), "Không tìm thấy nhân viên phù hợp.");
-                else
-                    Message.success(this.FindForm(), $"Tìm thấy {filtered.Count} nhân viên phù hợp!");
+                _currentKeyword = txtTim.Text?.Trim() ?? "";
+                ApplyFilters();
             }
             catch (Exception ex)
             {
                 Message.error(this.FindForm(), "Lỗi tìm kiếm: " + ex.Message);
             }
         }
-
-
         private void btnSync_Click(object sender, EventArgs e)
         {
-            txtTim.Text = string.Empty;
-            ddownPB.Text = "Phòng ban";
             try
             {
+                ddownPB.Text = "Phòng ban";
+                ddownSelect.Text = "Trạng thái";
                 LoadData();
                 Message.success(this.FindForm(), "Đã đồng bộ lại danh sách nhân viên!");
             }
@@ -246,48 +251,19 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi đồng bộ: " + ex.Message);
             }
         }
-
-
         private void ddownPB_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             try
             {
-                string selected = e.Value?.ToString() ?? "";
-
-                if (string.IsNullOrWhiteSpace(selected) || selected.Equals("Tất cả", StringComparison.OrdinalIgnoreCase))
-                {
-                    LoadData();
-                    return;
-                }
-
-                var allEmployees = employeeRepository.GetAll();
-                var assignedEmployees = employeeRepository.GetByTask(_taskID);
-                var assignedIDs = assignedEmployees.Select(emp => emp.EmployeeID).ToHashSet();
-
-                var filtered = allEmployees
-                    .Where(emp => emp.DepartmentName != null && emp.DepartmentName.Equals(selected, StringComparison.OrdinalIgnoreCase))
-                    .Select(e1 => new AssignItem
-                    {
-                        Key = e1.EmployeeID,
-                        EmployeeID = e1.EmployeeID,
-                        FullName = e1.FullName,
-                        Position = e1.Position ?? "Chưa có",
-                        Gender = e1.Gender,
-                        DepartmentName = e1.DepartmentName ?? "Chưa có",
-                        IsSelected = assignedIDs.Contains(e1.EmployeeID)
-                    })
-                    .ToList();
-
-                tbEmployee.DataSource = filtered;
-
-                Message.success(this.FindForm(), $"Hiển thị {filtered.Count} nhân viên trong phòng '{selected}'.");
+                ddownPB.Text = e.Value.ToString();
+                _currentDepartment = e.Value?.ToString() ?? "Tất cả";
+                ApplyFilters();
             }
             catch (Exception ex)
             {
                 Message.error(this.FindForm(), "Lỗi khi lọc phòng ban: " + ex.Message);
             }
         }
-
         private Table.CellStyleInfo tbEmployee_SetRowStyle(object sender, TableSetRowStyleEventArgs e)
         {
             if (e.Index % 2 == 0)
@@ -298,6 +274,19 @@ namespace EmployeeManagement.Pages
                 };
             }
             return null;
+        }
+        private void ddownSelect_SelectedValueChanged(object sender, ObjectNEventArgs e)
+        {
+            try
+            {
+                ddownSelect.Text = e.Value?.ToString();
+                _currentSelect = e.Value?.ToString() ?? "Tất cả";
+                ApplyFilters();
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi lọc theo lựa chọn: " + ex.Message);
+            }
         }
     }
 }

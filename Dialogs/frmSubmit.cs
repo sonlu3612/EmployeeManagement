@@ -16,22 +16,32 @@ using System.Windows.Forms;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 using Message = AntdUI.Message;
 using MyTask = EmployeeManagement.Models.Task;
+
 namespace EmployeeManagement.Dialogs
 {
     public partial class frmSubmit : Form
     {
         private MyTask _task;
         private int? _projectID;
-        private int _currentEmployeeID; 
+        private int _currentEmployeeID;
+        private ErrorProvider _errorProvider;
 
         public frmSubmit(MyTask task, int currentEmployeeID)
         {
             InitializeComponent();
             _task = task;
             _currentEmployeeID = currentEmployeeID;
+
+            _errorProvider = new ErrorProvider();
+            _errorProvider.BlinkStyle = ErrorBlinkStyle.NeverBlink;
         }
+
         private void frmSubmit_Load(object sender, EventArgs e)
         {
+            ddownStatus.Items.Clear();
+            ddownStatus.Items.Add("Chưa làm");
+            ddownStatus.Items.Add("Đã làm");
+
             if (_projectID.HasValue)
             {
                 _task = new MyTask();
@@ -54,20 +64,18 @@ namespace EmployeeManagement.Dialogs
                 dateEnd.Enabled = false;
                 ddownProjectID.Enabled = false;
 
-                // Lấy CompletionStatus từ TaskAssignments cho employee hiện tại
                 TaskRepository taskRepository = new TaskRepository();
-                // Giả sử có method GetAssignmentStatus(taskID, employeeID) trả về status
                 string currentStatus = taskRepository.GetAssignmentStatus(_task.TaskID, _currentEmployeeID);
                 ddownStatus.Text = currentStatus == "Completed" ? "Đã làm" : "Chưa làm";
             }
-            loadProjectsID();
-            //loadEmployeesID();
 
-            // Giới hạn ddownStatus chỉ 2 lựa chọn
-            ddownStatus.Items.Clear();
-            ddownStatus.Items.Add("Chưa làm");
-            ddownStatus.Items.Add("Đã làm");
+            loadProjectsID();
+
+            ddownProjectID.Validated += (s, ev) => _errorProvider.SetError(ddownProjectID, string.Empty);
+            txtTaskName.Validated += (s, ev) => _errorProvider.SetError(txtTaskName, string.Empty);
+            ddownStatus.Validated += (s, ev) => _errorProvider.SetError(ddownStatus, string.Empty);
         }
+
         private ProjectRepository projectRepository = new ProjectRepository();
         private void loadProjectsID()
         {
@@ -77,18 +85,17 @@ namespace EmployeeManagement.Dialogs
             {
                 ddownProjectID.Items.Add(id.ProjectID);
             }
+
+            if (ddownProjectID.Items.Count > 0 && string.IsNullOrWhiteSpace(ddownProjectID.Text))
+            {
+                ddownProjectID.SelectedValue = null;
+            }
         }
+
         private EmployeeRepository employeeRepository = new EmployeeRepository();
-        //private void loadEmployeesID()
-        //{
-        // var IDs = employeeRepository.GetAll();
-        // ddownOwnerID.Items.Clear();
-        // foreach (var id in IDs)
-        // {
-        // ddownOwnerID.Items.Add(id.EmployeeID+"-"+id.FullName);
-        // }
-        //}
+
         private TaskRepository taskRepository = new TaskRepository();
+
         private void btnHuy_Click(object sender, EventArgs e)
         {
             var modalConfig = AntdUI.Modal.config(
@@ -106,10 +113,16 @@ namespace EmployeeManagement.Dialogs
             };
             AntdUI.Modal.open(modalConfig);
         }
+
         private void btnLuu_Click(object sender, EventArgs e)
         {
             try
             {
+                if (!ValidateForm())
+                {
+                    return;
+                }
+
                 string newStatus = ddownStatus.Text == "Đã làm" ? "Completed" : "Pending";
                 TaskRepository taskRepository = new TaskRepository();
                 bool success = taskRepository.UpdateAssignmentStatus(_task.TaskID, _currentEmployeeID, newStatus);
@@ -129,13 +142,29 @@ namespace EmployeeManagement.Dialogs
                 MessageBox.Show("Lỗi khi cập nhật trạng thái: " + ex.Message);
             }
         }
+
         private void ddownProjectID_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            ddownProjectID.Text = ddownProjectID.SelectedValue.ToString();
+            if (e.Value != null)
+            {
+                ddownProjectID.Text = e.Value.ToString();
+            }
+            else
+            {
+                ddownProjectID.Text = string.Empty;
+            }
         }
+
         private void ddownStatus_SelectedValueChanged(object sender, AntdUI.ObjectNEventArgs e)
         {
-            ddownStatus.Text = ddownStatus.SelectedValue.ToString();
+            if (e.Value != null)
+            {
+                ddownStatus.Text = e.Value.ToString();
+            }
+            else
+            {
+                ddownStatus.Text = string.Empty;
+            }
         }
 
         private void uploadDragger1_DragChanged(object sender, StringsEventArgs e)
@@ -166,6 +195,13 @@ namespace EmployeeManagement.Dialogs
                     }
 
                     string title = Path.GetFileNameWithoutExtension(filePath);
+
+                    if (string.IsNullOrWhiteSpace(title) || title.Length > 200)
+                    {
+                        failCount++;
+                        continue;
+                    }
+
                     bool success = fileService.UploadTaskFile(_task.TaskID, title, filePath, _currentEmployeeID);
 
                     if (success)
@@ -191,6 +227,44 @@ namespace EmployeeManagement.Dialogs
             {
                 Message.error(this.FindForm(), "Lỗi khi tải lên file: " + ex.Message);
             }
+        }
+
+        private bool ValidateForm()
+        {
+            _errorProvider.Clear();
+            bool valid = true;
+
+            if (string.IsNullOrWhiteSpace(ddownProjectID.Text) || !int.TryParse(ddownProjectID.Text, out int projId))
+            {
+                _errorProvider.SetError(ddownProjectID, "Chọn Project hợp lệ");
+                valid = false;
+            }
+
+            if (_task == null || _task.TaskID <= 0)
+            {
+                Message.error(this.FindForm(), "Task chưa tồn tại hoặc Task ID không hợp lệ. Không thể cập nhật trạng thái.");
+                valid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtTaskName.Text))
+            {
+                _errorProvider.SetError(txtTaskName, "Tên task không được để trống");
+                valid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(ddownStatus.Text) || !(ddownStatus.Text == "Chưa làm" || ddownStatus.Text == "Đã làm"))
+            {
+                _errorProvider.SetError(ddownStatus, "Chọn trạng thái: 'Chưa làm' hoặc 'Đã làm'");
+                valid = false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtDescription.Text) && txtDescription.Text.Length > 2000)
+            {
+                _errorProvider.SetError(txtDescription, "Mô tả quá dài (tối đa 2000 ký tự)");
+                valid = false;
+            }
+
+            return valid;
         }
     }
 }
