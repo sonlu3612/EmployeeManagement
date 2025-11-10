@@ -36,7 +36,6 @@ namespace EmployeeManagement.Dialogs
             ddownGT.Items.Add("Nữ");
 
             btnXem.Click += btnXem_Click;
-            btnAnh.Click += btnAnh_Click;
 
             var departments = _departmentRepository.GetAll().ToList();
             ddownDepartment.Items.Clear();

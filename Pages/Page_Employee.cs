@@ -105,6 +105,7 @@ namespace EmployeeManagement.Pages
                         .ToList();
                 }
                 tbNV.DataSource = visibleEmployees;
+                
                 var avatarCol = tbNV.Columns.FirstOrDefault(c => c.Key == "EmployeeID") as AntdUI.ColumnSelect;
                 if (avatarCol != null)
                 {
@@ -120,7 +121,10 @@ namespace EmployeeManagement.Pages
                                 string fullPath = Path.Combine(projectRoot, emp.AvatarPath);
                                 if (File.Exists(fullPath))
                                 {
-                                    icon = Image.FromFile(fullPath);
+                                    using (Image tempImage = Image.FromFile(fullPath))
+                                    {
+                                        icon = new Bitmap(tempImage);
+                                    }
                                 }
                                 else
                                 {
@@ -140,7 +144,15 @@ namespace EmployeeManagement.Pages
                         }
                         items.Add(new AntdUI.SelectItem(0, icon, emp.FullName ?? "", emp.EmployeeID));
                     }
-                    avatarCol.Items = items;
+                    
+                    tbNV.Columns.Remove(avatarCol);
+                    
+                    var newAvatarCol = new AntdUI.ColumnSelect("EmployeeID", "Ảnh");
+                    newAvatarCol.CellType = AntdUI.SelectCellType.Icon;
+                    newAvatarCol.SetAlign(AntdUI.ColumnAlign.Center);
+                    newAvatarCol.Items = items;
+                    
+                    tbNV.Columns.Insert(0, newAvatarCol);
                 }
                 if (ddownGender.Items.Count == 0)
                 {

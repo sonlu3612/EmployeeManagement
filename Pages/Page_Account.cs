@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.DAL.Repositories;
+using EmployeeManagement.DAL.Services;
 using EmployeeManagement.Models;
 using System;
 using System.Drawing;
@@ -11,12 +12,15 @@ namespace EmployeeManagement.Pages
     public partial class Page_Account : UserControl
     {
         public event EventHandler ProfileUpdated;
+
         private EmployeeRepository employeeRepository = new EmployeeRepository();
+        private AvatarService avatarService = new AvatarService();
 
         public Page_Account()
         {
             InitializeComponent();
         }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -53,10 +57,12 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi lưu nhân viên: " + ex.Message);
             }
         }
+
         private void Page_Account_Load(object sender, EventArgs e)
         {
             // TODO: Load employee theo UserID nếu cần
         }
+
         public void LoadProfile(Employee employee)
         {
             label1.Text = employee.FullName ?? "Chưa cập nhật";
@@ -134,6 +140,64 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi chọn ảnh: " + ex.Message);
             }
         }
+
+        private void btnXem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (avatar1.Image == null)
+                {
+                    Message.warn(this.FindForm(), "Chưa có ảnh đại diện để xem!");
+                    return;
+                }
+                Form viewForm = new Form
+                {
+                    Text = "Xem ảnh đại diện",
+                    Width = 400,
+                    Height = 400,
+                    BackColor = Color.Black,
+                    StartPosition = FormStartPosition.CenterScreen,
+                    FormBorderStyle = FormBorderStyle.FixedSingle,
+                    MaximizeBox = false,
+                    MinimizeBox = false
+                };
+                PictureBox pictureBox = new PictureBox
+                {
+                    Image = avatar1.Image,
+                    Dock = DockStyle.Fill,
+                    SizeMode = PictureBoxSizeMode.Zoom
+                };
+                viewForm.Controls.Add(pictureBox);
+                viewForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi xem ảnh: " + ex.Message);
+            }
+        }
+
+        private void btnXoaAnh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Bitmap defaultAvatar = (Bitmap)avatarService.CreateDefaultAvatar(txtHoTen.Text);
+                string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
+                string avatarFolder = Path.Combine(projectRoot, "Assets", "Avatars");
+                if (!Directory.Exists(avatarFolder))
+                    Directory.CreateDirectory(avatarFolder);
+                string defaultFileName = $"{DateTime.Now:yyyyMMddHHmmss}_default_{Guid.NewGuid().ToString().Substring(0, 8)}.png";
+                string destPath = Path.Combine(avatarFolder, defaultFileName);
+                defaultAvatar.Save(destPath);
+                avatar1.Image = defaultAvatar;
+                avatar1.Tag = $"Assets/Avatars/{defaultFileName}";
+                Message.success(this.FindForm(), "Đã sử dụng ảnh mặc định!");
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi khi xóa ảnh: " + ex.Message);
+            }
+        }
+
         private void lblEmail_Click(object sender, EventArgs e)
         {
         }

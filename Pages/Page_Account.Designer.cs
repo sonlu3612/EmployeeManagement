@@ -48,6 +48,8 @@
             this.label4 = new AntdUI.Label();
             this.label3 = new AntdUI.Label();
             this.panel1 = new AntdUI.Panel();
+            this.btnXoaAnh = new AntdUI.Button();
+            this.btnXem = new AntdUI.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.lbl2 = new System.Windows.Forms.TextBox();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -280,6 +282,8 @@
             // panel1
             // 
             this.panel1.BorderWidth = 1F;
+            this.panel1.Controls.Add(this.btnXoaAnh);
+            this.panel1.Controls.Add(this.btnXem);
             this.panel1.Controls.Add(this.panel4);
             this.panel1.Controls.Add(this.panel6);
             this.panel1.Controls.Add(this.lblEmail);
@@ -292,6 +296,38 @@
             this.panel1.Size = new System.Drawing.Size(336, 631);
             this.panel1.TabIndex = 1;
             this.panel1.Text = "panel1";
+            // 
+            // btnXoaAnh
+            // 
+            this.btnXoaAnh.BackHover = System.Drawing.Color.White;
+            this.btnXoaAnh.BorderWidth = 1F;
+            this.btnXoaAnh.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(57)))), ((int)(((byte)(53)))));
+            this.btnXoaAnh.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(57)))), ((int)(((byte)(53)))));
+            this.btnXoaAnh.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXoaAnh.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(57)))), ((int)(((byte)(53)))));
+            this.btnXoaAnh.ForeColor = System.Drawing.Color.White;
+            this.btnXoaAnh.Location = new System.Drawing.Point(171, 504);
+            this.btnXoaAnh.Name = "btnXoaAnh";
+            this.btnXoaAnh.Size = new System.Drawing.Size(85, 35);
+            this.btnXoaAnh.TabIndex = 23;
+            this.btnXoaAnh.Text = "Xóa";
+            this.btnXoaAnh.Click += new System.EventHandler(this.btnXoaAnh_Click);
+            // 
+            // btnXem
+            // 
+            this.btnXem.BackHover = System.Drawing.Color.White;
+            this.btnXem.BorderWidth = 1F;
+            this.btnXem.DefaultBack = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnXem.DefaultBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnXem.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnXem.ForeActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnXem.ForeColor = System.Drawing.Color.White;
+            this.btnXem.Location = new System.Drawing.Point(62, 504);
+            this.btnXem.Name = "btnXem";
+            this.btnXem.Size = new System.Drawing.Size(85, 35);
+            this.btnXem.TabIndex = 22;
+            this.btnXem.Text = "Xem";
+            this.btnXem.Click += new System.EventHandler(this.btnXem_Click);
             // 
             // panel4
             // 
@@ -409,6 +445,8 @@
         private AntdUI.Label lblEmail;
         private AntdUI.Label lblTen;
         private AntdUI.Avatar avatar1;
+        private AntdUI.Button btnXem;
+        private AntdUI.Button btnXoaAnh;
         private AntdUI.Label label6;
         private AntdUI.Label label8;
         private AntdUI.Label label7;
