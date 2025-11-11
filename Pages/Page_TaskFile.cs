@@ -23,6 +23,11 @@ namespace EmployeeManagement.Pages
         private string _currentTaskName;
         private List<dynamic> originalFiles; // Lưu danh sách gốc để filter/sort
 
+        private bool IsEmployee()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
+        }
+
         public Page_TaskFile()
         {
             InitializeComponent();
@@ -34,7 +39,6 @@ namespace EmployeeManagement.Pages
         public void LoadTaskFiles(int taskId, string taskName)
         {
             _currentTaskId = taskId;
-            Console.WriteLine(_currentTaskId);
             _currentTaskName = taskName;
             this.Text = $"Quản lý Tập Tin Nhiệm Vụ - {taskName}";
             tbFiles.Columns.Add(new Column("Title", "Tên file") { Width = "22%" });
@@ -48,11 +52,16 @@ namespace EmployeeManagement.Pages
             tbFiles.Columns.Add(new Column("CreatedAt", "Ngày thêm") { Width = "15%" });
             tbFiles.Columns.Add(new Column("CreatedByName", "Thêm bởi") { Width = "16%" });
             tbFiles.Columns.Add(new Column("Actions", "Hành động") { Width = "20%" });
-            // tbFiles.CellButtonClick += tbFiles_CellButtonClick;
             ddSort.Items.Add("Tên A-Z");
             ddSort.Items.Add("Tên Z-A");
             ddSort.Items.Add("Ngày thêm mới nhất");
             ddSort.Items.Add("Ngày thêm cũ nhất");
+
+            if (IsEmployee())
+            {
+                btnThem.Enabled = false; 
+            }
+
             LoadData();
         }
 
@@ -61,6 +70,7 @@ namespace EmployeeManagement.Pages
             try
             {
                 var files = _taskFileRepository.GetByTask(_currentTaskId);
+                bool isEmployee = IsEmployee();
                 originalFiles = files.Select(f => new
                 {
                     f.TaskFileID,
@@ -73,12 +83,7 @@ namespace EmployeeManagement.Pages
                     f.CreatedAt,
                     f.TaskTitle,
                     f.CreatedByName,
-                    Actions = new AntdUI.CellLink[]
-                    {
-                        new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default).SetIcon("EditOutlined"),
-                        new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary).SetIcon("DownloadOutlined"),
-                        new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined")
-                    }
+                    Actions = GetActions(isEmployee)
                 }).ToList<dynamic>();
                 tbFiles.DataSource = originalFiles;
             }
@@ -88,9 +93,25 @@ namespace EmployeeManagement.Pages
             }
         }
 
+        private AntdUI.CellLink[] GetActions(bool isEmployee)
+        {
+            var actions = new List<AntdUI.CellLink>
+            {
+                new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary).SetIcon("DownloadOutlined")
+            };
+
+            if (!isEmployee)
+            {
+                actions.Add(new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default).SetIcon("EditOutlined"));
+                actions.Add(new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined"));
+            }
+
+            return actions.ToArray();
+        }
+
         private void Page_TaskFile_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -103,12 +124,10 @@ namespace EmployeeManagement.Pages
                     tbFiles.DataSource = originalFiles;
                     return;
                 }
-
                 var filtered = originalFiles.Where(f =>
                     (f.Title?.ToString().ToLower().Contains(searchText) ?? false) ||
                     (f.FileName?.ToString().ToLower().Contains(searchText) ?? false)
                 ).ToList();
-
                 tbFiles.DataSource = filtered;
                 if (filtered.Count == 0)
                 {
@@ -124,10 +143,8 @@ namespace EmployeeManagement.Pages
         private void ddSort_SelectedValueChanged(object sender, ObjectNEventArgs e)
         {
             if (originalFiles == null || originalFiles.Count == 0) return;
-
             string sortOption = e.Value?.ToString() ?? "";
             List<dynamic> sorted = new List<dynamic>(originalFiles);
-
             switch (sortOption)
             {
                 case "Tên A-Z":
@@ -145,12 +162,17 @@ namespace EmployeeManagement.Pages
                 default:
                     return;
             }
-
             tbFiles.DataSource = sorted;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            if (IsEmployee())
+            {
+                Message.error(this.FindForm(), "Bạn không có quyền thêm file!");
+                return;
+            }
+
             try
             {
                 if (SessionManager.CurrentUser == null)
@@ -226,6 +248,11 @@ namespace EmployeeManagement.Pages
             dynamic record = e.Record;
             if (e.Btn.Id == "edit")
             {
+                if (IsEmployee())
+                {
+                    Message.error(this.FindForm(), "Bạn không có quyền sửa file!");
+                    return;
+                }
                 EditFile(record);
             }
             else if (e.Btn.Id == "download")
@@ -234,6 +261,11 @@ namespace EmployeeManagement.Pages
             }
             else if (e.Btn.Id == "delete")
             {
+                if (IsEmployee())
+                {
+                    Message.error(this.FindForm(), "Bạn không có quyền xóa file!");
+                    return;
+                }
                 DeleteFile(record);
             }
         }

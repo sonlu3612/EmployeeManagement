@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.DAL.Interfaces;
+﻿using EmployeeManagement.DAL.Helpers;
+using EmployeeManagement.DAL.Interfaces;
 using EmployeeManagement.DAL.Repositories;
 using EmployeeManagement.DAL.Services;
 using EmployeeManagement.Models;
@@ -28,6 +29,11 @@ namespace EmployeeManagement.Dialogs
             _employee = employee;
             _canEdit = canEdit;
             _fixedDepartment = fixedDepartment;
+        }
+
+        private bool IsAdmin()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Admin") ?? false;
         }
 
         public void frmEmployee_Load()
@@ -95,6 +101,12 @@ namespace EmployeeManagement.Dialogs
                     ddownDepartment.Enabled = false;
                 }
             }
+
+            if (IsAdmin())
+            {
+                ddownDepartment.Enabled = true;
+            }
+            
         }
 
         public void frmEmployee_Load(string DepartmentName)

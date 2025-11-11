@@ -249,6 +249,11 @@ namespace EmployeeManagement.Pages
                 return;
             }
 
+            if (!IsAdmin() && !IsProjectManager())
+            {
+                Message.error(this.FindForm(), "Bạn không có quyền xem toàn bộ nhiệm vụ của dự án này!");
+                return;
+            }
             var frm = new frmManageTasks();
             frm.frmManageTasks_Load(project.ProjectID);
             frm.ShowDialog();
@@ -434,10 +439,10 @@ namespace EmployeeManagement.Pages
             LoadData();
 
             if (!IsAdmin())
-                btnThem.Enabled = false;
+                btnThem.Visible = false;
 
             if (!IsAdmin() && !IsProjectManager())
-                btnXoa.Enabled = false;
+                btnXoa.Visible = false;
         }
 
         #endregion Load Form
@@ -448,13 +453,6 @@ namespace EmployeeManagement.Pages
             if (project == null)
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu dự án được chọn!");
-                return;
-            }
-
-            // Phân quyền: Admin hoặc Quản lý dự án của dự án này
-            if (!IsAdmin() && !(IsProjectManager() && project.ManagerBy == SessionManager.CurrentUser.UserID))
-            {
-                Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho dự án này!");
                 return;
             }
 

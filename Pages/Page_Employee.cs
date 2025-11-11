@@ -67,7 +67,12 @@ namespace EmployeeManagement.Pages
             LoadData();
             if (!IsAdmin() && !IsDepartmentManager())
             {
-                btnDelete.Enabled = false;
+                btnDelete.Visible = false;
+            }
+
+            if (!IsAdmin())
+            {
+                btnAdd.Visible = false;
             }
         }
         public void LoadData()
@@ -167,20 +172,7 @@ namespace EmployeeManagement.Pages
                 Message.error(this.FindForm(), "Lỗi khi load dữ liệu: " + ex.Message);
             }
         }
-        //private void btnAdd_Click(object sender, EventArgs e)
-        //{
-        // frmEmployee frm = new frmEmployee();
-        // if (frm.ShowDialog() == DialogResult.OK)
-        // {
-        // var newEmployee = frm.Tag as Employee;
-        // if (newEmployee != null)
-        // {
-        // employeeRepository.Insert(newEmployee);
-        // LoadData(); // 🔁 Reload để cập nhật avatar mới
-        // Message.success(this.FindForm(), "Thêm nhân viên thành công!");
-        // }
-        // }
-        //}
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
             var selectedIndex = tbNV.SelectedIndex - 1;
@@ -201,7 +193,7 @@ namespace EmployeeManagement.Pages
                 {
                     if (!IsDepartmentManager())
                     {
-                        btnDelete.Enabled = false;
+                        btnDelete.Visible = false;
                         //Message.warn(this.FindForm(), "Bạn không có quyền xóa nhân viên!");
                         return;
                     }
@@ -382,7 +374,7 @@ namespace EmployeeManagement.Pages
                 }
                 if (!canEdit)
                 {
-                    Message.error(this.FindForm(), "Bạn không có quyền xem hoặc sửa thông tin nhân viên này!");
+                    Message.warn(this.FindForm(), "Bạn không có quyền chỉnh sửa thông tin nhân viên này!");
                     return;
                 }
                 EmployeeManagement.Dialogs.frmEmployee frm = new EmployeeManagement.Dialogs.frmEmployee(record, canEdit);
@@ -399,6 +391,26 @@ namespace EmployeeManagement.Pages
             else
             {
                 Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên được chọn!");
+            }
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            if (!IsAdmin())
+            {
+                Message.warn(this.FindForm(), "Bạn không có quyền thêm nhân viên ở đây!");
+            }
+            var frm = new EmployeeManagement.Dialogs.frmEmployee();
+            frm.frmEmployee_Load();
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                var newEmployee = frm.Tag as Employee;
+                if (newEmployee != null)
+                {
+                    employeeRepository.Insert(newEmployee);
+                    LoadData();
+                    Message.success(this.FindForm(), "Thêm nhân viên thành công!");
+                }
             }
         }
     }

@@ -31,6 +31,7 @@ namespace EmployeeManagement
         private void InitializeComponent()
         {
             AntdUI.Tabs.StyleLine styleLine1 = new AntdUI.Tabs.StyleLine();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             AntdUI.MenuItem menuItem1 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem2 = new AntdUI.MenuItem();
             AntdUI.MenuItem menuItem3 = new AntdUI.MenuItem();
@@ -75,7 +76,6 @@ namespace EmployeeManagement
             this.panel2 = new AntdUI.Panel();
             this.panel8 = new AntdUI.Panel();
             this.avatar3 = new AntdUI.Avatar();
-            this.label4 = new AntdUI.Label();
             this.divider3 = new AntdUI.Divider();
             this.panel4 = new AntdUI.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
@@ -112,7 +112,7 @@ namespace EmployeeManagement
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1280, 720);
+            this.panel1.Size = new System.Drawing.Size(1440, 767);
             this.panel1.TabIndex = 1;
             this.panel1.Text = "panel1";
             // 
@@ -122,7 +122,7 @@ namespace EmployeeManagement
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(282, 37);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(998, 683);
+            this.panel5.Size = new System.Drawing.Size(1158, 730);
             this.panel5.TabIndex = 18;
             this.panel5.Text = "panel5";
             // 
@@ -152,7 +152,7 @@ namespace EmployeeManagement
             this.tabs1.Pages.Add(this.tabMyProfile);
             this.tabs1.Pages.Add(this.tpPhongBan);
             this.tabs1.SelectedIndex = 5;
-            this.tabs1.Size = new System.Drawing.Size(998, 683);
+            this.tabs1.Size = new System.Drawing.Size(1158, 730);
             this.tabs1.Style = styleLine1;
             this.tabs1.TabIndex = 9;
             this.tabs1.TabMenuVisible = false;
@@ -164,7 +164,7 @@ namespace EmployeeManagement
             this.tabProject.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabProject.Location = new System.Drawing.Point(0, 0);
             this.tabProject.Name = "tabProject";
-            this.tabProject.Size = new System.Drawing.Size(998, 683);
+            this.tabProject.Size = new System.Drawing.Size(1158, 730);
             this.tabProject.TabIndex = 0;
             this.tabProject.Text = "Projects";
             // 
@@ -173,7 +173,7 @@ namespace EmployeeManagement
             this.page_Project1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Project1.Location = new System.Drawing.Point(0, 0);
             this.page_Project1.Name = "page_Project1";
-            this.page_Project1.Size = new System.Drawing.Size(998, 683);
+            this.page_Project1.Size = new System.Drawing.Size(1158, 730);
             this.page_Project1.TabIndex = 0;
             // 
             // tabTask
@@ -182,7 +182,7 @@ namespace EmployeeManagement
             this.tabTask.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabTask.Location = new System.Drawing.Point(0, 0);
             this.tabTask.Name = "tabTask";
-            this.tabTask.Size = new System.Drawing.Size(998, 683);
+            this.tabTask.Size = new System.Drawing.Size(1158, 730);
             this.tabTask.TabIndex = 1;
             this.tabTask.Text = "Tasks";
             // 
@@ -191,7 +191,7 @@ namespace EmployeeManagement
             this.page_Task1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Task1.Location = new System.Drawing.Point(0, 0);
             this.page_Task1.Name = "page_Task1";
-            this.page_Task1.Size = new System.Drawing.Size(998, 683);
+            this.page_Task1.Size = new System.Drawing.Size(1158, 730);
             this.page_Task1.TabIndex = 0;
             // 
             // tabNV
@@ -200,7 +200,7 @@ namespace EmployeeManagement
             this.tabNV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabNV.Location = new System.Drawing.Point(0, 0);
             this.tabNV.Name = "tabNV";
-            this.tabNV.Size = new System.Drawing.Size(998, 683);
+            this.tabNV.Size = new System.Drawing.Size(1158, 730);
             this.tabNV.TabIndex = 7;
             this.tabNV.Text = "Nhân viên";
             // 
@@ -209,7 +209,7 @@ namespace EmployeeManagement
             this.page_Employee1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Employee1.Location = new System.Drawing.Point(0, 0);
             this.page_Employee1.Name = "page_Employee1";
-            this.page_Employee1.Size = new System.Drawing.Size(998, 683);
+            this.page_Employee1.Size = new System.Drawing.Size(1158, 730);
             this.page_Employee1.TabIndex = 0;
             // 
             // tabCompany
@@ -217,7 +217,7 @@ namespace EmployeeManagement
             this.tabCompany.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabCompany.Location = new System.Drawing.Point(0, 0);
             this.tabCompany.Name = "tabCompany";
-            this.tabCompany.Size = new System.Drawing.Size(998, 683);
+            this.tabCompany.Size = new System.Drawing.Size(1158, 730);
             this.tabCompany.TabIndex = 2;
             this.tabCompany.Text = "Setting.Company";
             // 
@@ -226,7 +226,7 @@ namespace EmployeeManagement
             this.tabDatabase.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabDatabase.Location = new System.Drawing.Point(0, 0);
             this.tabDatabase.Name = "tabDatabase";
-            this.tabDatabase.Size = new System.Drawing.Size(998, 683);
+            this.tabDatabase.Size = new System.Drawing.Size(1158, 730);
             this.tabDatabase.TabIndex = 3;
             this.tabDatabase.Text = "Setting.Database";
             // 
@@ -237,7 +237,7 @@ namespace EmployeeManagement
             this.tabChangePassword.Location = new System.Drawing.Point(0, 0);
             this.tabChangePassword.Name = "tabChangePassword";
             this.tabChangePassword.Showed = true;
-            this.tabChangePassword.Size = new System.Drawing.Size(998, 683);
+            this.tabChangePassword.Size = new System.Drawing.Size(1158, 730);
             this.tabChangePassword.TabIndex = 4;
             this.tabChangePassword.Text = "Account.ChangePassword";
             this.tabChangePassword.Visible = false;
@@ -383,7 +383,7 @@ namespace EmployeeManagement
             this.tabLogout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabLogout.Location = new System.Drawing.Point(0, 0);
             this.tabLogout.Name = "tabLogout";
-            this.tabLogout.Size = new System.Drawing.Size(998, 683);
+            this.tabLogout.Size = new System.Drawing.Size(1158, 730);
             this.tabLogout.TabIndex = 5;
             this.tabLogout.Text = "Account.LogOut";
             // 
@@ -393,7 +393,7 @@ namespace EmployeeManagement
             this.tabMyProfile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMyProfile.Location = new System.Drawing.Point(0, 0);
             this.tabMyProfile.Name = "tabMyProfile";
-            this.tabMyProfile.Size = new System.Drawing.Size(998, 683);
+            this.tabMyProfile.Size = new System.Drawing.Size(1158, 730);
             this.tabMyProfile.TabIndex = 6;
             this.tabMyProfile.Text = "Account.MyProfile";
             // 
@@ -403,7 +403,7 @@ namespace EmployeeManagement
             this.page_Account1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Account1.Location = new System.Drawing.Point(0, 0);
             this.page_Account1.Name = "page_Account1";
-            this.page_Account1.Size = new System.Drawing.Size(998, 683);
+            this.page_Account1.Size = new System.Drawing.Size(1158, 730);
             this.page_Account1.TabIndex = 0;
             this.page_Account1.Load += new System.EventHandler(this.page_Account1_Load);
             // 
@@ -413,7 +413,7 @@ namespace EmployeeManagement
             this.tpPhongBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tpPhongBan.Location = new System.Drawing.Point(0, 0);
             this.tpPhongBan.Name = "tpPhongBan";
-            this.tpPhongBan.Size = new System.Drawing.Size(998, 683);
+            this.tpPhongBan.Size = new System.Drawing.Size(1158, 730);
             this.tpPhongBan.TabIndex = 8;
             this.tpPhongBan.Text = "Phòng ban";
             // 
@@ -422,7 +422,7 @@ namespace EmployeeManagement
             this.page_Department1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.page_Department1.Location = new System.Drawing.Point(0, 0);
             this.page_Department1.Name = "page_Department1";
-            this.page_Department1.Size = new System.Drawing.Size(998, 683);
+            this.page_Department1.Size = new System.Drawing.Size(1158, 730);
             this.page_Department1.TabIndex = 0;
             // 
             // panel3
@@ -431,7 +431,7 @@ namespace EmployeeManagement
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(282, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(998, 37);
+            this.panel3.Size = new System.Drawing.Size(1158, 37);
             this.panel3.TabIndex = 17;
             this.panel3.Text = "panel3";
             // 
@@ -444,7 +444,7 @@ namespace EmployeeManagement
             this.phTrangChu.Name = "phTrangChu";
             this.phTrangChu.ShowButton = true;
             this.phTrangChu.ShowIcon = true;
-            this.phTrangChu.Size = new System.Drawing.Size(998, 34);
+            this.phTrangChu.Size = new System.Drawing.Size(1158, 34);
             this.phTrangChu.TabIndex = 9;
             this.phTrangChu.Text = "Project";
             // 
@@ -457,7 +457,7 @@ namespace EmployeeManagement
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Radius = 0;
-            this.panel2.Size = new System.Drawing.Size(282, 720);
+            this.panel2.Size = new System.Drawing.Size(282, 767);
             this.panel2.TabIndex = 16;
             this.panel2.Text = "panel2";
             // 
@@ -465,10 +465,9 @@ namespace EmployeeManagement
             // 
             this.panel8.Back = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.panel8.Controls.Add(this.avatar3);
-            this.panel8.Controls.Add(this.label4);
             this.panel8.Controls.Add(this.divider3);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel8.Location = new System.Drawing.Point(0, 629);
+            this.panel8.Location = new System.Drawing.Point(0, 676);
             this.panel8.Name = "panel8";
             this.panel8.Radius = 0;
             this.panel8.Size = new System.Drawing.Size(282, 91);
@@ -477,23 +476,14 @@ namespace EmployeeManagement
             // 
             // avatar3
             // 
-            this.avatar3.ImageSvg = "RubyOutlined";
-            this.avatar3.Location = new System.Drawing.Point(73, 49);
+            this.avatar3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.avatar3.Image = ((System.Drawing.Image)(resources.GetObject("avatar3.Image")));
+            this.avatar3.ImageSvg = "";
+            this.avatar3.Location = new System.Drawing.Point(111, 36);
             this.avatar3.Name = "avatar3";
-            this.avatar3.Size = new System.Drawing.Size(29, 23);
+            this.avatar3.Size = new System.Drawing.Size(45, 45);
             this.avatar3.TabIndex = 18;
             this.avatar3.Text = "a";
-            // 
-            // label4
-            // 
-            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
-            this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.label4.Location = new System.Drawing.Point(108, 49);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(86, 23);
-            this.label4.TabIndex = 17;
-            this.label4.Text = "SonLu INC";
             // 
             // divider3
             // 
@@ -586,7 +576,7 @@ namespace EmployeeManagement
             menuItem3.Name = "Phòng ban";
             menuItem3.Text = "Phòng ban";
             menuItem4.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem4.IconSvg = "UserOutlined";
+            menuItem4.IconSvg = "TeamOutlined";
             menuItem4.Text = "Nhân viên";
             menuItem5.Expand = false;
             menuItem5.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -630,7 +620,7 @@ namespace EmployeeManagement
             this.label5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(71)))), ((int)(((byte)(180)))));
             this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.MediumTurquoise;
-            this.label5.Location = new System.Drawing.Point(105, 162);
+            this.label5.Location = new System.Drawing.Point(108, 162);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 17);
             this.label5.TabIndex = 16;
@@ -661,7 +651,7 @@ namespace EmployeeManagement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.ClientSize = new System.Drawing.Size(1440, 767);
             this.Controls.Add(this.panel1);
             this.Name = "frmMain";
             this.Text = "frmMain";
@@ -718,7 +708,6 @@ namespace EmployeeManagement
         private AntdUI.Divider divider4;
         private AntdUI.Panel panel8;
         private AntdUI.Avatar avatar3;
-        private AntdUI.Label label4;
         private AntdUI.Divider divider3;
         private AntdUI.Panel panel7;
         private Label labelMatKhau;

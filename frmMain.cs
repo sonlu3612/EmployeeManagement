@@ -22,7 +22,7 @@ namespace EmployeeManagement
             _currentUser = currentUser;
             tabs1.SelectedTab = tabProject;
             menu1.SelectIndex(0, true);
-            // Đăng ký lắng nghe sự kiện cập nhật profile
+
             if (page_Account1 != null)
             {
                 page_Account1.ProfileUpdated += Page_Account1_ProfileUpdated;
@@ -31,7 +31,6 @@ namespace EmployeeManagement
 
         }
 
-        // Khi click vào dòng trong bảng
         private void TblNhanVien_Click(object sender, EventArgs e)
         {
 
@@ -57,6 +56,7 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tabProject;
                 phTrangChu.Text = "Dự án";
+                phTrangChu.IconSvg = "DiffOutlined";
                 page_Project1.LoadData();
                 //tabs1.SelectedTab = tabProject;
                 //frmManageTasks frmManageTasks = new frmManageTasks();
@@ -71,7 +71,7 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tabTask;
                 phTrangChu.Text = "Nhiệm vụ";
-                phTrangChu.Icon = Properties.Resources.note;
+                phTrangChu.IconSvg = "ScheduleOutlined";
                 page_Task1.loadData();
             }
             if (select == "Đăng xuất")
@@ -85,12 +85,14 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tabMyProfile;
                 phTrangChu.Text = "Thông tin cá nhân";
+                phTrangChu.IconSvg = "UserOutlined";
                 page_Project1.LoadData();
             }
             if (select == "Nhân viên")
             {
                 tabs1.SelectedTab = tabNV;
                 phTrangChu.Text = "Nhân viên";
+                phTrangChu.IconSvg = "TeamOutlined";
                 page_Employee1.LoadData();
             }
            
@@ -98,6 +100,7 @@ namespace EmployeeManagement
             {
                 tabs1.SelectedTab = tpPhongBan;
                 phTrangChu.Text = "Phòng Ban";
+                phTrangChu.IconSvg = "GroupOutlined";
                 page_Department1.LoadData();
             }
 
@@ -147,7 +150,6 @@ namespace EmployeeManagement
             bool changeResult = userRepository.ChangePassword(userID, newPassHash);
             if (changeResult)
             {
-                // Cập nhật session (nếu bạn có lưu hash trong session)
                 _currentUser.PasswordHash = newPassHash;
 
                 labelMatKhau.ForeColor = Color.Green;
@@ -176,7 +178,7 @@ namespace EmployeeManagement
             employee.Phone = user.Phone;
 
             page_Account1.LoadProfile(employee);
-            if (page_Account1 != null && employee != null) // Assuming page_Account1 is the instance of Page_Account in tabMyProfile
+            if (page_Account1 != null && employee != null) 
             {
                 page_Account1.LoadProfile(employee);
             }
@@ -208,7 +210,7 @@ namespace EmployeeManagement
                 }
                 else
                 {
-                    // avatar1.Image = Properties.Resources.default_avatar;
+                    //avatar1.Image = Properties.Resources.default_avatar;
                 }
             }
             catch (Exception ex)

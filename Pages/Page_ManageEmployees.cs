@@ -254,49 +254,5 @@ namespace EmployeeManagement.Pages
             }
             return null;
         }
-
-        // eUpdate
-        //private void cậpNhậtToolStripMenuItem_Click(object sender, EventArgs eUpdate)
-        //{
-        //    int index = tbNV.SelectedIndex;
-        //    if (index < 0)
-        //    {
-        //        Message.warn(this.FindForm(), "Vui lòng chọn nhân viên cần cập nhật!");
-        //        return;
-        //    }
-
-        //    if (tbNV.DataSource is System.Collections.IList list && index < list.Count)
-        //    {
-        //        dynamic row = list[index];
-        //        int empId = row.EmployeeID;
-
-        //        var employee = employeeRepository.GetById(empId);
-        //        if (employee == null)
-        //        {
-        //            Message.error(this.FindForm(), "Không thể lấy dữ liệu nhân viên!");
-        //            return;
-        //        }
-
-        //        var frm = new EmployeeManagement.Dialogs.frmEmployee(employee);
-        //        frm.frmEmployee_Load(this.DepartmentName);
-        //        if (frm.ShowDialog() == DialogResult.OK)
-        //        {
-        //            var updated = frm.Tag as Employee;
-        //            if (updated != null)
-        //            {
-        //                try
-        //                {
-        //                    employeeRepository.Update(updated);
-        //                    LoadData();
-        //                    Message.success(this.FindForm(), "Cập nhật thành công!");
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    Message.error(this.FindForm(), "Lỗi cập nhật: " + ex.Message);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
     }
 }

@@ -260,11 +260,6 @@ namespace EmployeeManagement.Pages
             }
             else if (e.ClickedItem.Text == "Tài liệu")
             {
-                if (!IsAdmin() && !isProjectManagerOfThis)
-                {
-                    Message.warn(this.FindForm(), "Bạn không có quyền xem tài liệu cho nhiệm vụ này!");
-                    return;
-                }
                 var frmFile = new frmTaskFile(task.TaskID);
                 frmFile.ShowDialog();
             }
@@ -337,7 +332,7 @@ namespace EmployeeManagement.Pages
             loadEmployeesName();
 
             if (!IsAdmin() && !IsProjectManager())
-                btnDelete.Enabled = false;
+                btnDelete.Visible = false;
         }
 
         private Table.CellStyleInfo tableTask_SetRowStyle(object sender, TableSetRowStyleEventArgs e)

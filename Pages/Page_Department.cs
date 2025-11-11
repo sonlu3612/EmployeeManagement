@@ -85,14 +85,8 @@ namespace EmployeeManagement.Pages
             bool isAdmin = IsAdmin();
             bool isDeptMgr = IsDepartmentManager();
 
-            btnAdd.Enabled = isAdmin; // chỉ admin được thêm
-            btnDelete.Enabled = isAdmin; // chỉ admin được xóa
-
-            // Chỉnh sửa: admin hoặc quản lý phòng ban (chỉ phòng mình quản lý) => checked tại thời điểm chọn record
-            chỉnhSửaToolStripMenuItem.Enabled = isAdmin || isDeptMgr;
-
-            // Quản lý nhân viên (ManageEmployee): admin hoặc quản lý phòng ban
-            quảnLýToolStripMenuItem.Enabled = isAdmin || isDeptMgr;
+            btnAdd.Visible = isAdmin; // chỉ admin được thêm
+            btnDelete.Visible = isAdmin; // chỉ admin được xóa
         }
 
         private bool IsAdmin()
@@ -278,23 +272,6 @@ namespace EmployeeManagement.Pages
                         if (index >= 0 && index < departments.Count)
                         {
                             var record = departments[index];
-
-                            // Ai được mở context menu?
-                            bool canOpenContext = IsAdmin() || IsDepartmentManager() || IsEmployee();
-                            if (!canOpenContext)
-                            {
-                                // Không show menu nếu không có quyền cơ bản
-                                return;
-                            }
-
-                            // chỉnhSửa chỉ cho Admin hoặc Quản lý phòng ban của phòng đó
-                            chỉnhSửaToolStripMenuItem.Enabled = IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID);
-
-                            // task (ManageEmployee) cho Admin hoặc Quản lý phòng ban
-                            quảnLýToolStripMenuItem.Enabled = IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID);
-
-                            // Nếu có các menu khác (ví dụ xoá trong context), có thể set tương tự ở đây
-
                             ctm1.Show(Cursor.Position);
                         }
                     }
@@ -310,7 +287,6 @@ namespace EmployeeManagement.Pages
                 var record = departments[selectedIndex];
                 if (record == null) { Message.error(this.FindForm(), "Không thể lấy dữ liệu phòng ban được chọn!"); return; }
 
-                // Phân quyền: chỉ Admin hoặc Quản lý phòng ban của phòng đó
                 if (!(IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID)))
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền quản lý nhân viên của phòng này.");
@@ -341,14 +317,12 @@ namespace EmployeeManagement.Pages
                     return;
                 }
 
-                // Phân quyền: Admin hoặc Quản lý phòng ban của chính phòng này mới được sửa
                 if (!(IsAdmin() || (IsDepartmentManager() && record.ManagerID == SessionManager.CurrentUser.UserID)))
                 {
                     Message.warn(this.FindForm(), "Bạn không có quyền chỉnh sửa phòng ban này.");
                     return;
                 }
 
-                // Mở form ở chế độ chỉnh sửa bằng cách truyền department hiện tại
                 frmDepartment frm = new frmDepartment(record);
                 if (frm.ShowDialog() == DialogResult.OK)
                 {

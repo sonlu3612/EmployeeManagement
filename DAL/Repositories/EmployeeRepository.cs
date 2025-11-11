@@ -325,7 +325,7 @@ namespace EmployeeManagement.DAL.Repositories
             {
                 string sql = @"
                 SELECT e.EmployeeID, e.FullName, e.Gender, e.AvatarPath,
-                       u.Email, u.Phone, e.Position,
+                       u.Email, u.Phone, e.Position, e.DepartmentID,
                        STRING_AGG(ur.Role, ', ') AS Roles,
                        ISNULL((
                            SELECT COUNT(DISTINCT p.ProjectID)
@@ -358,7 +358,7 @@ namespace EmployeeManagement.DAL.Repositories
                 LEFT JOIN Users u ON u.UserID = e.EmployeeID
                 LEFT JOIN UserRoles ur ON ur.UserID = e.EmployeeID
                 WHERE e.IsActive = 1
-                GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone, e.Position;
+                GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone, e.Position, e.DepartmentID;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
                 foreach (DataRow row in dt.Rows)
