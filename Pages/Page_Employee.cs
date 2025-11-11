@@ -79,23 +79,47 @@ namespace EmployeeManagement.Pages
         {
             try
             {
+                Console.WriteLine($"UserID: {SessionManager.CurrentUser.UserID}");
+                Console.WriteLine($"Roles: {string.Join(", ", SessionManager.CurrentUser.Roles)}");
+                Console.WriteLine($"IsDepartmentManager: {IsDepartmentManager()}");
                 string projectRoot = Path.GetFullPath(Path.Combine(Application.StartupPath, @"..\..\"));
                 var allEmployees = employeeRepository.GetForGrid();
+                Console.WriteLine("=== ALL EMPLOYEES ===");
+                foreach (var emp in allEmployees)
+                {
+                    Console.WriteLine(
+                        $"EmpID: {emp.EmployeeID}, " +
+                        $"Name: {emp.FullName}, " +
+                        $"DeptID: {emp.DepartmentID}, " +
+                        $"gt: {emp.Gender}, " +
+                        $"Avatar: {emp.AvatarPath}"
+                    );
+                }
+                Console.WriteLine("======================");
                 if (IsAdmin())
                 {
                     visibleEmployees = allEmployees.ToList();
                 }
                 else if (IsDepartmentManager())
                 {
+                    var allDepts = departmentRepository.GetAll();
+                    foreach (var dept in allDepts)
+                    {
+                        Console.WriteLine($"DeptID: {dept.DepartmentID}, Name: {dept.DepartmentName}, ManagerID: {dept.ManagerID}, ManagerName: {dept.ManagerName}");
+                    }
                     var myDepartmentIds = departmentRepository.GetAll()
                         .Where(d => d.ManagerID == SessionManager.CurrentUser.UserID)
                         .Select(d => d.DepartmentID)
                         .ToList();
-
+                    Console.WriteLine($"myDepartmentIds: {string.Join(", ", myDepartmentIds)}");
                     visibleEmployees = allEmployees
                         .Where(e => myDepartmentIds.Contains(e.DepartmentID ?? 0))
                         .ToList();
-
+                    Console.WriteLine($"Visible Employees Count: {visibleEmployees.Count}");
+                    foreach (var emp in visibleEmployees)
+                    {
+                        Console.WriteLine($"EmpID: {emp.EmployeeID}, Name: {emp.FullName}, DeptID: {emp.DepartmentID}");
+                    }
                     var manager = allEmployees.FirstOrDefault(e => e.EmployeeID == SessionManager.CurrentUser.UserID);
                     if (manager != null && !visibleEmployees.Any(e => e.EmployeeID == manager.EmployeeID))
                     {

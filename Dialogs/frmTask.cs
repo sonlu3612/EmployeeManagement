@@ -118,8 +118,16 @@ namespace EmployeeManagement.Dialogs
             modalConfig.OkType = TTypeMini.Primary;
             modalConfig.OnOk = (cfg) =>
             {
-                this.DialogResult = DialogResult.Cancel; // ĐÁNH DẤU HỦY
-                this.Close();
+                this.DialogResult = DialogResult.Cancel; 
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(() => this.Close()));
+                }
+                else
+                {
+                    this.Close();
+                }
+
                 return true;
             };
             AntdUI.Modal.open(modalConfig);

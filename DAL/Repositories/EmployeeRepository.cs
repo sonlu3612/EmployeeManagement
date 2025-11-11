@@ -361,6 +361,7 @@ namespace EmployeeManagement.DAL.Repositories
                 GROUP BY e.EmployeeID, e.FullName, e.Gender, e.AvatarPath, u.Email, u.Phone, e.Position, e.DepartmentID;
                 ";
                 DataTable dt = DatabaseHelper.ExecuteQuery(sql, null);
+                Console.WriteLine($"Total Employees in Grid: {dt.Rows.Count}");
                 foreach (DataRow row in dt.Rows)
                 {
                     Employee emp = new Employee
@@ -369,6 +370,7 @@ namespace EmployeeManagement.DAL.Repositories
                         FullName = row["FullName"]?.ToString(),
                         Position = row["Position"]?.ToString(),
                         Gender = row["Gender"]?.ToString(),
+                        DepartmentID = row["DepartmentID"] != DBNull.Value ? Convert.ToInt32(row["DepartmentID"]) : 0,
                         Email = row["Email"]?.ToString(),
                         Phone = row["Phone"]?.ToString(),
                         AvatarPath = row["AvatarPath"]?.ToString()
