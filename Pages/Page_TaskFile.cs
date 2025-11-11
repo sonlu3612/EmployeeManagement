@@ -28,6 +28,11 @@ namespace EmployeeManagement.Pages
             return SessionManager.CurrentUser?.Roles?.Contains("Nhân viên") ?? false;
         }
 
+        private bool IsProjectManager()
+        {
+            return SessionManager.CurrentUser?.Roles?.Contains("Quản lý dự án") ?? false;
+        }
+
         public Page_TaskFile()
         {
             InitializeComponent();
@@ -57,7 +62,7 @@ namespace EmployeeManagement.Pages
             ddSort.Items.Add("Ngày thêm mới nhất");
             ddSort.Items.Add("Ngày thêm cũ nhất");
 
-            if (IsEmployee())
+            if (IsEmployee() && !IsProjectManager())
             {
                 btnThem.Enabled = false; 
             }
@@ -100,7 +105,7 @@ namespace EmployeeManagement.Pages
                 new AntdUI.CellButton("download", "Tải", AntdUI.TTypeMini.Primary).SetIcon("DownloadOutlined")
             };
 
-            if (!isEmployee)
+            if (!isEmployee || IsProjectManager())
             {
                 actions.Add(new AntdUI.CellButton("edit", "Sửa", AntdUI.TTypeMini.Default).SetIcon("EditOutlined"));
                 actions.Add(new AntdUI.CellButton("delete", "Xóa", AntdUI.TTypeMini.Error).SetIcon("DeleteOutlined"));
@@ -167,7 +172,7 @@ namespace EmployeeManagement.Pages
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (IsEmployee())
+            if (IsEmployee() && !IsProjectManager())
             {
                 Message.error(this.FindForm(), "Bạn không có quyền thêm file!");
                 return;
@@ -248,7 +253,7 @@ namespace EmployeeManagement.Pages
             dynamic record = e.Record;
             if (e.Btn.Id == "edit")
             {
-                if (IsEmployee())
+                if (IsEmployee() && !IsProjectManager())
                 {
                     Message.error(this.FindForm(), "Bạn không có quyền sửa file!");
                     return;
@@ -261,7 +266,7 @@ namespace EmployeeManagement.Pages
             }
             else if (e.Btn.Id == "delete")
             {
-                if (IsEmployee())
+                if (IsEmployee() && !IsProjectManager())
                 {
                     Message.error(this.FindForm(), "Bạn không có quyền xóa file!");
                     return;

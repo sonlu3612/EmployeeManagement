@@ -47,11 +47,8 @@ namespace EmployeeManagement
             this.panel5 = new AntdUI.Panel();
             this.tabs1 = new AntdUI.Tabs();
             this.tabProject = new AntdUI.TabPage();
-            this.page_Project1 = new EmployeeManagement.Pages.Page_Project();
             this.tabTask = new AntdUI.TabPage();
-            this.page_Task1 = new EmployeeManagement.Pages.Page_Task();
             this.tabNV = new AntdUI.TabPage();
-            this.page_Employee1 = new EmployeeManagement.Pages.Page_Employee();
             this.tabCompany = new AntdUI.TabPage();
             this.tabDatabase = new AntdUI.TabPage();
             this.tabChangePassword = new AntdUI.TabPage();
@@ -68,9 +65,7 @@ namespace EmployeeManagement
             this.label3 = new AntdUI.Label();
             this.tabLogout = new AntdUI.TabPage();
             this.tabMyProfile = new AntdUI.TabPage();
-            this.page_Account1 = new EmployeeManagement.Pages.Page_Account();
             this.tpPhongBan = new AntdUI.TabPage();
-            this.page_Department1 = new EmployeeManagement.Pages.Page_Department();
             this.panel3 = new AntdUI.Panel();
             this.phTrangChu = new AntdUI.PageHeader();
             this.panel2 = new AntdUI.Panel();
@@ -85,6 +80,11 @@ namespace EmployeeManagement
             this.menu1 = new AntdUI.Menu();
             this.label5 = new System.Windows.Forms.Label();
             this.divider4 = new AntdUI.Divider();
+            this.page_Project1 = new EmployeeManagement.Pages.Page_Project();
+            this.page_Task1 = new EmployeeManagement.Pages.Page_Task();
+            this.page_Employee1 = new EmployeeManagement.Pages.Page_Employee();
+            this.page_Account1 = new EmployeeManagement.Pages.Page_Account();
+            this.page_Department1 = new EmployeeManagement.Pages.Page_Department();
             this.page_Department2 = new EmployeeManagement.Pages.Page_Department();
             this.panel1.SuspendLayout();
             this.panel5.SuspendLayout();
@@ -129,12 +129,12 @@ namespace EmployeeManagement
             // tabs1
             // 
             this.tabs1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabProject);
             this.tabs1.Controls.Add(this.tabTask);
             this.tabs1.Controls.Add(this.tabNV);
             this.tabs1.Controls.Add(this.tabCompany);
             this.tabs1.Controls.Add(this.tabDatabase);
-            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabLogout);
             this.tabs1.Controls.Add(this.tabMyProfile);
             this.tabs1.Controls.Add(this.tpPhongBan);
@@ -168,14 +168,6 @@ namespace EmployeeManagement
             this.tabProject.TabIndex = 0;
             this.tabProject.Text = "Projects";
             // 
-            // page_Project1
-            // 
-            this.page_Project1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_Project1.Location = new System.Drawing.Point(0, 0);
-            this.page_Project1.Name = "page_Project1";
-            this.page_Project1.Size = new System.Drawing.Size(1158, 730);
-            this.page_Project1.TabIndex = 0;
-            // 
             // tabTask
             // 
             this.tabTask.Controls.Add(this.page_Task1);
@@ -186,14 +178,6 @@ namespace EmployeeManagement
             this.tabTask.TabIndex = 1;
             this.tabTask.Text = "Tasks";
             // 
-            // page_Task1
-            // 
-            this.page_Task1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_Task1.Location = new System.Drawing.Point(0, 0);
-            this.page_Task1.Name = "page_Task1";
-            this.page_Task1.Size = new System.Drawing.Size(1158, 730);
-            this.page_Task1.TabIndex = 0;
-            // 
             // tabNV
             // 
             this.tabNV.Controls.Add(this.page_Employee1);
@@ -203,14 +187,6 @@ namespace EmployeeManagement
             this.tabNV.Size = new System.Drawing.Size(1158, 730);
             this.tabNV.TabIndex = 7;
             this.tabNV.Text = "Nhân viên";
-            // 
-            // page_Employee1
-            // 
-            this.page_Employee1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_Employee1.Location = new System.Drawing.Point(0, 0);
-            this.page_Employee1.Name = "page_Employee1";
-            this.page_Employee1.Size = new System.Drawing.Size(1158, 730);
-            this.page_Employee1.TabIndex = 0;
             // 
             // tabCompany
             // 
@@ -397,16 +373,6 @@ namespace EmployeeManagement
             this.tabMyProfile.TabIndex = 6;
             this.tabMyProfile.Text = "Account.MyProfile";
             // 
-            // page_Account1
-            // 
-            this.page_Account1.AutoScroll = true;
-            this.page_Account1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_Account1.Location = new System.Drawing.Point(0, 0);
-            this.page_Account1.Name = "page_Account1";
-            this.page_Account1.Size = new System.Drawing.Size(1158, 730);
-            this.page_Account1.TabIndex = 0;
-            this.page_Account1.Load += new System.EventHandler(this.page_Account1_Load);
-            // 
             // tpPhongBan
             // 
             this.tpPhongBan.Controls.Add(this.page_Department1);
@@ -416,14 +382,6 @@ namespace EmployeeManagement
             this.tpPhongBan.Size = new System.Drawing.Size(1158, 730);
             this.tpPhongBan.TabIndex = 8;
             this.tpPhongBan.Text = "Phòng ban";
-            // 
-            // page_Department1
-            // 
-            this.page_Department1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.page_Department1.Location = new System.Drawing.Point(0, 0);
-            this.page_Department1.Name = "page_Department1";
-            this.page_Department1.Size = new System.Drawing.Size(1158, 730);
-            this.page_Department1.TabIndex = 0;
             // 
             // panel3
             // 
@@ -638,6 +596,48 @@ namespace EmployeeManagement
             this.divider4.TabIndex = 14;
             this.divider4.Text = "";
             this.divider4.Thickness = 0.9F;
+            // 
+            // page_Project1
+            // 
+            this.page_Project1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Project1.Location = new System.Drawing.Point(0, 0);
+            this.page_Project1.Name = "page_Project1";
+            this.page_Project1.Size = new System.Drawing.Size(1158, 730);
+            this.page_Project1.TabIndex = 0;
+            // 
+            // page_Task1
+            // 
+            this.page_Task1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Task1.Location = new System.Drawing.Point(0, 0);
+            this.page_Task1.Name = "page_Task1";
+            this.page_Task1.Size = new System.Drawing.Size(1158, 730);
+            this.page_Task1.TabIndex = 0;
+            // 
+            // page_Employee1
+            // 
+            this.page_Employee1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Employee1.Location = new System.Drawing.Point(0, 0);
+            this.page_Employee1.Name = "page_Employee1";
+            this.page_Employee1.Size = new System.Drawing.Size(1158, 730);
+            this.page_Employee1.TabIndex = 0;
+            // 
+            // page_Account1
+            // 
+            this.page_Account1.AutoScroll = true;
+            this.page_Account1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Account1.Location = new System.Drawing.Point(0, 0);
+            this.page_Account1.Name = "page_Account1";
+            this.page_Account1.Size = new System.Drawing.Size(1158, 730);
+            this.page_Account1.TabIndex = 0;
+            this.page_Account1.Load += new System.EventHandler(this.page_Account1_Load);
+            // 
+            // page_Department1
+            // 
+            this.page_Department1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.page_Department1.Location = new System.Drawing.Point(0, 0);
+            this.page_Department1.Name = "page_Department1";
+            this.page_Department1.Size = new System.Drawing.Size(1158, 730);
+            this.page_Department1.TabIndex = 0;
             // 
             // page_Department2
             // 
