@@ -346,5 +346,36 @@ namespace EmployeeManagement.Pages
             }
             return null;
         }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            tableTask.DataSource = null;
+            string keyword = txtTim.Text.Trim();
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    var displayReset = visibleTasks.Select(t => CreateDisplayItem(t)).ToList();
+                    tableTask.DataSource = displayReset;
+                    Message.success(this.FindForm(), $"Tìm thấy {visibleTasks.Count} nhiệm vụ.");
+                    return;
+                }
+
+                var filtered = visibleTasks
+                    .Where(t => t.TaskName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .ToList();
+
+                var displayList = filtered.Select(t => CreateDisplayItem(t)).ToList();
+                tableTask.DataSource = displayList;
+
+                Message.success(this.FindForm(), $"Tìm thấy {filtered.Count} nhiệm vụ phù hợp.");
+            }
+            catch (Exception ex)
+            {
+                Message.error(this.FindForm(), "Lỗi tìm kiếm: " + ex.Message);
+            }
+        }
+
     }
 }
