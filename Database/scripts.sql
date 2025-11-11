@@ -1,29 +1,90 @@
-﻿USE master;
+﻿USE [master]
 GO
-
--- Xóa database nếu đã tồn tại (ngắt kết nối an toàn)
-IF DB_ID(N'ProjectManagementDB') IS NOT NULL
-BEGIN
-    PRINT 'Closing all connections to ProjectManagementDB...';
-    ALTER DATABASE ProjectManagementDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE ProjectManagementDB;
-    PRINT 'Database "ProjectManagementDB" has been dropped.';
-END
+/****** Object:  Database [ProjectManagementDB]    Script Date: 11/11/2025 11:06:46 AM ******/
+CREATE DATABASE [ProjectManagementDB]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'ProjectManagementDB', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\ProjectManagementDB.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'ProjectManagementDB_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\ProjectManagementDB_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
 GO
-
--- Tạo database mới
-IF DB_ID(N'ProjectManagementDB') IS NULL
-BEGIN
-    CREATE DATABASE ProjectManagementDB;
-    PRINT 'Database "ProjectManagementDB" created successfully!';
-END
+ALTER DATABASE [ProjectManagementDB] SET COMPATIBILITY_LEVEL = 160
 GO
-
--- Chuyển sang database mới tạo
-USE [ProjectManagementDB];
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [ProjectManagementDB].[dbo].[sp_fulltext_database] @action = 'enable'
+end
 GO
-
-/****** Object:  Table [dbo].[Departments]    Script Date: 11/7/2025 4:56:46 PM ******/
+ALTER DATABASE [ProjectManagementDB] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [ProjectManagementDB] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [ProjectManagementDB] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [ProjectManagementDB] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [ProjectManagementDB] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET RECOVERY FULL 
+GO
+ALTER DATABASE [ProjectManagementDB] SET  MULTI_USER 
+GO
+ALTER DATABASE [ProjectManagementDB] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [ProjectManagementDB] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [ProjectManagementDB] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [ProjectManagementDB] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [ProjectManagementDB] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [ProjectManagementDB] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'ProjectManagementDB', N'ON'
+GO
+ALTER DATABASE [ProjectManagementDB] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [ProjectManagementDB] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [ProjectManagementDB]
+GO
+/****** Object:  Table [dbo].[Departments]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -39,7 +100,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[EmployeeFiles]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[EmployeeFiles]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -57,7 +118,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Employees]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[Employees]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -78,7 +139,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ProjectFiles]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[ProjectFiles]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -96,7 +157,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Projects]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[Projects]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -117,7 +178,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Subtasks]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[Subtasks]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -139,7 +200,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TaskAssignments]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[TaskAssignments]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -158,7 +219,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TaskComments]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[TaskComments]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,7 +236,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TaskFiles]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[TaskFiles]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -193,7 +254,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tasks]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[Tasks]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -215,7 +276,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserRoles]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[UserRoles]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -231,7 +292,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Users]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Table [dbo].[Users]    Script Date: 11/11/2025 11:06:46 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -256,6 +317,7 @@ INSERT [dbo].[Departments] ([DepartmentID], [DepartmentName], [Description], [Ma
 INSERT [dbo].[Departments] ([DepartmentID], [DepartmentName], [Description], [ManagerID]) VALUES (3, N'Tài chính', N'Phòng kế toán, tài chính', 5)
 INSERT [dbo].[Departments] ([DepartmentID], [DepartmentName], [Description], [ManagerID]) VALUES (4, N'Marketing', N'Phòng marketing và truyền thông', 6)
 INSERT [dbo].[Departments] ([DepartmentID], [DepartmentName], [Description], [ManagerID]) VALUES (1003, N'Nghiên cứu', N'Nghiên cứu cơ sở hạ tầng', 6)
+INSERT [dbo].[Departments] ([DepartmentID], [DepartmentName], [Description], [ManagerID]) VALUES (1004, N'Pháp lý', N'Xử lý các sự kiện pháp lý', 1016)
 SET IDENTITY_INSERT [dbo].[Departments] OFF
 GO
 SET IDENTITY_INSERT [dbo].[EmployeeFiles] ON 
@@ -264,13 +326,14 @@ INSERT [dbo].[EmployeeFiles] ([EmployeeFileID], [EmployeeID], [Title], [FileName
 INSERT [dbo].[EmployeeFiles] ([EmployeeFileID], [EmployeeID], [Title], [FileName], [CreatedBy], [CreatedAt]) VALUES (2, 4, N'Chứng chỉ AWS', N'20240120150000_aws_cert.pdf', 4, CAST(N'2024-01-20T15:00:00.000' AS DateTime))
 SET IDENTITY_INSERT [dbo].[EmployeeFiles] OFF
 GO
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (2, N'Nguyễn Văn An', N'Lập trình viên', 1, N'Assets/Avatars/20251106113813_Không có tiêu đề.jpg', N'123 Láng Hạ, Hà Nội', CAST(N'2020-03-15' AS Date), 0, N'Nam')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (3, N'Trần Thị Bình', N'Trưởng phòng Nhân sự', 2, N'Assets/Avatars/20251106113813_Không có tiêu đề.jpg', N'456 Giải Phóng, Hà Nội', CAST(N'2019-07-20' AS Date), 1, N'Nữ')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (4, N'Lê Minh Cường', N'Trưởng phòng IT', 1, N'Assets/Avatars/20251106113813_Không có tiêu đề.jpg', N'789 Trường Chinh, Hà Nội', CAST(N'2018-11-10' AS Date), 1, N'Nam')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (5, N'Phạm Thu Dung', N'Kế toán trưởng', 3, N'Assets/Avatars/20251106113813_Không có tiêu đề.jpg', N'101 Cầu Giấy, Hà Nội', CAST(N'2021-02-01' AS Date), 1, N'Nữ')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (6, N'Hoàng Quốc Huy', N'Trưởng phòng Marketing', NULL, N'Assets/Avatars/20251107151753_nv1.jpg', N'202 Nguyễn Trãi, Hà Nội', CAST(N'2019-09-25' AS Date), 1, N'Nam')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1016, N'Hoàng Văn Quyết', N'Nhân viên', 2, N'Assets/Avatars/20251106113813_Không có tiêu đề.jpg', N'HCM', CAST(N'2025-11-06' AS Date), 1, N'Nam')
-INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1018, N'Sl', N'l', 1003, N'Assets/Avatars/20251106134107_cute-hollow-knight-hornet-pack.png', N'l', CAST(N'2025-11-13' AS Date), 1, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (2, N'Nguyễn Văn An', N'Lập trình viên', 1, N'Assets/Avatars/nv4.jpg', N'123 Láng Hạ, Hà Nội', CAST(N'2020-03-15' AS Date), 0, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (3, N'Trần Thị Bình', N'Trưởng phòng Nhân sự', 2, N'Assets/Avatars/20251111103218_nv1.jpg', N'456 Giải Phóng, Hà Nội', CAST(N'2019-07-20' AS Date), 1, N'Nữ')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (4, N'Lê Minh Cường', N'Trưởng phòng IT', 1, N'Assets/Avatars/nv6.jpg', N'789 Trường Chinh, Hà Nội', CAST(N'2018-11-10' AS Date), 1, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (5, N'Phạm Thu Dung', N'Kế toán trưởng', 3, N'Assets/Avatars/nv5.jpg', N'101 Cầu Giấy, Hà Nội', CAST(N'2021-02-01' AS Date), 1, N'Nữ')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (6, N'Hoàng Quốc Huy', N'Trưởng phòng Marketing', 1004, N'Assets/Avatars/20251108140601_nv2.jpg', N'202 Nguyễn Trãi, Hà Nội', CAST(N'2019-09-25' AS Date), 1, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1016, N'Hoàng Văn Quyết', N'Nhân viên', 1, N'Assets/Avatars/nv8.jpg', N'HCM', CAST(N'2025-11-06' AS Date), 1, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1018, N'SonLu', N'l', 1, N'Assets/Avatars/20251110004112_default_ufha3ohsh4d.png', N'l', CAST(N'2025-11-13' AS Date), 1, N'Nam')
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1019, N'Trần Hoàng Việt', N'Nhân viên', 2, N'Assets/Avatars/20251111095603_image.jpg', N'HN', CAST(N'2025-11-11' AS Date), 1, N'Nam')
 GO
 SET IDENTITY_INSERT [dbo].[ProjectFiles] ON 
 
@@ -281,12 +344,12 @@ GO
 SET IDENTITY_INSERT [dbo].[Projects] ON 
 
 INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (1, N'Hệ thống quản lý nhân sự', N'Xây dựng hệ thống quản lý nhân sự tập trung', CAST(N'2024-01-15' AS Date), CAST(N'2024-07-31' AS Date), N'Đang thực hiện', 3, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 3)
-INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (2, N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', CAST(N'2024-02-01' AS Date), NULL, N'Lên kế hoạch', 3, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 4)
-INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (3, N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', CAST(N'2023-09-01' AS Date), CAST(N'2024-03-31' AS Date), N'Hoàn thành', 4, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 6)
+INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (2, N'Website thương mại điện tử', N'Phát triển nền tảng bán hàng online', CAST(N'2024-02-01' AS Date), NULL, N'Đang thực hiện', 3, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 4)
+INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (3, N'Ứng dụng mobile CRM', N'App quản lý quan hệ khách hàng trên di động', CAST(N'2023-09-01' AS Date), CAST(N'2024-03-31' AS Date), N'Đang thực hiện', 4, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 6)
 INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (4, N'Tối ưu hệ thống báo cáo', N'Nâng cấp hệ thống báo cáo tài chính', CAST(N'2024-04-01' AS Date), CAST(N'2024-12-31' AS Date), N'Lên kế hoạch', 4, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 5)
 INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (5, N'Nâng cấp hạ tầng mạng', N'Modernize network infrastructure', CAST(N'2024-01-10' AS Date), CAST(N'2024-06-30' AS Date), N'Đang thực hiện', 3, CAST(N'2025-11-02T15:53:42.523' AS DateTime), 3)
-INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (1002, N'Ứng dụng quản lý kho hàng', N'Xây dựng hệ thống quản lý kho hàng tự động', CAST(N'2025-11-01' AS Date), CAST(N'2026-05-31' AS Date), N'Lên kế hoạch', 3, CAST(N'2025-11-05T23:14:43.950' AS DateTime), NULL)
-INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (1006, N'1', N'1', CAST(N'2025-11-06' AS Date), CAST(N'2025-11-06' AS Date), N'Lên kế hoạch', 6, CAST(N'2025-11-06T19:25:56.613' AS DateTime), 2)
+INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (1002, N'Ứng dụng quản lý kho hàng', N'Xây dựng hệ thống quản lý kho hàng tự động', CAST(N'2025-11-01' AS Date), CAST(N'2026-05-31' AS Date), N'Đang thực hiện', 3, CAST(N'2025-11-05T23:14:43.950' AS DateTime), 4)
+INSERT [dbo].[Projects] ([ProjectID], [ProjectName], [Description], [StartDate], [EndDate], [Status], [CreatedBy], [CreatedDate], [ManagerBy]) VALUES (1006, N'Ứng dụng quản lý quán cafe', N'Xây dựng hệ thống quản lý quán cafe', CAST(N'2025-11-06' AS Date), CAST(N'2025-11-06' AS Date), N'Lên kế hoạch', 6, CAST(N'2025-11-06T19:25:56.613' AS DateTime), 3)
 SET IDENTITY_INSERT [dbo].[Projects] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Subtasks] ON 
@@ -297,11 +360,15 @@ SET IDENTITY_INSERT [dbo].[Subtasks] OFF
 GO
 SET IDENTITY_INSERT [dbo].[TaskAssignments] ON 
 
-INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (55, 2, 3, 3, CAST(N'2025-11-06T16:23:11.670' AS DateTime), N'Pending', NULL)
-INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (56, 2, 6, 3, CAST(N'2025-11-06T16:23:11.670' AS DateTime), N'Completed', CAST(N'2025-11-06T18:14:18.370' AS DateTime))
-INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (57, 4, 6, 4, CAST(N'2025-11-06T18:17:40.757' AS DateTime), N'Pending', NULL)
-INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (58, 3, 6, 3, CAST(N'2025-11-06T18:17:57.897' AS DateTime), N'Completed', CAST(N'2025-11-06T18:18:03.463' AS DateTime))
 INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (60, 1002, 3, 3, CAST(N'2025-11-06T21:03:41.307' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (62, 4, 1018, 4, CAST(N'2025-11-08T21:46:38.460' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (63, 3, 5, 3, CAST(N'2025-11-08T21:47:12.353' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (64, 3, 6, 3, CAST(N'2025-11-08T21:47:12.357' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (76, 2, 6, 3, CAST(N'2025-11-10T00:24:57.260' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (77, 2, 1016, 3, CAST(N'2025-11-10T00:24:57.270' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (78, 4, 5, 4, CAST(N'2025-11-10T00:40:05.200' AS DateTime), N'Pending', NULL)
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (79, 4, 6, 4, CAST(N'2025-11-10T00:40:15.240' AS DateTime), N'Completed', CAST(N'2025-11-10T00:40:24.950' AS DateTime))
+INSERT [dbo].[TaskAssignments] ([TaskAssignmentID], [TaskID], [EmployeeID], [AssignedBy], [AssignedDate], [CompletionStatus], [CompletedDate]) VALUES (81, 1005, 1019, 6, CAST(N'2025-11-11T09:57:24.390' AS DateTime), N'Pending', NULL)
 SET IDENTITY_INSERT [dbo].[TaskAssignments] OFF
 GO
 SET IDENTITY_INSERT [dbo].[TaskComments] ON 
@@ -313,43 +380,62 @@ GO
 SET IDENTITY_INSERT [dbo].[TaskFiles] ON 
 
 INSERT [dbo].[TaskFiles] ([TaskFileID], [TaskID], [Title], [FileName], [CreatedBy], [CreatedAt]) VALUES (2, 2, N'Kết quả test API', N'20240410160000_api_test_results.xlsx', 2, CAST(N'2024-04-10T16:00:00.000' AS DateTime))
+INSERT [dbo].[TaskFiles] ([TaskFileID], [TaskID], [Title], [FileName], [CreatedBy], [CreatedAt]) VALUES (3, 4, N'TA', N'20251108220312_TA.docx', 6, CAST(N'2025-11-08T22:03:12.293' AS DateTime))
 SET IDENTITY_INSERT [dbo].[TaskFiles] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Tasks] ON 
 
-INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (2, 1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 3, CAST(N'2024-04-30' AS Date), N'Đang thực hiện', N'High', CAST(N'2025-11-02T15:53:42.533' AS DateTime), NULL)
-INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (3, 2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', 3, CAST(N'2025-11-07' AS Date), N'Hoàn thành', N'Medium', CAST(N'2025-11-02T15:53:42.533' AS DateTime), CAST(N'2025-11-06T18:14:38.843' AS DateTime))
-INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (4, 3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 4, NULL, N'Hoàn thành', N'Critical', CAST(N'2025-11-02T15:53:42.533' AS DateTime), CAST(N'2025-11-07T16:52:40.090' AS DateTime))
-INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (1002, 1002, N'Thiết kế database', N'Tạo schema cho kho hàng', 3, CAST(N'2025-11-07' AS Date), N'Đang thực hiện', N'High', CAST(N'2025-11-05T23:14:43.953' AS DateTime), CAST(N'2025-11-06T18:17:16.470' AS DateTime))
-INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (1004, 3, N'Lập trình giao diện', N'UI', 6, NULL, N'Hoàn thành', N'Trung bình', CAST(N'2025-11-07T16:50:59.193' AS DateTime), CAST(N'2025-11-07T16:52:04.540' AS DateTime))
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (2, 1, N'Phát triển API Backend', N'Xây dựng REST API với .NET', 3, CAST(N'2024-04-30' AS Date), N'Hết hạn', N'Cao', CAST(N'2025-11-02T15:53:42.533' AS DateTime), NULL)
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (3, 2, N'Nghiên cứu công nghệ', N'Đánh giá các framework frontend phù hợp', 3, CAST(N'2025-11-14' AS Date), N'Đang thực hiện', N'Trung bình', CAST(N'2025-11-02T15:53:42.533' AS DateTime), CAST(N'2025-11-08T21:47:43.277' AS DateTime))
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (4, 3, N'Kiểm thử chức năng', N'Test toàn bộ tính năng trước khi release', 4, CAST(N'2025-11-27' AS Date), N'Đang thực hiện', N'Khẩn cấp', CAST(N'2025-11-02T15:53:42.533' AS DateTime), CAST(N'2025-11-10T12:50:59.650' AS DateTime))
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (1002, 1002, N'Thiết kế database', N'Tạo schema cho kho hàng', 3, CAST(N'2025-11-07' AS Date), N'Hết hạn', N'Cao', CAST(N'2025-11-05T23:14:43.953' AS DateTime), CAST(N'2025-11-06T18:17:16.470' AS DateTime))
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (1004, 3, N'Lập trình giao diện', N'UI', 6, CAST(N'2025-11-11' AS Date), N'Hoàn thành', N'Trung bình', CAST(N'2025-11-07T16:50:59.193' AS DateTime), CAST(N'2025-11-10T12:51:08.560' AS DateTime))
+INSERT [dbo].[Tasks] ([TaskID], [ProjectID], [TaskTitle], [Description], [CreatedBy], [Deadline], [Status], [Priority], [CreatedDate], [UpdatedDate]) VALUES (1005, 3, N'Kiểm thử', N'Test trước khi deploy', 6, CAST(N'2025-12-18' AS Date), N'Đang thực hiện', N'Trung bình', CAST(N'2025-11-10T12:50:46.297' AS DateTime), NULL)
 SET IDENTITY_INSERT [dbo].[Tasks] OFF
 GO
 SET IDENTITY_INSERT [dbo].[UserRoles] ON 
 
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (3, 1, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (4, 6, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (5, 1002, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (6, 1003, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (7, 1004, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (8, 1005, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (9, 1009, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (10, 1010, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (11, 1012, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (12, 1013, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (13, 1015, N'Admin', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (14, 1018, N'Nhân viên', CAST(N'2025-11-06T13:41:23.207' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (15, 3, N'Quản lý phòng ban', CAST(N'2025-11-06T12:51:02.883' AS DateTime))
-
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (61, 1, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (62, 2, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (65, 5, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (66, 7, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (67, 1002, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (68, 1003, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (69, 1004, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (70, 1005, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (71, 1008, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (72, 1009, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (73, 1010, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (74, 1011, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (75, 1012, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (76, 1013, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (77, 1014, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (78, 1015, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (80, 1017, N'Nhân viên', CAST(N'2025-11-08T14:28:14.857' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (85, 5, N'Quản lý dự án', CAST(N'2025-11-08T14:28:20.123' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (88, 5, N'Quản lý phòng ban', CAST(N'2025-11-08T14:28:20.147' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (96, 4, N'Nhân viên', CAST(N'2025-11-09T15:08:19.270' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (97, 4, N'Quản lý dự án', CAST(N'2025-11-09T15:08:19.273' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (98, 4, N'Quản lý phòng ban', CAST(N'2025-11-09T15:08:19.273' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (106, 1018, N'Nhân viên', CAST(N'2025-11-10T12:54:19.570' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (108, 1019, N'Nhân viên', CAST(N'2025-11-11T09:57:10.780' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (109, 1016, N'Nhân viên', CAST(N'2025-11-11T10:16:44.267' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (110, 1016, N'Quản lý phòng ban', CAST(N'2025-11-11T10:16:44.270' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (111, 6, N'Admin', CAST(N'2025-11-11T10:22:23.550' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (112, 6, N'Quản lý dự án', CAST(N'2025-11-11T10:22:23.550' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (113, 3, N'Nhân viên', CAST(N'2025-11-11T10:32:20.930' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (114, 3, N'Quản lý dự án', CAST(N'2025-11-11T10:32:20.933' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (115, 3, N'Quản lý phòng ban', CAST(N'2025-11-11T10:32:20.933' AS DateTime))
 SET IDENTITY_INSERT [dbo].[UserRoles] OFF
 GO
 SET IDENTITY_INSERT [dbo].[Users] ON 
 
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1, N'0900000001', N'admin@company.com', N'6CF0EA55E5FD5E692E007B16339A83F4319370CDB8B6193C1630820119CBBA50', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (2, N'0901234567', N'nguyen.van.an@company.com', N'B4BD29480AB196FAA782E0D4ECD10C2F4212814105227E5F7992F5BF4B212A64', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
-INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (3, N'0912345678', N'tran.thi.binh@company.com', N'E8392925A98C9C22795D1FC5D0DFEE5B9A6943F6B768EC5A2A0C077E5ED119CF', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (3, N'0912345678', N'binh@gmail.com', N'E8392925A98C9C22795D1FC5D0DFEE5B9A6943F6B768EC5A2A0C077E5ED119CF', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (4, N'0923456789', N'le.minh.cuong@company.com', N'E8392925A98C9C22795D1FC5D0DFEE5B9A6943F6B768EC5A2A0C077E5ED119CF', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (5, N'0934567890', N'pham.thu.dung@company.com', N'B4BD29480AB196FAA782E0D4ECD10C2F4212814105227E5F7992F5BF4B212A64', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
-INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (6, N'0934567891', N'1', N'EF797C8118F02DFB649607DD5D3F8C7623048C9C063D532CC95C5ED7A898A64F', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (6, N'0934567891', N'huy@gmail.com', N'EF797C8118F02DFB649607DD5D3F8C7623048C9C063D532CC95C5ED7A898A64F', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (7, N'0945678901', N'hoang.quoc.huy@company.com', N'B4BD29480AB196FAA782E0D4ECD10C2F4212814105227E5F7992F5BF4B212A64', 1, CAST(N'2025-11-02T15:53:42.480' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1002, NULL, N'sonlu1207@gmail.com', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-05T13:19:05.333' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1003, NULL, N'sonlu@gmail.com', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-05T13:24:01.207' AS DateTime))
@@ -365,18 +451,19 @@ INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [C
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1015, N'036487541', N'sonlu@gmai.com', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-05T20:02:27.040' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1016, N'0964235998', N'quyet@gmail.com', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-06T11:38:52.973' AS DateTime))
 INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1017, N'12213234', N's@s.s', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-06T13:34:52.443' AS DateTime))
-INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1018, N'123', N'g@g.g', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-06T13:41:23.203' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1018, N'03254789654', N'g@g.g', N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 1, CAST(N'2025-11-06T13:41:23.203' AS DateTime))
+INSERT [dbo].[Users] ([UserID], [Phone], [Email], [PasswordHash], [IsActive], [CreatedDate]) VALUES (1019, N'0321654987', N'viet@gmail.com', N'8D969EEF6ECAD3C29A3A629280E686CF0C3F5D5A86AFF3CA12020C923ADC6C92', 1, CAST(N'2025-11-11T09:57:10.777' AS DateTime))
 SET IDENTITY_INSERT [dbo].[Users] OFF
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ__Departme__D949CC34A122B9AD]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Index [UQ__Departme__D949CC34816D1F4E]    Script Date: 11/11/2025 11:06:46 AM ******/
 ALTER TABLE [dbo].[Departments] ADD UNIQUE NONCLUSTERED 
 (
 	[DepartmentName] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [UQ_TaskAssignments_TaskEmployee]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Index [UQ_TaskAssignments_TaskEmployee]    Script Date: 11/11/2025 11:06:46 AM ******/
 ALTER TABLE [dbo].[TaskAssignments] ADD  CONSTRAINT [UQ_TaskAssignments_TaskEmployee] UNIQUE NONCLUSTERED 
 (
 	[TaskID] ASC,
@@ -385,7 +472,7 @@ ALTER TABLE [dbo].[TaskAssignments] ADD  CONSTRAINT [UQ_TaskAssignments_TaskEmpl
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [UQ_UserRoles_UserRole]    Script Date: 11/7/2025 4:56:46 PM ******/
+/****** Object:  Index [UQ_UserRoles_UserRole]    Script Date: 11/11/2025 11:06:46 AM ******/
 ALTER TABLE [dbo].[UserRoles] ADD  CONSTRAINT [UQ_UserRoles_UserRole] UNIQUE NONCLUSTERED 
 (
 	[UserID] ASC,
@@ -556,9 +643,56 @@ ALTER TABLE [dbo].[TaskAssignments]  WITH CHECK ADD CHECK  (([CompletionStatus]=
 GO
 ALTER TABLE [dbo].[UserRoles]  WITH CHECK ADD CHECK  (([Role]=N'Quản lý dự án' OR [Role]=N'Nhân viên' OR [Role]=N'Quản lý phòng ban' OR [Role]='Admin'))
 GO
+/****** Object:  Trigger [dbo].[TR_Departments_Insert]    Script Date: 11/11/2025 11:06:46 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 
-CREATE TRIGGER TR_TaskAssignments_UpdateStatus    
-ON dbo.TaskAssignments    
+-- 6. (Tùy chọn) Thêm trigger để enforce gán manager khi tạo department/project  
+-- Ví dụ cho Departments: Không cho insert nếu ManagerID NULL (có thể tùy chỉnh)  
+CREATE TRIGGER [dbo].[TR_Departments_Insert]  
+ON [dbo].[Departments]  
+AFTER INSERT  
+AS  
+BEGIN  
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)  
+    BEGIN  
+        RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);  
+        ROLLBACK TRANSACTION;  
+    END  
+END; 
+GO
+ALTER TABLE [dbo].[Departments] ENABLE TRIGGER [TR_Departments_Insert]
+GO
+/****** Object:  Trigger [dbo].[TR_Projects_Insert]    Script Date: 11/11/2025 11:06:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER [dbo].[TR_Projects_Insert]  
+ON [dbo].[Projects]  
+AFTER INSERT  
+AS  
+BEGIN  
+    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)  
+    BEGIN  
+        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);  
+        ROLLBACK TRANSACTION;  
+    END  
+END;  
+GO
+ALTER TABLE [dbo].[Projects] ENABLE TRIGGER [TR_Projects_Insert]
+GO
+/****** Object:  Trigger [dbo].[TR_TaskAssignments_UpdateStatus]    Script Date: 11/11/2025 11:06:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER [dbo].[TR_TaskAssignments_UpdateStatus]    
+ON [dbo].[TaskAssignments]    
 AFTER UPDATE, INSERT    
 AS    
 BEGIN    
@@ -607,37 +741,16 @@ BEGIN
     DEALLOCATE task_cursor;    
 END;
 GO
-
--- 6. (Tùy chọn) Thêm trigger để enforce gán manager khi tạo department/project  
--- Ví dụ cho Departments: Không cho insert nếu ManagerID NULL (có thể tùy chỉnh)  
-CREATE TRIGGER TR_Departments_Insert  
-ON dbo.Departments  
-AFTER INSERT  
-AS  
-BEGIN  
-    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerID IS NULL)  
-    BEGIN  
-        RAISERROR ('ManagerID must be assigned when creating a department.', 16, 1);  
-        ROLLBACK TRANSACTION;  
-    END  
-END; 
+ALTER TABLE [dbo].[TaskAssignments] ENABLE TRIGGER [TR_TaskAssignments_UpdateStatus]
+GO
+/****** Object:  Trigger [dbo].[TR_Projects_UpdateStatus_FromTasks]    Script Date: 11/11/2025 11:06:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TRIGGER TR_Projects_Insert  
-ON dbo.Projects  
-AFTER INSERT  
-AS  
-BEGIN  
-    IF EXISTS (SELECT 1 FROM inserted WHERE ManagerBy IS NULL)  
-    BEGIN  
-        RAISERROR ('ManagerBy must be assigned when creating a project.', 16, 1);  
-        ROLLBACK TRANSACTION;  
-    END  
-END;  
-GO
-
-CREATE   TRIGGER TR_Projects_UpdateStatus_FromTasks  
-ON dbo.Tasks  
+CREATE   TRIGGER [dbo].[TR_Projects_UpdateStatus_FromTasks]  
+ON [dbo].[Tasks]  
 AFTER INSERT, UPDATE, DELETE  
 AS  
 BEGIN  
@@ -678,9 +791,16 @@ BEGIN
     WHERE ISNULL(p.Status, N'') <> ns.StatusVN;  
 END;
 GO
+ALTER TABLE [dbo].[Tasks] ENABLE TRIGGER [TR_Projects_UpdateStatus_FromTasks]
+GO
+/****** Object:  Trigger [dbo].[TR_UpdateTaskStatus_Expired]    Script Date: 11/11/2025 11:06:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 
-CREATE TRIGGER TR_UpdateTaskStatus_Expired
-ON dbo.Tasks
+CREATE TRIGGER [dbo].[TR_UpdateTaskStatus_Expired]
+ON [dbo].[Tasks]
 AFTER INSERT, UPDATE
 AS
 BEGIN
@@ -694,5 +814,9 @@ BEGIN
       AND t.Status NOT IN (N'Hoàn thành', N'Hết hạn');
 END
 GO
-
-select * from UserRoles
+ALTER TABLE [dbo].[Tasks] ENABLE TRIGGER [TR_UpdateTaskStatus_Expired]
+GO
+USE [master]
+GO
+ALTER DATABASE [ProjectManagementDB] SET  READ_WRITE 
+GO
