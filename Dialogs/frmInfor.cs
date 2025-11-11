@@ -27,7 +27,7 @@ namespace EmployeeManagement.Dialogs
         private void btnDangXuat_Click(object sender, EventArgs e)
         {
             this.Close();
-            _parentForm.Close();
+            _parentForm.Hide();
             frmLogin loginForm = new frmLogin();
             loginForm.Show();
         }
