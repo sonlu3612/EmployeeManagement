@@ -130,12 +130,12 @@ namespace EmployeeManagement
             // 
             this.tabs1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
             this.tabs1.Controls.Add(this.tabLogout);
-            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabProject);
             this.tabs1.Controls.Add(this.tabTask);
             this.tabs1.Controls.Add(this.tabNV);
             this.tabs1.Controls.Add(this.tabCompany);
             this.tabs1.Controls.Add(this.tabDatabase);
+            this.tabs1.Controls.Add(this.tabChangePassword);
             this.tabs1.Controls.Add(this.tabMyProfile);
             this.tabs1.Controls.Add(this.tpPhongBan);
             this.tabs1.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -550,11 +550,11 @@ namespace EmployeeManagement
             menuItem8.Expand = false;
             menuItem8.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             menuItem8.IconSvg = "UserOutlined";
-            menuItem9.Text = "Cá nhân";
+            menuItem9.Text = "         Cá nhân ";
             menuItem10.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem10.Text = "Đổi mật khẩu";
+            menuItem10.Text = "         Đổi mật khẩu";
             menuItem11.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            menuItem11.Text = "Đăng xuất";
+            menuItem11.Text = "         Đăng xuất";
             menuItem8.Sub.Add(menuItem9);
             menuItem8.Sub.Add(menuItem10);
             menuItem8.Sub.Add(menuItem11);
