@@ -278,6 +278,7 @@
     <EmbeddedResource Include="Auth\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Database\scr.resx" />
     <EmbeddedResource Include="Dialogs\frmAssignEmployee.resx">
       <DependentUpon>frmAssignEmployee.cs</DependentUpon>
     </EmbeddedResource>
@@ -395,6 +396,7 @@
     <Content Include="Assets\Avatars\20251106134107_cute-hollow-knight-hornet-pack.png" />
     <Content Include="bin\Debug\EmployeeManagement.exe" />
     <Content Include="bin\Debug\EmployeeManagement.pdb" />
+    <Content Include="Database\scr.Designer.sql" />
     <Content Include="Database\scripts.sql" />
     <Content Include="Database\schema.sql" />
     <Content Include="Database\stored_procedures.sql" />

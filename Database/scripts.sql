@@ -326,6 +326,7 @@ INSERT [dbo].[EmployeeFiles] ([EmployeeFileID], [EmployeeID], [Title], [FileName
 INSERT [dbo].[EmployeeFiles] ([EmployeeFileID], [EmployeeID], [Title], [FileName], [CreatedBy], [CreatedAt]) VALUES (2, 4, N'Chứng chỉ AWS', N'20240120150000_aws_cert.pdf', 4, CAST(N'2024-01-20T15:00:00.000' AS DateTime))
 SET IDENTITY_INSERT [dbo].[EmployeeFiles] OFF
 GO
+INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (1, N'System Administrator', N'Quản trị hệ thống', 1, N'Assets/Avatars/LogoUTC.jpg', N'Trụ sở chính', CAST(N'2024-01-01' AS Date), 1, N'Nam')
 INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (2, N'Nguyễn Văn An', N'Lập trình viên', 1, N'Assets/Avatars/nv4.jpg', N'123 Láng Hạ, Hà Nội', CAST(N'2020-03-15' AS Date), 0, N'Nam')
 INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (3, N'Trần Thị Bình', N'Trưởng phòng Nhân sự', 2, N'Assets/Avatars/20251111103218_nv1.jpg', N'456 Giải Phóng, Hà Nội', CAST(N'2019-07-20' AS Date), 1, N'Nữ')
 INSERT [dbo].[Employees] ([EmployeeID], [FullName], [Position], [DepartmentID], [AvatarPath], [Address], [HireDate], [IsActive], [GENDER]) VALUES (4, N'Lê Minh Cường', N'Trưởng phòng IT', 1, N'Assets/Avatars/nv6.jpg', N'789 Trường Chinh, Hà Nội', CAST(N'2018-11-10' AS Date), 1, N'Nam')
@@ -421,7 +422,7 @@ INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (108, 1019, N'Nhân viên', CAST(N'2025-11-11T09:57:10.780' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (109, 1016, N'Nhân viên', CAST(N'2025-11-11T10:16:44.267' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (110, 1016, N'Quản lý phòng ban', CAST(N'2025-11-11T10:16:44.270' AS DateTime))
-INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (111, 6, N'Admin', CAST(N'2025-11-11T10:22:23.550' AS DateTime))
+INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (111, 1, N'Admin', CAST(N'2025-11-11T10:22:23.550' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (112, 6, N'Quản lý dự án', CAST(N'2025-11-11T10:22:23.550' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (113, 3, N'Nhân viên', CAST(N'2025-11-11T10:32:20.930' AS DateTime))
 INSERT [dbo].[UserRoles] ([UserRoleID], [UserID], [Role], [AssignedDate]) VALUES (114, 3, N'Quản lý dự án', CAST(N'2025-11-11T10:32:20.933' AS DateTime))
